@@ -14,6 +14,6 @@ const cliente = sequelize.define("clientes", {
     },{
         timestamps: false // Desactiva las columnas createdAt y updatedAt
     }
-);
+)
 
 module.exports = cliente;

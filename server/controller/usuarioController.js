@@ -12,15 +12,16 @@ async function listarUsuario(req, res){
     }
 
  async function crearUsuario(req, res){
+  const dataUsuario=req.body;
   try {
     const usuario = await Usuario.create({
-      id_usuario:255,
-      fk_rol2:1,
-      nombres:"Pruebasapi",
-      apellidos:"Soy una prueba",
-      email:"pruebas@gmail.com",
-      contrasena:"112",
-      estado:1
+      id_usuario:dataUsuario.id_usuario,
+      fk_rol2:dataUsuario.fk_rol2,
+      nombres:dataUsuario.nombres,
+      apellidos:dataUsuario.apellidos,
+      email:dataUsuario.email,
+      contrasena:dataUsuario.contrasena,
+      estado:dataUsuario.estado
     });
     res.status(201).json(usuario)
   } catch (error) {

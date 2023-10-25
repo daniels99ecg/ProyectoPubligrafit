@@ -6,7 +6,7 @@ const UsuarioController=require("../../controller/usuario/usuarioController")
 
 Router.get("/", UsuarioController.listarUsuario);
 
-
+Router.get("/:id", UsuarioController.listarporid);
 
 Router.post("/create", UsuarioController.crearUsuario)
 

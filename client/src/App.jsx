@@ -11,8 +11,7 @@ function App() {
      <Routes>
       <Route path='/usuario' element={<User/>}/>
       <Route path='/usuario/create' element={<UserCreate/>}/>
-      <Route path='/edit/:id' element={<UserCreate/>}/>
-
+      <Route path='/edit/:id_usuario' element={<UserCreate/>}/>
      </Routes>
     </>
   )

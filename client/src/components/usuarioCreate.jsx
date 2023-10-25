@@ -1,16 +1,18 @@
 import { Form ,Formik} from 'formik'
-import {crearUsuario} from '../api/rutas.api'
+import {actualizarUsuario, crearUsuario, getListarRoles} from '../api/rutas.api'
 import { useParams, useNavigate } from 'react-router-dom'
 import '../../src/css/style.css'
 import Nav from '../components/nav'
 import Header from "../components/header"
 import Swal from 'sweetalert2'; // Import SweetAlert2
+import { useState, useEffect } from 'react'
 
 
 
 function UserCreate() {
   const params=useParams()
   const navigate = useNavigate();
+  
 
   const showValidationError = (message) => {
     Swal.fire({
@@ -20,6 +22,46 @@ function UserCreate() {
     });
   };
 
+  const [Listar, setListar]=useState([])
+ const[ListarActualizar, setListarActualizar]=useState({
+  id_usuario:"",
+    nombres:"",
+    apellidos:"",
+    email:"",
+    contrasena:"",
+    fk_rol2:"",
+ })
+  
+  useEffect(()=>{
+    
+    async function cargarRol(){
+     const response =  await getListarRoles()
+     setListar(response.data)
+     }
+     cargarRol()
+
+   
+     async function cargarUsuariosActualizar() {
+      try {
+      
+        const response = await actualizarUsuario(params.id_usuario);
+        const usuarioData=response.data
+        setListarActualizar({
+          id_usuario: usuarioData.id_usuario,
+          nombres: usuarioData.nombres,
+          apellidos: usuarioData.apellidos,
+          email: usuarioData.email,
+          contrasena: usuarioData.contrasena,
+          fk_rol2: usuarioData.fk_rol2,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    cargarUsuariosActualizar();
+    
+   },[params.id_usuario])
     return (
       <>
 
@@ -29,20 +71,16 @@ function UserCreate() {
     <div className="main-wrapper">
     <Header/>
     <div className='card w-75 p-3 mx-auto mt-5'>
-    <h2 className='text-center'>Registrar Usuario</h2>
+    <h2 className="text-center">
+               Registrar Usuario
+            </h2>
 
    <Formik
-   initialValues={{
-    id_usuario:"",
-    nombres:"",
-    apellidos:"",
-    email:"",
-    contrasena:"",
-    fk_rol2:""
-
-   }}
+   initialValues={ListarActualizar}
+   enableReinitialize={true}
    onSubmit={async (values)=>{
     console.log(values)
+ 
     try{
  // Perform your validation checks here
  if( values.nombres=="" || values.apellidos==""||values.email==""||values.contrasena==""){
@@ -62,7 +100,7 @@ function UserCreate() {
       })
     }else{
       const swalWithBootstrapButtons = Swal.mixin({
-          customClass: {
+          customclass: {
             confirmButton: 'btn btn-success',
             cancelButton: 'btn btn-danger'
           },
@@ -108,6 +146,7 @@ function UserCreate() {
   
         const responde=await crearUsuario(values)
         console.log(responde)
+        
         // actions.resetForm()
         
     }catch (error){
@@ -120,44 +159,49 @@ function UserCreate() {
     
       <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
         
-          <div class="col-md-6">
+          <div className="col-md-6">
       <label>Id usuario</label>
-      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} class="form-control"/>
+      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control"/>
       </div>
-      <div class="col-md-6">
+      <div className="col-md-6">
       <label>Nombre</label>
-      <input  type='text' name='nombres' onChange={handleChange} value={values.nombres} class="form-control"/>
+      <input  type='text' name='nombres' onChange={handleChange} value={values.nombres} className="form-control"/>
       </div>
-      <div class="col-md-6">
+      <div className="col-md-6">
       <label>Apellido</label>
-      <input  type='text' name='apellidos' onChange={handleChange} value={values.apellidos} class="form-control"/>
+      <input  type='text' name='apellidos' onChange={handleChange} value={values.apellidos} className="form-control"/>
 </div>
-<div class="col-md-6">
+<div className="col-md-6">
       <label>Correo</label>
-      <input  type='text' name='email' onChange={handleChange} value={values.email} class="form-control"/>
+      <input  type='text' name='email' onChange={handleChange} value={values.email} className="form-control"/>
 </div>
-<div class="col-md-6">
+<div className="col-md-6">
       <label>Contraseña</label>
-      <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} class="form-control"/>
+      <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control"/>
 </div>
-<div class="col-md-6">
+<div className="col-md-6">
       <label>Rol</label>
 
-<select name="fk_rol2" onChange={handleChange} value={values.fk_rol2} class="form-control">
+<select name="fk_rol2" onChange={handleChange} value={values.fk_rol2} className="form-control">
 <option value="Seleccionar">Seleccionar</option>
-  <option value="1"  onChange={handleChange}>Administrador</option>
-  <option value="2"  onChange={handleChange}>Empleado</option>
+  {
+    Listar.map(Listar=>(
+      <option key={Listar.id_rol} value={Listar.id_rol}>
+      {Listar.nombre_rol}
+    </option>
+    ))
+  }
 </select>
 
 </div>
 <br />
 
-<div class="col-auto">
-      <button class="btn btn-primary">
-          Guardar
+<div className="col-auto">
+      <button className="btn btn-primary">
+         Guardar
       </button>
 </div>
-<div class="col-auto">
+<div className="col-auto">
       <a href='/usuario' className='btn btn-danger'>Cancelar</a>
       </div>
 

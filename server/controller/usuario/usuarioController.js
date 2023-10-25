@@ -44,6 +44,20 @@ async function listarUsuario(req, res) {
  }
 
 
+ async function listarporid(req, res){
+  try {
+    const userId = req.params.id;
+    const user = await Usuario.findByPk(userId);
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+ }
 
  async function crearUsuario(req, res){
   const dataUsuario=req.body;
@@ -100,11 +114,11 @@ async function listarUsuario(req, res) {
  }
 
 
-
 module.exports={
     listarUsuario,
     crearUsuario,
     actualizarUsuario,
+    listarporid
     
 }
     

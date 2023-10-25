@@ -27,7 +27,6 @@ const navigate=useNavigate()
   return (
     <>
     
-
     <div className="page-flex">
     <Nav/>
 

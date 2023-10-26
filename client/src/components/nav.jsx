@@ -15,7 +15,7 @@ function Nav(){
         <div className="sidebar-head">
             <a href="/dashboard" className="logo-wrapper" title="Home">
                 <span className="sr-only">Home</span>
-      <img src="/img/PubliGrafit2.png" className='logonav'/>  <div className="logo-text">
+      <img srcSet="/img/PubliGrafit2.png" className='logonav'/>  <div className="logo-text">
                     <span className="logo-title ml-2">PubliGrafit</span>
                   
                 </div>
@@ -42,7 +42,7 @@ function Nav(){
                   </svg>Usuarios</a>
                    
               </li>
-              <li>
+              
                 <li>
                     <a className="show-cat" href="/rol">
                     <svg xmlns="http://www.w3.org/2000/svg" width="42" height="25" fill="currentColor" className="bi bi-person-fill-gear" viewBox="0 0 16 16" >
@@ -50,11 +50,11 @@ function Nav(){
                   </svg>Roles</a>
                    
               </li>
-              <li>
+            
                 <li>
                     <a className="show-cat" href="/insumos">
                       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="currentColor" className="bi bi-box-seam-fill" viewBox="0 0 16 16" >
-                        <path fill-rule="evenodd" d="M15.528 2.973a.75.75 0 0 1 .472.696v8.662a.75.75 0 0 1-.472.696l-7.25 2.9a.75.75 0 0 1-.557 0l-7.25-2.9A.75.75 0 0 1 0 12.331V3.669a.75.75 0 0 1 .471-.696L7.443.184l.01-.003.268-.108a.75.75 0 0 1 .558 0l.269.108.01.003 6.97 2.789ZM10.404 2 4.25 4.461 1.846 3.5 1 3.839v.4l6.5 2.6v7.922l.5.2.5-.2V6.84l6.5-2.6v-.4l-.846-.339L8 5.961 5.596 5l6.154-2.461L10.404 2Z"/>
+                        <path fillRule="evenodd" d="M15.528 2.973a.75.75 0 0 1 .472.696v8.662a.75.75 0 0 1-.472.696l-7.25 2.9a.75.75 0 0 1-.557 0l-7.25-2.9A.75.75 0 0 1 0 12.331V3.669a.75.75 0 0 1 .471-.696L7.443.184l.01-.003.268-.108a.75.75 0 0 1 .558 0l.269.108.01.003 6.97 2.789ZM10.404 2 4.25 4.461 1.846 3.5 1 3.839v.4l6.5 2.6v7.922l.5.2.5-.2V6.84l6.5-2.6v-.4l-.846-.339L8 5.961 5.596 5l6.154-2.461L10.404 2Z"/>
                       </svg>Insumos
                       
                     </a>
@@ -86,10 +86,10 @@ function Nav(){
                      
                   </a>
                 
-              </li>
+           
                   <a className="show-cat" href="/ventas">
                     <svg xmlns="http://www.w3.org/2000/svg" width="45" height="20" fill="currentColor" className="bi bi-bag-check-fill" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zm-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+  <path fillRule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zm-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
 </svg>Ventas
                     
                 </a>
@@ -101,7 +101,7 @@ function Nav(){
 </svg> Clientes</a>
 
                     <span className="msg-counter">7</span>
-                </li>
+                
             </ul>
             <span className="system-menu__title">system</span>
             <ul className="sidebar-body-menu">                
@@ -120,7 +120,7 @@ function Nav(){
     <div className="sidebar-footer">
         <a href="##" className="sidebar-user">
             <span className="sidebar-user-img">
-                <picture><source srcset="../img/avatar/avatar-illustrated-01.webp" type="image/webp"/><img src="../img/avatar/avatar-illustrated-01.png" alt="User name"/></picture>
+                <picture><source srcSet="../img/avatar/avatar-illustrated-01.webp" type="image/webp"/><img srcSet="../img/avatar/avatar-illustrated-01.png" alt="User name"/></picture>
             </span>
             <div className="sidebar-user-info">
                 <span className="sidebar-user__title">Nafisa Sh.</span>

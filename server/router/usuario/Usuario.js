@@ -12,4 +12,6 @@ Router.post("/create", UsuarioController.crearUsuario)
 
 Router.put("/update/:id", UsuarioController.actualizarUsuario)
 
+Router.put("/cambiar/:id", UsuarioController.actualizarEstado)
+
 module.exports=Router;

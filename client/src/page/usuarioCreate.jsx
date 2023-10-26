@@ -1,7 +1,6 @@
 import { Form ,Formik} from 'formik'
-import {actualizarUsuario, crearUsuario, getListarRoles} from '../api/rutas.api'
+import {cargaractualizarUsuario, crearUsuario, getListarRoles, actualizarUsuario} from '../api/rutas.api'
 import { useParams, useNavigate } from 'react-router-dom'
-import '../../src/css/style.css'
 import Nav from '../components/nav'
 import Header from "../components/header"
 import Swal from 'sweetalert2'; // Import SweetAlert2
@@ -14,13 +13,6 @@ function UserCreate() {
   const navigate = useNavigate();
   
 
-  const showValidationError = (message) => {
-    Swal.fire({
-      icon: 'error',
-      title: 'Validation Error',
-      text: message,
-    });
-  };
 
   const [Listar, setListar]=useState([])
  const[ListarActualizar, setListarActualizar]=useState({
@@ -44,7 +36,7 @@ function UserCreate() {
      async function cargarUsuariosActualizar() {
       try {
       
-        const response = await actualizarUsuario(params.id_usuario);
+        const response = await cargaractualizarUsuario(params.id_usuario);
         const usuarioData=response.data
         setListarActualizar({
           id_usuario: usuarioData.id_usuario,
@@ -61,7 +53,12 @@ function UserCreate() {
 
     cargarUsuariosActualizar();
     
+
+
    },[params.id_usuario])
+
+   
+  
     return (
       <>
 
@@ -72,7 +69,7 @@ function UserCreate() {
     <Header/>
     <div className='card w-75 p-3 mx-auto mt-5'>
     <h2 className="text-center">
-               Registrar Usuario
+               {params.id_usuario ? "Actualizar Usuario": "Registar Usuario"}
             </h2>
 
    <Formik
@@ -80,7 +77,10 @@ function UserCreate() {
    enableReinitialize={true}
    onSubmit={async (values)=>{
     console.log(values)
- 
+    if(params.id_usuario){
+      await actualizarUsuario(params.id_usuario, values)
+    }
+   
     try{
  // Perform your validation checks here
  if( values.nombres=="" || values.apellidos==""||values.email==""||values.contrasena==""){
@@ -99,54 +99,56 @@ function UserCreate() {
         
       })
     }else{
-      const swalWithBootstrapButtons = Swal.mixin({
-          customclass: {
-            confirmButton: 'btn btn-success',
-            cancelButton: 'btn btn-danger'
-          },
-          buttonsStyling: false
-        })
-        
-        swalWithBootstrapButtons.fire({
-          title: 'Confirmar el envio del formulario?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Aceptar!',
-          cancelButtonText: 'Cancelar!',
-          Buttons: true
-        }).then((result) => {
-          if (result.isConfirmed) {
 
-            //Linea de codigo muy importante para el cambio de type button a submit
-            // const formulario=document.getElementById('pruebas');
-            // formulario.submit();
-            navigate("/usuario");
-            swalWithBootstrapButtons.fire(
-              'Registro Enviado!',
-              'Your file has been deleted.',
-              'success'
-            )
-          
-          } else if (
-            /* Read more about handling dismissals below */
-            result.dismiss === Swal.DismissReason.cancel
-          ) {
-            swalWithBootstrapButtons.fire(
-              'Se cancelo el envio',
-              'Your imaginary file is safe :)',
-              'error'
-            )
-          }
-         
-        })
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Confirmar el envio del formulario?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar!',
+        cancelButtonText: 'Cancelar!',
+        Buttons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+          //Linea de codigo muy importante para el cambio de type button a submit
+          // const formulario=document.getElementById('pruebas');
+          // formulario.submit();
+          navigate("/usuario");
+          swalWithBootstrapButtons.fire(
+            'Registro Enviado!',
+            'Your file has been deleted.',
+            'success'
+          )
+        
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Se cancelo el envio',
+            'Your imaginary file is safe :)',
+            'error'
+          )
+        }
        
-       
-      }
+      })
+     
+     
+    }
   
         const responde=await crearUsuario(values)
         console.log(responde)
         
+      
         // actions.resetForm()
         
     }catch (error){
@@ -161,7 +163,7 @@ function UserCreate() {
         
           <div className="col-md-6">
       <label>Id usuario</label>
-      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control"/>
+      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control" disabled={params.id_usuario ? true : false}/>
       </div>
       <div className="col-md-6">
       <label>Nombre</label>
@@ -177,7 +179,7 @@ function UserCreate() {
 </div>
 <div className="col-md-6">
       <label>Contraseña</label>
-      <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control"/>
+      <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" disabled={params.id_usuario ? true : false}/>
 </div>
 <div className="col-md-6">
       <label>Rol</label>
@@ -198,7 +200,7 @@ function UserCreate() {
 
 <div className="col-auto">
       <button className="btn btn-primary">
-         Guardar
+         {params.id_usuario ? "Actualizar":"Registrar"}
       </button>
 </div>
 <div className="col-auto">

@@ -27,6 +27,14 @@ async function crearCliente(req, res){
 
     try{
         const dataCliente = req.body
+        const clienteExistente = await Cliente.findOne({
+            where: { documento: dataCliente.documento },
+        });
+
+        if (clienteExistente) {
+            return res.status(400).json({ error: "El cliente ya existe en la base de datos" });
+        }
+
         const cliente = await Cliente.create({
         documento: dataCliente.documento,
         nombre: dataCliente.nombre,
@@ -38,7 +46,7 @@ async function crearCliente(req, res){
         res.status(201).json(cliente)
     }catch (error){
         console.error(error);
-        res.status(500).json({error: 'Error al crear cliente'});
+        res.status(500).json({ error: 'Error al crear cliente'});
     }
 }
 

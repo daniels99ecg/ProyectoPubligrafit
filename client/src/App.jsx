@@ -10,7 +10,7 @@ function App() {
      <Routes>
       <Route path='/cliente' element={<ShowCliente/>}/>
       <Route path='/cliente/create' element={<CreateCliente/>}/> // controller
-      <Route path='/cliente/update' element={<UpdateCliente/>}/> // controller
+      <Route path='/edit/:documento' element={<UpdateCliente/>}/> // controller
      </Routes>
     </>
   )

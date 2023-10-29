@@ -1,45 +1,39 @@
 import { useEffect, useState } from "react"
-import {getListarUsuarios, cambiarEstadoUsuario} from '../api/rutas.api'
-import Nav from '../components/nav'
+import {getListarUsuarios, cambiarEstadoUsuario} from '../../api/rutas.api'
+import Nav from '../../components/nav'
 import { useNavigate } from "react-router-dom"
-import Header from "../components/header"
-import '../css/style.css'
-
+import Header from "../../components/header"
+import '../../css/style.css'
+import { useUser } from "../../context/Usuario/UserContext";
 
 
 function User() {
+  const {listar, cargarUsuario}=useUser()
 
-   const [listar, setListar]=useState([])
    const [searchTerm, setSearchTerm] = useState(""); 
 
   useEffect(()=>{
-    
-   async function cargarUsuario(){
-    const response =  await getListarUsuarios()
-    setListar(response.data)
-    
-    
-    }
     
     cargarUsuario()
 
   },[])
 const navigate=useNavigate()
 
-
-const toggleUserState = async(userId) => {
-  await cambiarEstadoUsuario(userId)
-  setListar((prevListar) =>
-    prevListar.map((listar) => {
-      if (listar.id_usuario === userId) {
-        listar.estado = !listar.estado; // Toggle the user's state
-      }
-      return listar;
-    })
-  );
+const toggleUserState = async (userId) => {
+  try {
+    await cambiarEstadoUsuario(userId); // Cambia el estado del usuario en la base de datos
+    setListar((prevListar) =>
+      prevListar.map((listar) => {
+        if (listar.id_usuario === userId) {
+          listar.estado = !listar.estado; // Toggle the user's state
+        }
+        return listar;
+      })
+    );
+  } catch (error) {
+    console.error('Error al cambiar el estado del usuario', error);
+  }
 };
-
-
 
   return (
     <>
@@ -57,7 +51,7 @@ const toggleUserState = async(userId) => {
 <div className="col-md-3">
 <input
               type="text"
-              placeholder="Buscar Nombre"
+              placeholder="Buscar..."
               onChange={(e) => setSearchTerm(e.target.value)}
               className="form-control"
             />
@@ -78,7 +72,7 @@ const toggleUserState = async(userId) => {
           <th scope="col">Contraseña</th>
           <th scope="col">Rol</th>
           <th scope="col">Estado</th>
-          <th scope="col">Acción</th>
+          <th scope="col">Acciones</th>
 
         </tr>
       </thead>
@@ -87,7 +81,10 @@ const toggleUserState = async(userId) => {
     
   listar.filter((item) =>
   // Filtrar usuarios que coincidan con el término de búsqueda
-  item.nombres.toLowerCase().includes(searchTerm.toLowerCase())
+  item.nombres.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  item.apellidos.toLowerCase().includes(searchTerm.toLowerCase())||
+  item.email.toLowerCase().includes(searchTerm.toLowerCase())
+
 ).map(listar=>(
     <tr key={listar.id_usuario}>
    
@@ -107,6 +104,7 @@ const toggleUserState = async(userId) => {
                           checked={listar.estado}
                           className="switch-button__checkbox"
                           onChange={() => toggleUserState(listar.id_usuario)}
+                          
                         />
                         <label
                           htmlFor={`switch-label-${listar.id_usuario}`}
@@ -115,9 +113,9 @@ const toggleUserState = async(userId) => {
                       </div>
                     </td>
       
-      <td><button className="btn btn-outline-secondary" onClick={()=>navigate(`/edit/${listar.id_usuario}`)}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"></path>
+      <td><button className="btn btn-outline-secondary" onClick={()=>navigate(`/edit/${listar.id_usuario}`)} style={{backgroundColor:"#0d6efd", borderColor:"#0d6efd"}}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-clockwise" viewBox="0 0 16 16" style={{color:"#000000",borderColor:"#000000"}}>
+    <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"></path>
     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"></path>
   </svg>
         

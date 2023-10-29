@@ -1,18 +1,16 @@
 import { Form ,Formik} from 'formik'
-import {cargaractualizarUsuario, crearUsuario, getListarRoles, actualizarUsuario} from '../api/rutas.api'
-import { useParams, useNavigate } from 'react-router-dom'
-import Nav from '../components/nav'
-import Header from "../components/header"
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import {cargaractualizarUsuario, crearUsuario, getListarRoles, actualizarUsuario} from '../../api/rutas.api'
+import { useParams} from 'react-router-dom'
+import Nav from '../../components/nav'
+import Header from "../../components/header"
 import { useState, useEffect } from 'react'
-
+import { useUser } from "../../context/Usuario/UserContext";
 
 
 function UserCreate() {
-  const params=useParams()
-  const navigate = useNavigate();
-  
 
+  const params=useParams()
+  const {creacionValidacion}=useUser()
 
   const [Listar, setListar]=useState([])
  const[ListarActualizar, setListarActualizar]=useState({
@@ -25,14 +23,12 @@ function UserCreate() {
  })
   
   useEffect(()=>{
-    
     async function cargarRol(){
      const response =  await getListarRoles()
      setListar(response.data)
      }
      cargarRol()
 
-   
      async function cargarUsuariosActualizar() {
       try {
       
@@ -52,9 +48,7 @@ function UserCreate() {
     }
 
     cargarUsuariosActualizar();
-    
-
-
+  
    },[params.id_usuario])
 
    
@@ -80,82 +74,11 @@ function UserCreate() {
     if(params.id_usuario){
       await actualizarUsuario(params.id_usuario, values)
     }
-   
-    try{
- // Perform your validation checks here
- if( values.nombres=="" || values.apellidos==""||values.email==""||values.contrasena==""){
 
-  Swal.fire({
-      icon: 'error',
-      title: 'Campos Vacios',
-      text: 'Por favor ingresar datos!',
-      
-    })
-  }else if(!values.email.includes("@") || !values.email.includes(".com")){
-    Swal.fire({
-        icon: 'error',
-        title: 'Correo no valido',
-        text: 'Por favor ingresar un correo valido!',
-        
-      })
-    }else{
-
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: 'btn btn-success',
-          cancelButton: 'btn btn-danger'
-        },
-        buttonsStyling: false
-      })
-      
-      swalWithBootstrapButtons.fire({
-        title: 'Confirmar el envio del formulario?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Aceptar!',
-        cancelButtonText: 'Cancelar!',
-        Buttons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-
-          //Linea de codigo muy importante para el cambio de type button a submit
-          // const formulario=document.getElementById('pruebas');
-          // formulario.submit();
-          navigate("/usuario");
-          swalWithBootstrapButtons.fire(
-            'Registro Enviado!',
-            'Your file has been deleted.',
-            'success'
-          )
-        
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            'Se cancelo el envio',
-            'Your imaginary file is safe :)',
-            'error'
-          )
-        }
-       
-      })
-     
-     
-    }
-  
-        const responde=await crearUsuario(values)
-        console.log(responde)
-        
-      
-        // actions.resetForm()
-        
-    }catch (error){
-        console.log(error)
-    }
+   creacionValidacion(values)
 
    }}
+   
    >
   {({handleChange, handleSubmit, values})=>(
     

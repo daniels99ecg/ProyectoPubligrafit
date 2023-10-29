@@ -117,7 +117,7 @@ async function listarUsuario(req, res) {
 
   try{
       const id_usuario = req.params.id;
-      const usuario = req.body
+      const nuevoEstado = req.body
       // Verifica si el cliente con el ID dado existe antes de intentar actualizarlo
       const usuarioExistente = await Usuario.findByPk(id_usuario);
       if (!usuarioExistente) {
@@ -128,7 +128,7 @@ async function listarUsuario(req, res) {
       await Usuario.update(
           {
             
-              estado: 1
+              estado: 0
           },
           {
               where: { id_usuario }

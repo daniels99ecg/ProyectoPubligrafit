@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import {getListarUsuarios, cambiarEstadoUsuario} from '../../api/rutas.api'
 import Nav from '../../components/nav'
 import { useNavigate } from "react-router-dom"
-import Header from "../../components/header"
 import '../../css/style.css'
 import { useUser } from "../../context/Usuario/UserContext";
 
@@ -37,16 +36,23 @@ const toggleUserState = async (userId) => {
 
   return (
     <>
-    
-    <div className="page-flex">
-    <Nav/>
+<Nav/>
 
-    <div className="main-wrapper">
-    <Header/>
-<br />
+
+    <div class='dashboard-app'>
+      
+        <div class='dashboard-content'>
+            <div class='container'>
+                <div class='card'>
+                    {/* <div class='card-header'>
+                        <h1>Welcome back Jim</h1>
+                    </div> */}
+                    <div class='card-body'>
+                    <br />
 <div className='row'>
 <div className="col-md-2">  
-<a className="btn btn-primary " href="/usuario/create" role="button">Nuevo Registro</a>
+<a className="btn btn-primary " href="/usuario/create" role="button" >Nuevo Registro</a>
+
 </div>
 <div className="col-md-3">
 <input
@@ -59,8 +65,6 @@ const toggleUserState = async (userId) => {
             </div>
 <br />
 
-    <div className="card" style={{marginLeft:15}}>
-  
       <table className="table table-hover">
       <thead>
         <tr>
@@ -129,9 +133,12 @@ const toggleUserState = async (userId) => {
 </table>
 
 </div>
-</div>
-</div>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+  
     </>
   )
 }

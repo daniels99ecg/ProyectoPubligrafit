@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { getListarRoles } from "../../api/rutas.api"
-import Header from "../../components/header"
 import Nav from '../../components/nav'
 
 function Rol(){
@@ -17,12 +16,18 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
     },[])
 
     return(
-        <div className="page-flex">
-        <Nav/>
-    
-        <div className="main-wrapper">
-        <Header/>
-    <br />
+      <>
+      <Nav/>
+          <div class='dashboard-app'>
+              <div class='dashboard-content'>
+                  <div class='container'>
+                      <div class='card'>
+                          {/* <div class='card-header'>
+                              <h1>Welcome back Jim</h1>
+                          </div> */}
+                          <div class='card-body'>
+                          <br />
+   
     <div className='row'>
     <div className="col-md-2">  
     <a className="btn btn-primary " href="/rol/create" role="button">Nuevo Registro</a>
@@ -47,7 +52,7 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
           <th scope="col">Nombre Rol</th>
           <th scope="col">Fecha</th>
           <th scope="col">Estado</th>
-          <th scope="col">Acciones</th>
+        
 
         </tr>
       </thead>
@@ -86,13 +91,7 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
                       </div>
                     </td>
       
-      <td><button className="btn btn-outline-secondary" onClick={()=>navigate(`/edit/${listar.id_usuario}`)} style={{backgroundColor:"#0d6efd", borderColor:"#0d6efd"}}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-clockwise" viewBox="0 0 16 16" style={{color:"#000000",borderColor:"#000000"}}>
-    <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"></path>
-    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"></path>
-  </svg>
-        
-        </button></td>
+      
     </tr>
     ))
   }  
@@ -101,8 +100,14 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
   
 </table>
 </div>
-</div>
-</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+    </>
+
     )
 }
 

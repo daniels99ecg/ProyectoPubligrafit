@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import {getListarUsuarios, cambiarEstadoUsuario, crearUsuario} from '../../api/rutas.api'
+import {getListarUsuarios, crearUsuario, getListarRoles} from '../../api/rutas.api'
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
 export const UserContext = createContext()
@@ -16,7 +16,10 @@ export const UserContextProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [listar, setListar]=useState([])
-    
+    const [Listar, setListar2]=useState([])
+
+
+
     async function cargarUsuario(){
         const response =  await getListarUsuarios()
         setListar(response.data)
@@ -84,6 +87,7 @@ export const UserContextProvider = ({ children }) => {
                      )
                    }
                   
+
                  })
                 
                 
@@ -100,9 +104,15 @@ export const UserContextProvider = ({ children }) => {
                }
     }    
 
+    async function cargarRol(){
+      const response =  await getListarRoles()
+      setListar2(response.data)
+      }
 
+
+  
     return( 
-    <UserContext.Provider value={{listar, cargarUsuario, creacionValidacion}}>
+    <UserContext.Provider value={{listar, Listar,cargarUsuario, creacionValidacion,  cargarRol}}>
         {children}
     </UserContext.Provider>
     )

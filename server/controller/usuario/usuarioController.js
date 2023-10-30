@@ -141,13 +141,14 @@ async function listarUsuario(req, res) {
 }
 
 
+
 module.exports={
     listarUsuario,
     crearUsuario,
     actualizarUsuario,
     listarporid,
-    actualizarEstado
-    
+    actualizarEstado,
+
 }
     
     

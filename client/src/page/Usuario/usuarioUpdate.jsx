@@ -52,13 +52,11 @@ function UserCreate() {
     return (
       <>
 
+<div className="page-flex">
     <Nav/>
 
-    <div class='dashboard-app'>
-        <div class='dashboard-content'>
-            <div class='container'>
-                <div class='card'>
-    <div className='w-75 p-3 mx-auto '>
+    <div className="main-wrapper">
+    <div className='card w-75 p-3 mx-auto mt-5'>
     <h2 className="text-center">
                {params.id_usuario ? "Actualizar Usuario": "Registar Usuario"}
             </h2>
@@ -132,14 +130,8 @@ function UserCreate() {
     </Formik> 
 
     </div>
-  
-   
-                </div>
-            </div>
-        </div>
     </div>
-
-
+    </div>
       </>
     )
   }

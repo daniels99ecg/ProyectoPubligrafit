@@ -14,7 +14,7 @@ function Nav() {
             
             </a><a href="#" class="brand-logo">
           
-              <span>   <img srcSet="/img/PubliGrafit2.png" className='logonav'/></span>
+              <span>PubliGrafit</span>
               </a>
               </header>
           <nav class="dashboard-nav-list">

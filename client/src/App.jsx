@@ -7,13 +7,16 @@ import UserUpdate from './page/Usuario/usuarioUpdate'
 import { UserContextProvider } from './context/Usuario/UserContext'
 import Rol from './page/Rol/rol'
 import RolCreate from './page/Rol/RolCreate'
-
+import Login from './page/Login/login'
 function App() {
 
   return (
     <>
     <UserContextProvider>
      <Routes>
+     <Route path='/' element={<Login/>}/>
+
+
       {/* Usuarios */}
       <Route path='/usuario' element={<User/>}/>
       <Route path='/usuario/create' element={<UserCreate/>}/>

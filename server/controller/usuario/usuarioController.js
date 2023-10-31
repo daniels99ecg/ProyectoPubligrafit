@@ -113,33 +113,20 @@ async function listarUsuario(req, res) {
   }
  }
 
- async function actualizarEstado(req, res){
 
-  try{
-      const id_usuario = req.params.id;
-      const nuevoEstado = req.body
-      // Verifica si el cliente con el ID dado existe antes de intentar actualizarlo
-      const usuarioExistente = await Usuario.findByPk(id_usuario);
-      if (!usuarioExistente) {
-          return res.status(404).json({ error: 'Usuario no encontrado' });
-      }
 
-      // Actualiza los campos del cliente
-      await Usuario.update(
-          {
-            
-              estado: 0
-          },
-          {
-              where: { id_usuario }
-          }
-      );
-  }catch (error){
-      console.error(error);
-      res.status(500).json({error: 'Error al actualizar cliente'});
+
+async function login(req, res){
+  const datosUsuarios = req.body;
+
+  const user = await Usuario.findOne({ where: { email:datosUsuarios.email, contrasena:datosUsuarios.contrasena } });
+
+  if (user) {
+    res.json({ message: 'Login exitoso' });
+  } else {
+    res.status(401).json({ message: 'Credenciales incorrectas' });
   }
 }
-
 
 
 module.exports={
@@ -147,7 +134,7 @@ module.exports={
     crearUsuario,
     actualizarUsuario,
     listarporid,
-    actualizarEstado,
+    login
 
 }
     

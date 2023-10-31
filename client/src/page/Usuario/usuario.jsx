@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import {getListarUsuarios, cambiarEstadoUsuario} from '../../api/rutas.api'
+import {getListarUsuarios} from '../../api/rutas.api'
 import Nav from '../../components/nav'
 import { useNavigate } from "react-router-dom"
 import '../../css/style.css'

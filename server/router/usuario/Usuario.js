@@ -12,7 +12,7 @@ Router.post("/create", UsuarioController.crearUsuario)
 
 Router.put("/update/:id", UsuarioController.actualizarUsuario)
 
-Router.put("/cambiar/:id", UsuarioController.actualizarEstado)
+Router.post("/login/", UsuarioController.login)
 
 
 

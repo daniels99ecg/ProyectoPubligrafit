@@ -14,6 +14,11 @@ Router.put("/update/:id", UsuarioController.actualizarUsuario)
 
 Router.post("/login/", UsuarioController.login)
 
+Router.put("/disable/:id", UsuarioController.desactivarCliente)
+
+Router.put("/activate/:id", UsuarioController.activarCliente)
+
+
 
 
 module.exports=Router;

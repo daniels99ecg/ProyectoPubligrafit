@@ -12,7 +12,8 @@ function Login(){
       try{
         const response=await loginIngreso(email, contrasena)
         console.log('Valores enviados:', response.data);
-      if (response.data) {
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
         navigate('/usuario'); 
       }
     } catch (error) {
@@ -27,7 +28,7 @@ function Login(){
 
     
 return( 
-    <div>
+    <div className="card w-25 text-center p-5">
       <h2>Iniciar sesión</h2>
       <Formik initialValues={{
         email:"",
@@ -36,9 +37,10 @@ return(
       } onSubmit={handleSubmit}>
         {({ isSubmitting }) => (
           <Form>
+            
             <div>
               <label htmlFor="email">Correo electrónico:</label>
-              <Field type="email" id="email" name="email" clasName="form-control" className="form-control" />
+              <Field type="email" id="email" name="email" clasName="form-control"  className="form-control" />
               <ErrorMessage name="email" component="div" />
             </div>
             <div>
@@ -46,6 +48,7 @@ return(
               <Field type="password" id="contrasena" name="contrasena" className="form-control" />
               <ErrorMessage name="contrasena" component="div" />
             </div>
+            <br />
             <div>
               <button type="submit" disabled={isSubmitting} className="btn btn-primary" >
                 Iniciar sesión

@@ -4,6 +4,7 @@ const Rol  = require('../../models/rol/Rol');
 
 const bcrypt = require('bcrypt');
 
+const jwt = require('jsonwebtoken');
 
 // async function listarUsuario(req, res){
 
@@ -42,7 +43,6 @@ async function listarUsuario(req, res) {
     res.status(500).json({ error: 'Hubo un error al obtener los usuarios con roles' });
   }
  }
-
 
  async function listarporid(req, res){
   try {
@@ -113,18 +113,56 @@ async function listarUsuario(req, res) {
   }
  }
 
-
-
-
 async function login(req, res){
   const datosUsuarios = req.body;
 
   const user = await Usuario.findOne({ where: { email:datosUsuarios.email, contrasena:datosUsuarios.contrasena } });
 
   if (user) {
-    res.json({ message: 'Login exitoso' });
+     // Si las credenciales son correctas, genera un token JWT
+     const token = jwt.sign({ userId: user.id }, 'your-secret-key', {
+      expiresIn: '1h' // Puedes ajustar la duración del token
+    });
+    res.json({ message: 'Login exitoso', token });
   } else {
     res.status(401).json({ message: 'Credenciales incorrectas' });
+  }
+}
+
+async function desactivarCliente(req, res) {
+  try {
+    const id = req.params.id;
+    const cliente = await Usuario.findByPk(id);
+      
+      if (!cliente) {
+          return res.status(404).json({ error: 'Cliente no encontrado' });
+      }
+
+      // Actualiza el estado del cliente a "deshabilitado" (false)
+      await cliente.update({ estado: false });
+
+      res.status(200).json({ message: 'Cliente deshabilitado exitosamente' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al deshabilitar cliente' });
+  }
+}
+
+async function activarCliente(req, res) {
+  try {
+      const id = req.params.id;
+      const cliente = await Usuario.findByPk(id);
+      
+      if (!cliente) {
+          return res.status(404).json({ error: 'Cliente no encontrado' });
+      }
+
+      await cliente.update({ estado: true });
+
+      res.status(200).json({ message: 'Cliente habilitado exitosamente' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al habilitar cliente' });
   }
 }
 
@@ -134,7 +172,9 @@ module.exports={
     crearUsuario,
     actualizarUsuario,
     listarporid,
-    login
+    login,
+    desactivarCliente,
+    activarCliente
 
 }
     

@@ -24,9 +24,16 @@ export const loginIngreso = async (email, contrasena) => {
 
 }
 
-
 export const getListarRoles=async ()=>{
   return await axios.get('http://localhost:3001/rol')
+}
+
+export const putDesactivarCliente = async (id_usuario) => {
+  return await axios.put(`http://localhost:3001/usuario/disable/${id_usuario}`);
+}
+
+export const putActivarCliente = async (id_usuario) => {
+  return await axios.put(`http://localhost:3001/usuario/activate/${id_usuario}`);
 }
 
 

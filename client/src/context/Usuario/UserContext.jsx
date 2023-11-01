@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import {getListarUsuarios, crearUsuario, getListarRoles} from '../../api/rutas.api'
+import {getListarUsuarios, crearUsuario, getListarRoles, putActivarCliente, putDesactivarCliente} from '../../api/rutas.api'
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
 export const UserContext = createContext()
@@ -17,7 +17,6 @@ export const UserContextProvider = ({ children }) => {
 
     const [listar, setListar]=useState([])
     const [Listar, setListar2]=useState([])
-
 
 
     async function cargarUsuario(){
@@ -109,10 +108,48 @@ export const UserContextProvider = ({ children }) => {
       setListar2(response.data)
       }
 
-
+      const desactivarCliente = async (id_usuario) => {
+        try {
+          const response = await putDesactivarCliente(id_usuario);
+          if (response.status === 200) {
+            // Actualiza la lista de clientes después de desactivar uno
+            const updatedList = listar.map((item) => {
+              if (item.id_usuario === id_usuario) {
+                // Actualiza el estado del cliente en la lista
+                return { ...item, estado: false };
+              }
+              return item;
+            });
+            setListar(updatedList);
+          }
+        } catch (error) {
+          console.error(error);
+          // Maneja el error de manera adecuada
+        }
+      };
+    
+      const activarCliente = async (id_usuario) => {
+        try {
+          const response = await putActivarCliente(id_usuario);
+          if (response.status === 200) {
+            // Actualiza la lista de clientes después de activar uno
+            const updatedList = listar.map((item) => {
+              if (item.id_usuario === id_usuario) {
+                // Actualiza el estado del cliente en la lista
+                return { ...item, estado: true };
+              }
+              return item;
+            });
+            setListar(updatedList);
+          }
+        } catch (error) {
+          console.error(error);
+          // Maneja el error de manera adecuada
+        }
+      };
   
     return( 
-    <UserContext.Provider value={{listar, Listar,cargarUsuario, creacionValidacion,  cargarRol}}>
+    <UserContext.Provider value={{listar, Listar,cargarUsuario, creacionValidacion,  cargarRol, desactivarCliente, activarCliente}}>
         {children}
     </UserContext.Provider>
     )

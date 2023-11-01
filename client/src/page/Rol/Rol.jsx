@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
-import { getListarRoles } from "../../api/rutas.api"
+import { getListarRoles, putActivarCliente,putDesactivarCliente } from "../../api/rutas.api"
 import Nav from '../../components/nav'
+import { DataGrid } from '@mui/x-data-grid';
+
 
 function Rol(){
 const [listar, setListar]=useState([])//Lista todos los roles
@@ -15,17 +17,58 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
     cargarRol()
     },[])
 
+    const desactivarCliente = async (id_rol) => {
+      try {
+        const response = await putDesactivarCliente(id_rol);
+        if (response.status === 200) {
+          // Actualiza la lista de clientes después de desactivar uno
+          const updatedList = listar.map((item) => {
+            if (item.id_rol === id_rol) {
+              // Actualiza el estado del cliente en la lista
+              return { ...item, estado: false };
+            }
+            return item;
+          });
+          setListar(updatedList);
+        }
+      } catch (error) {
+        console.error(error);
+        // Maneja el error de manera adecuada
+      }
+    };
+  
+    const activarCliente = async (id_rol) => {
+      try {
+        const response = await putActivarCliente(id_rol);
+        if (response.status === 200) {
+          // Actualiza la lista de clientes después de activar uno
+          const updatedList = listar.map((item) => {
+            if (item.id_rol === id_rol) {
+              // Actualiza el estado del cliente en la lista
+              return { ...item, estado: true };
+            }
+            return item;
+          });
+          setListar(updatedList);
+        }
+      } catch (error) {
+        console.error(error);
+        // Maneja el error de manera adecuada
+      }
+    };
+
+
     return(
       <>
       <Nav/>
-          <div class='dashboard-app'>
-              <div class='dashboard-content'>
-                  <div class='container'>
-                      <div class='card'>
+          <div className='dashboard-app'>
+              <div className='dashboard-content'>
+                  <div className='container'>
+                      <div className='card'>
                           {/* <div class='card-header'>
                               <h1>Welcome back Jim</h1>
                           </div> */}
-                          <div class='card-body'>
+                          <div className='card-body'>
                           <br />
    
     <div className='row'>
@@ -44,61 +87,60 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
     <br />
     
         <div className="card" style={{marginLeft:15}}>
-     <table className="table table-hover">
-      <thead>
-        <tr>
-        
-          <th scope="col">Id</th>
-          <th scope="col">Nombre Rol</th>
-          <th scope="col">Fecha</th>
-          <th scope="col">Estado</th>
-        
 
-        </tr>
-      </thead>
-  <tbody>
-   {
-    
-  listar.filter((item) =>
-  // Filtrar usuarios que coincidan con el término de búsqueda
 
-  item.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase())||
-  item.fecha.toLowerCase().includes(searchTerm.toLowerCase())
-
-).map(listar=>(
-    <tr key={listar.id_rol}>
-   
-      <th scope="row">{listar.id_rol}</th>
-      <td>{listar.nombre_rol}</td>
-      <td>{listar.fecha}</td>
+        <DataGrid
+            rows={listar.map((item) => ({
+              ...item,
+              id: item.id_rol,
+             
+            }))}
+            columns={[
+              { field: 'id_rol', headerName: 'Id', flex: 0 },
+              { field: 'nombre_rol', headerName: 'Nombre', flex: 0.5 },
+              { field: 'fecha', headerName: 'Fecha', flex: 0.5 },
+         
+              {
+                field: 'estado',
+                headerName: 'Estado',
+                flex: 0.5,
+                renderCell: (params) => (
+                  <div className="switch-button">
+                     <input
+                       type="checkbox"
+                        id={`switch-label-${params.row.id_rol}`}
+                        checked={params.row.estado}
+                        onChange={(e) => {
+                        e.preventDefault(); // Evitar la navegación por defecto
+                    if (params.row.estado) {
+                      desactivarCliente(params.row.id_rol);
+                  } else {
+                      activarCliente(params.row.id_rol);
+                }
+          }}
+        className="switch-button__checkbox"
+      />
+      <label
+        htmlFor={`switch-label-${params.row.id_rol}`}
+        className="switch-button__label"
+      ></label>
+                  </div>
+                ),
+              }
+            ]}
+            autoHeight
+            
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 100,
+                },
+              },
+            }}
+          />
   
-      <td>
-     
-                      <div className="switch-button">
-                        <input
-                          type="checkbox"
-                          name={`switch-button-${listar.id_usuario}`}
-                          id={`switch-label-${listar.id_usuario}`}
-                          checked={listar.estado}
-                          className="switch-button__checkbox"
-                        //   onChange={() => toggleUserState(listar.id_usuario)}
-                          
-                        />
-                        <label
-                          htmlFor={`switch-label-${listar.id_usuario}`}
-                          className="switch-button__label"
-                        ></label>
-                      </div>
-                    </td>
-      
-      
-    </tr>
-    ))
-  }  
 
-  </tbody>
-  
-</table>
+
 </div>
 
                     </div>

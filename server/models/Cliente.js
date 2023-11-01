@@ -26,6 +26,12 @@ const cliente = sequelize.define("clientes", {
         type:DataTypes.STRING,
         allowNull: false
     },
+
+    estado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true // Puedes establecerlo como verdadero por defecto
+    }
 }, {
         timestamps: false, // Desactiva las columnas createdAt y updatedAt
 });

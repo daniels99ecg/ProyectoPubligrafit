@@ -15,3 +15,15 @@ export const showClienteUpdate = async (documento) => {
 export const putActualizarCliente = async (documento, task) => {
     return await axios.put(`http://localhost:3001/cliente/update/${documento}`, task)
 }
+
+export const deleteCliente = async (documento) => {
+    return await axios.delete(`http://localhost:3001/cliente/delete/${documento}`);
+}
+
+export const putDesactivarCliente = async (documento) => {
+    return await axios.put(`http://localhost:3001/cliente/disable/${documento}`);
+}
+
+export const putActivarCliente = async (documento) => {
+    return await axios.put(`http://localhost:3001/cliente/activate/${documento}`);
+}

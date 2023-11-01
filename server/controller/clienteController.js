@@ -34,6 +34,8 @@ async function crearCliente(req, res){
         if (clienteExistente) {
             return res.status(400).json({ error: "El cliente ya existe en la base de datos" });
         }
+        
+        dataCliente.estado = true;
 
         const cliente = await Cliente.create({
         documento: dataCliente.documento,
@@ -41,7 +43,8 @@ async function crearCliente(req, res){
         apellido: dataCliente.apellido,
         telefono: dataCliente.telefono,
         direccion: dataCliente.direccion,
-        email: dataCliente.email
+        email: dataCliente.email,
+        estado: dataCliente.estado
         });
         res.status(201).json(cliente)
     }catch (error){
@@ -81,9 +84,68 @@ async function actualizarCliente(req, res){
     }
 }
 
+async function eliminarCliente(req, res) {
+    try {
+        const id = req.params.id;
+        const cliente = await Cliente.findByPk(id);
+
+        if (!cliente) {
+            return res.status(404).json({ error: 'Cliente no encontrado' });
+        }
+
+        // Elimina el cliente
+        await cliente.destroy();
+
+        res.json({ message: 'Cliente eliminado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar cliente' });
+    }
+}
+
+async function desactivarCliente(req, res) {
+    try {
+        const id = req.params.id;
+        const cliente = await Cliente.findByPk(id);
+        
+        if (!cliente) {
+            return res.status(404).json({ error: 'Cliente no encontrado' });
+        }
+
+        // Actualiza el estado del cliente a "deshabilitado" (false)
+        await cliente.update({ estado: false });
+
+        res.status(200).json({ message: 'Cliente deshabilitado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al deshabilitar cliente' });
+    }
+}
+
+async function activarCliente(req, res) {
+    try {
+        const id = req.params.id;
+        const cliente = await Cliente.findByPk(id);
+        
+        if (!cliente) {
+            return res.status(404).json({ error: 'Cliente no encontrado' });
+        }
+
+        await cliente.update({ estado: true });
+
+        res.status(200).json({ message: 'Cliente habilitado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al habilitar cliente' });
+    }
+}
+
 module.exports={
     listarClientes,
     listarCliente,
     crearCliente,
-    actualizarCliente
+    actualizarCliente,
+    eliminarCliente,
+    desactivarCliente,
+    activarCliente
 }

@@ -89,7 +89,7 @@ function ListarClientes() {
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() => navigate(`/edit/${params.row.documento}`)}
+                      onClick={() => navigate(`/editc/${params.row.documento}`)}
                       disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',

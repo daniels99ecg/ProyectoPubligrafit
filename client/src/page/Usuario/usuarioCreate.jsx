@@ -1,6 +1,4 @@
 import { Form ,Formik} from 'formik'
-import {cargaractualizarUsuario, crearUsuario, getListarRoles, actualizarUsuario} from '../../api/rutas.api'
-import { useParams} from 'react-router-dom'
 import Nav from '../../components/nav'
 import { useState, useEffect } from 'react'
 import { useUser } from "../../context/Usuario/UserContext";
@@ -8,69 +6,42 @@ import { useUser } from "../../context/Usuario/UserContext";
 
 function UserCreate() {
 
-  const params=useParams()
   const {Listar, creacionValidacion, cargarRol}=useUser()
 
-
- const[ListarActualizar, setListarActualizar]=useState({
-  id_usuario:"",
-    nombres:"",
-    apellidos:"",
-    email:"",
-    contrasena:"",
-    fk_rol2:"",
- })
-  
   useEffect(()=>{
     
-     cargarRol()
+    cargarRol()
+    
+   },[])
 
-     async function cargarUsuariosActualizar() {
-      try {
-      
-        const response = await cargaractualizarUsuario(params.id_usuario);
-        const usuarioData=response.data
-        setListarActualizar({
-          id_usuario: usuarioData.id_usuario,
-          nombres: usuarioData.nombres,
-          apellidos: usuarioData.apellidos,
-          email: usuarioData.email,
-          contrasena: usuarioData.contrasena,
-          fk_rol2: usuarioData.fk_rol2,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    cargarUsuariosActualizar();
-  
-   },[params.id_usuario])
-
-   
   
     return (
       <>
 
     <Nav/>
 
-    <div class='dashboard-app'>
-        <div class='dashboard-content'>
-            <div class='container'>
-                <div class='card'>
-    <div className='w-75 p-3 mx-auto '>
-    <h2 className="text-center">
-               {params.id_usuario ? "Actualizar Usuario": "Registar Usuario"}
-            </h2>
+    <div className='dashboard-app'>
+        <div className='dashboard-content'>
+            <div className='container'>
+                <div className='card'>
+    <div className='w-75 p-3 mx-auto'>
+    <h2 className="text-center">Registar Usuario</h2>
 
    <Formik
-   initialValues={ListarActualizar}
+   initialValues={
+    {
+    id_usuario:"",
+    fk_rol2:"",
+    nombres:"",
+    apellidos:"",
+    email:"",
+    contrasena:""
+    }
+   }
    enableReinitialize={true}
    onSubmit={async (values)=>{
     console.log(values)
-    if(params.id_usuario){
-      await actualizarUsuario(params.id_usuario, values)
-    }
+    
 
    creacionValidacion(values)
 
@@ -83,7 +54,7 @@ function UserCreate() {
         
           <div className="col-md-6">
       <label>Id usuario</label>
-      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control" disabled={params.id_usuario ? true : false}/>
+      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control"/>
       </div>
       <div className="col-md-6">
       <label>Nombre</label>
@@ -99,7 +70,7 @@ function UserCreate() {
 </div>
 <div className="col-md-6">
       <label>Contraseña</label>
-      <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" disabled={params.id_usuario ? true : false}/>
+      <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" />
 </div>
 <div className="col-md-6">
       <label>Rol</label>
@@ -120,7 +91,7 @@ function UserCreate() {
 
 <div className="col-auto">
       <button className="btn btn-primary" type='submit'>
-         {params.id_usuario ? "Actualizar":"Registrar"}
+        Registrar
       </button>
 </div>
 <div className="col-auto">

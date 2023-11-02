@@ -157,6 +157,23 @@ async function activarCliente(req, res) {
   }
 }
 
+async function eliminar(req, res) {
+  try {
+    const id_usuario = req.params.id_usuario;
+    const response = await Usuario.destroy({ where: { id_usuario: id_usuario } });
+
+    if (response === 1) {
+      // Si se eliminó correctamente, response será 1.
+      res.status(200).json({ message: 'Usuario eliminado con éxito' });
+    } else {
+      // Si no se encontró el usuario o no se pudo eliminar, response será 0.
+      res.status(404).json({ message: 'Usuario no encontrado o no se pudo eliminar' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al eliminar el usuario' });
+  }
+}
 
 module.exports={
     listarUsuario,
@@ -165,7 +182,8 @@ module.exports={
     listarporid,
     login,
     desactivarCliente,
-    activarCliente
+    activarCliente,
+    eliminar
 
 }
     

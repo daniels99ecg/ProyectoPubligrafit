@@ -18,6 +18,7 @@ Router.put("/disable/:id", UsuarioController.desactivarCliente)
 
 Router.put("/activate/:id", UsuarioController.activarCliente)
 
+Router.delete("/delete/:id_usuario", UsuarioController.eliminar)
 
 
 

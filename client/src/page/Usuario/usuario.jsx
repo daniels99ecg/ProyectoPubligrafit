@@ -1,50 +1,43 @@
-import { useEffect, useState } from "react"
-import {getListarUsuarios} from '../../api/rutas.api'
+import { useEffect} from "react"
 import Nav from '../../components/nav'
 import { useNavigate } from "react-router-dom"
 import { useUser } from "../../context/Usuario/UserContext";
 import { DataGrid } from '@mui/x-data-grid';
 
+  
 
 function User() {
-  const {listar,cargarUsuario, desactivarCliente, activarCliente}=useUser()
-
-  //  const [searchTerm, setSearchTerm] = useState(""); 
-
+  const {cargarUsuario,searchTerm, setSearchTerm,desactivarCliente, activarCliente, eliminarUsuario,filtrarDesactivados}=useUser()
+  const navigate=useNavigate()
+  
   useEffect(()=>{
     
     cargarUsuario()
 
-  },[])
-
-const navigate=useNavigate()
-
+  },[searchTerm])
 
   return (
     <>
 <Nav/>
-
 
     <div className='dashboard-app'>
       
         <div className='dashboard-content'>
             <div className='container'>
                 <div className='card'>
-                    {/* <div class='card-header'>
-                        <h1>Welcome back Jim</h1>
-                    </div> */}
+                 
                     <div className='card-body'>
                     <br />
 <div className='row'>
 <div className="col-md-2">  
-<a className="btn btn-primary " href="/usuario/create" role="button" >Nuevo Registro</a>
+<a className="btn btn-primary" href="/usuario/create" role="button">Nuevo Registro</a>
 
 </div>
 <div className="col-md-3">
 <input
               type="text"
               placeholder="Buscar..."
-              // onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="form-control"
             />
             </div>
@@ -52,19 +45,20 @@ const navigate=useNavigate()
 <br />
 
 <div style={{ height: 360, width: '100%' }}>
-          <DataGrid
-            rows={listar.map((item) => ({
+<DataGrid
+            rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.id_usuario,
-              nombreRol: item.rol.nombre_rol
+              nombreRol:item.rol.nombre_rol
             }))}
             columns={[
-              { field: 'id_usuario', headerName: 'Documento', flex: 1 },
-              { field: 'nombres', headerName: 'Nombre', flex: 1 },
-              { field: 'apellidos', headerName: 'Apellido', flex: 1 },
-              { field: 'email', headerName: 'Email', flex: 1 },
-              { field: 'contrasena', headerName: 'Contraseña', flex: 1 },
-              { field: 'nombreRol', headerName: 'Rol', flex: 1 },
+              { field: 'id_usuario', headerName: 'Tipo Documento', flex: 1 },
+              { field: 'nombres', headerName: 'Documento', flex: 1 },
+              { field: 'apellidos', headerName: 'Nombre', flex: 1 },
+              { field: 'email', headerName: 'Apellido', flex: 1 },
+              { field: 'contrasena', headerName: 'Teléfono', flex: 1 },
+              { field: 'nombreRol', headerName: 'Dirección', flex: 1 },
+          
               {
                 field: 'estado',
                 headerName: 'Estado',
@@ -86,8 +80,8 @@ const navigate=useNavigate()
         className="switch-button__checkbox"
       />
       <label
-       htmlFor={`switch-label-${params.row.id_usuario}`}
-       className="switch-button__label"
+        htmlFor={`switch-label-${params.row.id_usuario}`}
+        className="switch-button__label"
       ></label>
                   </div>
                 ),
@@ -100,7 +94,7 @@ const navigate=useNavigate()
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() => navigate(`/edit/${params.row.id_usuario}`)}
+                      onClick={() => navigate(`/editu/${params.row.id_usuario}`)}
                       disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',
@@ -127,20 +121,40 @@ const navigate=useNavigate()
                       </svg>
                     </button>
 
-                    
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => eliminarUsuario(params.row.id_usuario)}
+                      disabled={!params.row.estado}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-trash"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
+                        ></path>
+                        <path
+                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
+                        ></path>
+                      </svg>
+                    </button>
                   </div>
                 ),
               },
             ]}
             autoHeight
-            
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 100,
+                  pageSize: 5
                 },
               },
-            }}
+            }} 
+            pageSizeOptions={[5]}
             getRowClassName={(params) => {
               if (!params.row.estado) {
                 return 'cliente-desactivado';

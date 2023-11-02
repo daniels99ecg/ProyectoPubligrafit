@@ -17,7 +17,7 @@ function App() {
 
   return (
     <>
-
+<ClienteContextProvider>
     <UserContextProvider>
      <Routes>
      <Route path='/' element={<Login/>}/>
@@ -26,7 +26,7 @@ function App() {
       {/* Usuarios */}
       <Route path='/usuario' element={<User/>}/>
       <Route path='/usuario/create' element={<UserCreate/>}/>
-      <Route path='/edit/:id_usuario' element={<UserUpdate/>}/>
+      <Route path='/editu/:id_usuario' element={<UserUpdate/>}/>
 
       {/* Rol */}
 
@@ -36,11 +36,11 @@ function App() {
       {/* Cliente */}
 
       <Route path='/cliente' element={<ShowCliente/>}/>
-      <Route path='/cliente/create' element={<CreateCliente/>}/> // controller
-      <Route path='/edit/:documento' element={<UpdateCliente/>}/> // controller
+      <Route path='/cliente/create' element={<CreateCliente/>}/> 
+      <Route path='/editc/:documento' element={<UpdateCliente/>}/> 
      </Routes>
      </UserContextProvider>
-
+     </ClienteContextProvider>
     </>
   )
 }

@@ -1,7 +1,9 @@
 import { createContext, useContext, useState } from "react";
-import {getListarUsuarios, crearUsuario, getListarRoles, putActivarCliente, putDesactivarCliente} from '../../api/rutas.api'
+import {getListarUsuarios, crearUsuario, getListarRoles, putActivarCliente, putDesactivarCliente, eliminar} from '../../api/rutas.api'
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
+
+
 export const UserContext = createContext()
 
 export const useUser=()=>{
@@ -17,13 +19,23 @@ export const UserContextProvider = ({ children }) => {
 
     const [listar, setListar]=useState([])
     const [Listar, setListar2]=useState([])
-
+    const [searchTerm, setSearchTerm] = useState("");
 
     async function cargarUsuario(){
         const response =  await getListarUsuarios()
-        setListar(response.data)
+        const filterList = response.data.filter((item) => 
+          item.id_usuario.toString().includes(searchTerm) ||
+          item.nombres.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.email.toString().includes(searchTerm)
+         
+        );
+    
+        setListar(filterList);
+      
         }
        
+    
     async function creacionValidacion(values){
         
         try{
@@ -61,12 +73,12 @@ export const UserContextProvider = ({ children }) => {
                    confirmButtonText: 'Aceptar!',
                    cancelButtonText: 'Cancelar!',
                    Buttons: true
-                 }).then((result) => {
+                 }).then(async(result) => {
                    if (result.isConfirmed) {
            
-                     //Linea de codigo muy importante para el cambio de type button a submit
-                     // const formulario=document.getElementById('pruebas');
-                     // formulario.submit();
+                    const responde=await crearUsuario(values)
+                    console.log(responde)
+                    
                      navigate("/usuario");
 
                      swalWithBootstrapButtons.fire(
@@ -92,23 +104,20 @@ export const UserContextProvider = ({ children }) => {
                 
                }
              
-                   const responde=await crearUsuario(values)
-                   console.log(responde)
-                   
                  
                    // actions.resetForm()
                    
                }catch (error){
                    console.log(error)
                }
-    }    
+      }    
 
     async function cargarRol(){
       const response =  await getListarRoles()
       setListar2(response.data)
       }
 
-      const desactivarCliente = async (id_usuario) => {
+    const desactivarCliente = async (id_usuario) => {
         try {
           const response = await putDesactivarCliente(id_usuario);
           if (response.status === 200) {
@@ -128,7 +137,7 @@ export const UserContextProvider = ({ children }) => {
         }
       };
     
-      const activarCliente = async (id_usuario) => {
+    const activarCliente = async (id_usuario) => {
         try {
           const response = await putActivarCliente(id_usuario);
           if (response.status === 200) {
@@ -148,9 +157,42 @@ export const UserContextProvider = ({ children }) => {
         }
       };
   
+      const filtrarDesactivados = listar.sort((a, b) => {
+        if (a.estado === b.estado) {
+          return 0;
+        }
+        return a.estado ? -1 : 1;
+      });
+      const eliminarUsuario=async(id_usuario)=>{
+        try {
+          Swal.fire({
+            title: 'Eliminar Registro?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar'
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+            
+              const responde = await eliminar(id_usuario)
+              setListar(listar.filter(listar=>listar.id_usuario!==id_usuario))
+
+            }
+          })
+         
+
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    
+    
+    
     return( 
-    <UserContext.Provider value={{listar, Listar,cargarUsuario, creacionValidacion,  cargarRol, desactivarCliente, activarCliente}}>
-        {children}
-    </UserContext.Provider>
+      <UserContext.Provider value={{listar, Listar,cargarUsuario,searchTerm,setSearchTerm, creacionValidacion,  cargarRol, desactivarCliente, activarCliente, eliminarUsuario, filtrarDesactivados}}>
+          {children}
+      </UserContext.Provider>
     )
 }

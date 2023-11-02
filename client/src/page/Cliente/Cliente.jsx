@@ -1,91 +1,29 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from "react-router-dom";
-import { getListarClientes, putDesactivarCliente, putActivarCliente } from "../api/Rutas.Cliente.api";
-import { useEffect, useState } from "react";
-import Nav from '../components/nav';
+import { useEffect} from "react";
+import Nav from '../../components/nav';
+import { useCliente } from '../../context/Clientes/ClienteContext';
 
 function ListarClientes() {
-  const [listar, setListar] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const {showClientes, searchTerm, setSearchTerm, activarCliente, desactivarCliente, filtrarDesactivados}= useCliente()
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function showClientes() {
-      const response = await getListarClientes();
-      
-      const filterList = response.data.filter((item) => 
-        item.documento.toString().includes(searchTerm) ||
-        item.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.telefono.toString().includes(searchTerm) ||
-        item.direccion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-  
-      setListar(filterList);
-    }
+    
   
     showClientes();
   }, [searchTerm]);
-
-  const desactivarCliente = async (documento) => {
-    try {
-      const response = await putDesactivarCliente(documento);
-      if (response.status === 200) {
-        // Actualiza la lista de clientes después de desactivar uno
-        const updatedList = listar.map((item) => {
-          if (item.documento === documento) {
-            // Actualiza el estado del cliente en la lista
-            return { ...item, estado: false };
-          }
-          return item;
-        });
-        setListar(updatedList);
-      }
-    } catch (error) {
-      console.error(error);
-      // Maneja el error de manera adecuada
-    }
-  };
-
-  const activarCliente = async (documento) => {
-    try {
-      const response = await putActivarCliente(documento);
-      if (response.status === 200) {
-        // Actualiza la lista de clientes después de activar uno
-        const updatedList = listar.map((item) => {
-          if (item.documento === documento) {
-            // Actualiza el estado del cliente en la lista
-            return { ...item, estado: true };
-          }
-          return item;
-        });
-        setListar(updatedList);
-      }
-    } catch (error) {
-      console.error(error);
-      // Maneja el error de manera adecuada
-    }
-  };
-
-  const filtrarDesactivados = listar.sort((a, b) => {
-    if (a.estado === b.estado) {
-      return 0;
-    }
-    return a.estado ? -1 : 1;
-  });
 
   return (
     <>
     <Nav/>
 
-
-<div class='dashboard-app'>
+<div className='dashboard-app'>
   
-    <div class='dashboard-content'>
-        <div class='container'>
-            <div class='card'>
-                <div class='card-body'>
+    <div className='dashboard-content'>
+        <div className='container'>
+            <div className='card'>
+                <div className='card-body'>
                 <br />
         <div className="row">
           <div className="col-md-3">
@@ -95,20 +33,21 @@ function ListarClientes() {
           <div className="col-md-3">
             <input
               type="text"
-              placeholder="Documento"
+              placeholder="Buscar"
               onChange={(e) => setSearchTerm(e.target.value)}
               className="form-control"
             />
           </div>
         </div>
         <br />
-        <div style={{ height: 500, width: '100%' }}>
+        <div style={{ height: 360, width: '100%' }}>
           <DataGrid
             rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.documento,
             }))}
             columns={[
+              { field: 'tipo_documento', headerName: 'Tipo Documento', flex: 1 },
               { field: 'documento', headerName: 'Documento', flex: 1 },
               { field: 'nombre', headerName: 'Nombre', flex: 1 },
               { field: 'apellido', headerName: 'Apellido', flex: 1 },
@@ -206,10 +145,11 @@ function ListarClientes() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 8,
+                  pageSize: 5
                 },
               },
-            }}
+            }} 
+            pageSizeOptions={[5]}
             getRowClassName={(params) => {
               if (!params.row.estado) {
                 return 'cliente-desactivado';

@@ -1,4 +1,5 @@
 const Cliente = require("../models/Cliente")
+const { Op } = require('sequelize');
 
 async function listarClientes(req, res){
     
@@ -23,33 +24,28 @@ async function listarCliente(req, res){
     }
 }
 
-async function crearCliente(req, res){
-
-    try{
-        const dataCliente = req.body
+async function crearCliente(req, res) {
+    try {
+        const dataCliente = req.body;
         const clienteExistente = await Cliente.findOne({
-            where: { documento: dataCliente.documento },
+            where: {
+                [Op.or]: [
+                    { documento: dataCliente.documento },
+                ],
+            },
         });
 
         if (clienteExistente) {
             return res.status(400).json({ error: "El cliente ya existe en la base de datos" });
         }
-        
+
         dataCliente.estado = true;
 
-        const cliente = await Cliente.create({
-        documento: dataCliente.documento,
-        nombre: dataCliente.nombre,
-        apellido: dataCliente.apellido,
-        telefono: dataCliente.telefono,
-        direccion: dataCliente.direccion,
-        email: dataCliente.email,
-        estado: dataCliente.estado
-        });
-        res.status(201).json(cliente)
-    }catch (error){
+        const cliente = await Cliente.create(dataCliente);
+        res.status(201).json(cliente);
+    } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al crear cliente'});
+        res.status(500).json({ error: 'Error al crear cliente' });
     }
 }
 
@@ -63,7 +59,6 @@ async function actualizarCliente(req, res){
         if (!clienteExistente) {
             return res.status(404).json({ error: 'Cliente no encontrado' });
         }
-
         // Actualiza los campos del cliente
         await clienteExistente.update(
             {

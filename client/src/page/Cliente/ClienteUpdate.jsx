@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom"
-import { putActualizarCliente, showClienteUpdate } from '../api/Rutas.Cliente.api'
+import { putActualizarCliente, showClienteUpdate } from '../../api/Rutas.Cliente.api'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik' 
 import Swal from 'sweetalert2'
-import Nav from '../components/nav'
+import Nav from '../../components/nav'
 
 function primeraMayuscula(input) {
     return input
@@ -72,15 +72,12 @@ function UpdateCliente(){
     <Nav/>
 
 
-<div class='dashboard-app'>
+<div className='dashboard-app'>
   
-    <div class='dashboard-content'>
-        <div class='container'>
-            <div class='card'>
-                {/* <div class='card-header'>
-                    <h1>Welcome back Jim</h1>
-                </div> */}
-                <div class='card-body'>
+    <div className='dashboard-content'>
+        <div className='container'>
+            <div className='card'>
+                <div className='card-body'>
                 <br />
 <div className='card w-75 p-3 mx-auto mt-5'>
         <Formik 
@@ -245,37 +242,38 @@ function UpdateCliente(){
                 ({handleChange, handleSubmit, values}) => (
                     <Form  onSubmit={handleSubmit} className='row g-3'>
                 <div className="col-md-6">
-                <label htmlFor="documento">Documento</label>
-                <input type="text" name='documento' onChange={handleChange} value={values.documento} className="form-control" readOnly/>
-                </div>
-
+                    <label htmlFor="tipo_documento">Tipo Documento <span style={{ color: "red" }}>*</span></label>
+                    <select className="form-select" name="tipo_documento" id="tipo_documento" onChange={handleChange} value={values.tipo_documento} readOnly>
+                        <option value="CC">CC</option>
+                        <option value="CE">CE</option>
+                    </select>
+                </div>        
                 <div className="col-md-6">
-                <label htmlFor="nombre">Nombre</label>
-                <input type="text" name='nombre' onChange={handleChange} value={values.nombre} className="form-control"/>
+                    <label htmlFor="documento">Documento</label>
+                    <input type="text" name='documento' onChange={handleChange} value={values.documento} className="form-control" readOnly/>
                 </div>
-
                 <div className="col-md-6">
-                <label htmlFor="apellido">Apellido</label>
-                <input type="text" name='apellido' onChange={handleChange} value={values.apellido} className="form-control"/>
+                    <label htmlFor="nombre">Nombre</label>
+                    <input type="text" name='nombre' onChange={handleChange} value={values.nombre} className="form-control"/>
                 </div>
-
+                <div className="col-md-6">
+                    <label htmlFor="apellido">Apellido</label>
+                    <input type="text" name='apellido' onChange={handleChange} value={values.apellido} className="form-control"/>
+                </div>
                 <div className="col-md-6"> 
-                <label htmlFor="telefono">Teléfono</label>
-                <input type="text" name='telefono' onChange={handleChange} value={values.telefono} className="form-control"/>
-                </div>   
-
-                <div className="col-md-6">
-                <label htmlFor="direccion">Dirección</label>
-                <input type="text" name='direccion' onChange={handleChange} value={values.direccion} className="form-control"/>
-                </div>  
-
-                <div className="col-md-6">
-                <label htmlFor="email">Email</label>
-                <input type="text" name='email' onChange={handleChange} value={values.email} className="form-control"/>
+                    <label htmlFor="telefono">Teléfono</label>
+                    <input type="text" name='telefono' onChange={handleChange} value={values.telefono} className="form-control"/>
                 </div> 
-
+                <div className="col-md-6">
+                    <label htmlFor="email">Email</label>
+                    <input type="text" name='email' onChange={handleChange} value={values.email} className="form-control"/>
+                </div>   
+                <div className="col-md-12">
+                    <label htmlFor="direccion">Dirección</label>
+                    <input type="text" name='direccion' onChange={handleChange} value={values.direccion} className="form-control"/>
+                </div>  
                 <div className='col-auto'>
-                <button className='btn btn-primary' type='submit'>Actualizar</button>
+                    <button className='btn btn-primary' type='submit'>Actualizar</button>
                 </div>
 
                 <div className='col-auto'>

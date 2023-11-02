@@ -2,6 +2,9 @@ const { DataTypes } = require("sequelize")
 const sequelize = require("../database/db")
 
 const cliente = sequelize.define("clientes", {
+    tipo_documento:{
+        type: DataTypes.STRING
+    },   
     documento:{
         type: DataTypes.INTEGER,
         primaryKey: true
@@ -26,7 +29,6 @@ const cliente = sequelize.define("clientes", {
         type:DataTypes.STRING,
         allowNull: false
     },
-
     estado: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

@@ -1,4 +1,9 @@
 
+import ShowCliente from './page/Cliente/Cliente'
+import CreateCliente from './page/Cliente/ClienteCreate'
+import UpdateCliente from './page/Cliente/ClienteUpdate'
+import { ClienteContextProvider } from './context/Clientes/ClienteContext'
+
 import { Route, Routes } from 'react-router-dom'
 import User from './page/Usuario/usuario'
 import UserCreate from './page/Usuario/usuarioCreate'
@@ -12,6 +17,7 @@ function App() {
 
   return (
     <>
+
     <UserContextProvider>
      <Routes>
      <Route path='/' element={<Login/>}/>
@@ -27,8 +33,14 @@ function App() {
       <Route path='/rol' element={<Rol/>}/>
       <Route path='/rol/create' element={<RolCreate/>}/>
 
+      {/* Cliente */}
+
+      <Route path='/cliente' element={<ShowCliente/>}/>
+      <Route path='/cliente/create' element={<CreateCliente/>}/> // controller
+      <Route path='/edit/:documento' element={<UpdateCliente/>}/> // controller
      </Routes>
      </UserContextProvider>
+
     </>
   )
 }

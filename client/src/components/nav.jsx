@@ -72,8 +72,9 @@ function Nav() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="45" height="20" fill="currentColor" className="bi bi-box2-fill" viewBox="0 0 16 16" >
                     <path d="M3.75 0a1 1 0 0 0-.8.4L.1 4.2a.5.5 0 0 0-.1.3V15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4.5a.5.5 0 0 0-.1-.3L13.05.4a1 1 0 0 0-.8-.4h-8.5ZM15 4.667V5H1v-.333L1.5 4h6V1h1v3h6l.5.667Z"></path>
                 </svg>
-                  Producto</a><a
-                  href="#" className="dashboard-nav-dropdown-item">
+                  Producto</a>
+                  <a href="/cliente" className="dashboard-nav-dropdown-item">
+
                     <svg xmlns="http://www.w3.org/2000/svg" width="42" height="25" fill="currentColor" className="bi bi-person-fill" viewBox="0 0 16 16">
   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
 </svg>

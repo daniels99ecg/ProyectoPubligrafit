@@ -6,16 +6,6 @@ const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 
-// async function listarUsuario(req, res){
-
-//     try {
-//         const usuario = await Usuario.findAll();
-//         res.json(usuario);
-//       } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Error al obtener usuarios' });
-//       }
-//     }
 
 async function listarUsuario(req, res) {
   try {
@@ -32,7 +22,8 @@ async function listarUsuario(req, res) {
         'apellidos',
         'email',
         'contrasena',
-        'fk_rol2'
+        'fk_rol2',
+        'estado'
        // Asumiendo que quieres mostrar también el ID del rol
       ],
     });

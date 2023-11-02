@@ -1,3 +1,4 @@
+
 const {DataTypes, Model}=require("sequelize")
 const sequelize=require("../../database/db");
 const Rol = require("../rol/Rol");

@@ -36,6 +36,10 @@ export const putActivarCliente = async (id_usuario) => {
   return await axios.put(`http://localhost:3001/usuario/activate/${id_usuario}`);
 }
 
+export const eliminar = async (id_usuario) => {
+  return await axios.delete(`http://localhost:3001/usuario/delete/${id_usuario}`);
+}
+
 
 
 

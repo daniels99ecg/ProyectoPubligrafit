@@ -87,11 +87,72 @@ async function actualizarProducto(req, res) {
         console.error(error);
         res.status(500).json({error: 'Error al actualizar producto'});
     }
-}    
+}
+
+async function eliminarProducto(req, res) {
+    try {
+        const id = req.params.id;
+        const producto = await Producto.findByPk(id);
+
+        if (!producto) {
+            return res.status(404).json({ error: 'Cliente no encontrado' });
+        }
+
+        // Elimina el cliente
+        await producto.destroy();
+
+        res.json({ message: 'Cliente eliminado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar cliente' });
+    }
+}
+
+async function desactivarProducto(req, res) {
+    try {
+      const id = req.params.id;
+      const producto = await Producto.findByPk(id);
+        
+        if (!producto) {
+            return res.status(404).json({ error: 'Cliente no encontrado' });
+        }
+  
+        // Actualiza el estado del cliente a "deshabilitado" (false)
+        await producto.update({ estado: false });
+  
+        res.status(200).json({ message: 'Cliente deshabilitado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al deshabilitar cliente' });
+    }
+  }
+  
+  async function activarProducto(req, res) {
+    try {
+        const id = req.params.id;
+        const producto = await Producto.findByPk(id);
+        
+        if (!cliente) {
+            return res.status(404).json({ error: 'Cliente no encontrado' });
+        }
+  
+        await producto.update({ estado: true });
+  
+        res.status(200).json({ message: 'Cliente habilitado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al habilitar cliente' });
+    }
+  }
+
+
 
 module.exports ={
     listarProductos,
     listarProducto,
     crearProducto,
-    actualizarProducto
+    actualizarProducto,
+    eliminarProducto,
+    activarProducto,
+    desactivarProducto
 }

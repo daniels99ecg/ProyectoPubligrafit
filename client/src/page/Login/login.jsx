@@ -1,35 +1,41 @@
 import { loginIngreso } from "../../api/rutas.api";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import  { useState } from 'react';
 
 function Login(){
 
-   
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-    const handleSubmit =async (values, { setSubmitting }) => {
-      const { email, contrasena } = values;
-      try{
-        const response=await loginIngreso(email, contrasena)
-        console.log('Valores enviados:', response.data);
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        navigate('/usuario'); 
+  const handleSubmit = async (values, { setSubmitting }) => {
+    const { email, contrasena } = values;
+    try {
+      const response = await loginIngreso(email, contrasena);
+      console.log('Valores enviados:', response);
+  
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        navigate('/usuario');
+      } else {
+        setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
       }
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
-      navigate('/ruta-no-exitosa'); 
-
+      setError('Error al iniciar sesión, inténtalo de nuevo.');
     }
-      setSubmitting(false);
-    };
+    setSubmitting(false);
+  };
   
-
-
-    
 return( 
-    <div className="card w-25 text-center p-5">
-      <h2>Iniciar sesión</h2>
+
+  <>   
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+
+   <div className="card p-5">
+
+   <img src="../img/PubliGrafit.png" style={{width:350}}/>
+      {error && <div className="alert alert-danger">{error}</div>}
       <Formik initialValues={{
         email:"",
         contrasena:""
@@ -40,7 +46,7 @@ return(
             
             <div>
               <label htmlFor="email">Correo electrónico:</label>
-              <Field type="email" id="email" name="email" clasName="form-control"  className="form-control" />
+              <Field type="email" id="email" name="email"   className="form-control" />
               <ErrorMessage name="email" component="div" />
             </div>
             <div>
@@ -48,16 +54,22 @@ return(
               <Field type="password" id="contrasena" name="contrasena" className="form-control" />
               <ErrorMessage name="contrasena" component="div" />
             </div>
+            
             <br />
-            <div>
+            <div className="d-grid gap-2">
               <button type="submit" disabled={isSubmitting} className="btn btn-primary" >
                 Iniciar sesión
               </button>
+              <span><a href="">Recuperar Contraseña</a></span>
+
             </div>
           </Form>
         )}
       </Formik>
     </div>
+   </div> 
+    </>
+
 )
 
 }

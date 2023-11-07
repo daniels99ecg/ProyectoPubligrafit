@@ -66,7 +66,7 @@ h1, .h1 {
   font-weight: normal;
 }
 
-.card {
+ .card {
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -77,13 +77,13 @@ h1, .h1 {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  min-width: 0;
+  min-width: 0  ;
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 0;
-}
+  border-radius: 15;
+} 
 
 .card-body {
   -webkit-box-flex: 1;
@@ -164,6 +164,7 @@ h1, .h1 {
   -ms-flex-align: center;
   align-items: center;
 }
+
 
 .dashboard-nav header .menu-toggle {
   display: none;
@@ -484,3 +485,4 @@ h1, .h1 {
   background-color: #fffefe; 
   color: #636262; 
 }
+

@@ -1,9 +1,6 @@
 const Usuario=require("../../models/usuario/Usuario")
-
 const Rol  = require('../../models/rol/Rol');
-
 const bcrypt = require('bcrypt');
-
 const jwt = require('jsonwebtoken');
 
 // async function listarUsuario(req, res){
@@ -16,6 +13,7 @@ const jwt = require('jsonwebtoken');
 //         res.status(500).json({ error: 'Error al obtener usuarios' });
 //       }
 //     }
+const secretKey = 'your-secret-key';
 
 async function listarUsuario(req, res) {
   try {
@@ -74,7 +72,13 @@ async function listarUsuario(req, res) {
       contrasena:hashedPassword,
       estado:1
     });
-    res.status(201).json(usuario)
+     // Después de crear el usuario, genera un token JWT
+     const token = jwt.sign({ userId: usuario.id }, 'your-secret-key', {
+      expiresIn: '1h'
+    });
+
+    // Envía el token como respuesta
+    res.status(201).json({ usuario, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener usuarios' });
@@ -114,21 +118,43 @@ async function listarUsuario(req, res) {
   }
  }
 
-async function login(req, res){
-  const datosUsuarios = req.body;
+ async function login(req, res) {
 
-  const user = await Usuario.findOne({ where: { email:datosUsuarios.email, contrasena:datosUsuarios.contrasena } });
+  const {email, contrasena} = req.body;
 
-  if (user) {
-     // Si las credenciales son correctas, genera un token JWT
-     const token = jwt.sign({ userId: user.id }, 'your-secret-key', {
-      expiresIn: '1h' // Puedes ajustar la duración del token
-    });
-    res.json({ message: 'Login exitoso', token });
-  } else {
-    res.status(401).json({ message: 'Credenciales incorrectas' });
+  const usuario = await Usuario.findOne({ where: { email } });
+
+  if (!usuario) {
+    return res.status(401).json({ error: 'Authentication failed user' });
   }
+
+  const passwordMatch = await bcrypt.compare(contrasena, usuario.contrasena)
+
+  if (!passwordMatch) {
+    return res.status(401).json({ error: 'Authentication failed' });
+  }
+
+  const token = jwt.sign({ userId: usuario.id_usuario }, secretKey, { expiresIn: '1h' });
+  res.status(200).json({ token });
 }
+
+const verifyToken = async (req, res) => {
+  const { token } = req.cookies;
+  if (!token) return res.send(false);
+
+  jwt.verify(token, secretKey, async (error, user) => {
+    if (error) return res.sendStatus(401);
+
+    const userFound = await Usuario.findByPk(user.id);
+    if (!userFound) return res.sendStatus(401);
+
+    return res.json({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+    });
+  });
+};
 
 async function desactivarCliente(req, res) {
   try {
@@ -193,7 +219,8 @@ module.exports={
     login,
     desactivarCliente,
     activarCliente,
-    eliminar
+    eliminar,
+    verifyToken
 
 }
     

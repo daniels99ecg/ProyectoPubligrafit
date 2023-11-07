@@ -2,62 +2,16 @@ import { useEffect, useState } from "react"
 import { getListarRoles, putActivarCliente,putDesactivarCliente } from "../../api/rutas.api"
 import Nav from '../../components/nav'
 import { DataGrid } from '@mui/x-data-grid';
-
+import { useRol } from "../../context/Rol/RolContext";
 
 function Rol(){
-const [listar, setListar]=useState([])//Lista todos los roles
-const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por filtro 
+const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchTerm}=useRol()
+
+//Para hacer la busqueda por filtro 
 
     useEffect(()=>{
-    async function cargarRol(){
-       
-           const response= await getListarRoles()//LLamar la ruta del server
-           setListar(response.data) //Se le pasa los datos al setListar 
-    }
     cargarRol()
-    },[])
-
-    const desactivarCliente = async (id_rol) => {
-      try {
-        const response = await putDesactivarCliente(id_rol);
-        if (response.status === 200) {
-          // Actualiza la lista de clientes después de desactivar uno
-          const updatedList = listar.map((item) => {
-            if (item.id_rol === id_rol) {
-              // Actualiza el estado del cliente en la lista
-              return { ...item, estado: false };
-            }
-            return item;
-          });
-          setListar(updatedList);
-        }
-      } catch (error) {
-        console.error(error);
-        // Maneja el error de manera adecuada
-      }
-    };
-  
-    const activarCliente = async (id_rol) => {
-      try {
-        const response = await putActivarCliente(id_rol);
-        if (response.status === 200) {
-          // Actualiza la lista de clientes después de activar uno
-          const updatedList = listar.map((item) => {
-            if (item.id_rol === id_rol) {
-              // Actualiza el estado del cliente en la lista
-              return { ...item, estado: true };
-            }
-            return item;
-          });
-          setListar(updatedList);
-        }
-      } catch (error) {
-        console.error(error);
-        // Maneja el error de manera adecuada
-      }
-    };
-
-
+    },[searchTerm])
     return(
       <>
       <Nav/>
@@ -65,9 +19,7 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
               <div className='dashboard-content'>
                   <div className='container'>
                       <div className='card'>
-                          {/* <div class='card-header'>
-                              <h1>Welcome back Jim</h1>
-                          </div> */}
+                          
                           <div className='card-body'>
                           <br />
    
@@ -75,7 +27,7 @@ const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por f
     <div className="col-md-2">  
     <a className="btn btn-primary " href="/rol/create" role="button">Nuevo Registro</a>
     </div>
-    <div className="col-md-3">
+    <div className="col-md-3" style={{ marginLeft: 'auto' }}>
     <input
                   type="text"
                   placeholder="Buscar..."

@@ -3,7 +3,6 @@ import Nav from '../../components/nav'
 import { useNavigate } from "react-router-dom"
 import { useUser } from "../../context/Usuario/UserContext";
 import { DataGrid } from '@mui/x-data-grid';
-
   
 
 function User() {
@@ -20,20 +19,24 @@ function User() {
     <>
 <Nav/>
 
-    <div className='dashboard-app'>
+    <div className='dashboard-app' >
       
         <div className='dashboard-content'>
             <div className='container'>
                 <div className='card'>
                  
                     <div className='card-body'>
+                    
+                      <div className="card-header">
+                        <h1>Gestionar Usuarios</h1>
+                      </div>
                     <br />
 <div className='row'>
 <div className="col-md-2">  
 <a className="btn btn-primary" href="/usuario/create" role="button">Nuevo Registro</a>
 
 </div>
-<div className="col-md-3">
+<div className="col-md-3" style={{ marginLeft: 'auto' }}>
 <input
               type="text"
               placeholder="Buscar..."
@@ -45,7 +48,7 @@ function User() {
 <br />
 
 <div style={{ height: 360, width: '100%' }}>
-<DataGrid
+<DataGrid 
             rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.id_usuario,
@@ -53,11 +56,11 @@ function User() {
             }))}
             columns={[
               { field: 'id_usuario', headerName: 'Tipo Documento', flex: 1 },
-              { field: 'nombres', headerName: 'Documento', flex: 1 },
-              { field: 'apellidos', headerName: 'Nombre', flex: 1 },
-              { field: 'email', headerName: 'Apellido', flex: 1 },
-              { field: 'contrasena', headerName: 'Teléfono', flex: 1 },
-              { field: 'nombreRol', headerName: 'Dirección', flex: 1 },
+              { field: 'nombres', headerName: 'Nombre', flex: 1 },
+              { field: 'apellidos', headerName: 'Apellido', flex: 1 },
+              { field: 'email', headerName: 'Email', flex: 1 },
+              { field: 'contrasena', headerName: 'Contraseña', flex: 1 },
+              { field: 'nombreRol', headerName: 'Rol', flex: 1 },
           
               {
                 field: 'estado',
@@ -169,6 +172,7 @@ function User() {
                 </div>
             </div>
             </div>
+         
         
         </>
   );

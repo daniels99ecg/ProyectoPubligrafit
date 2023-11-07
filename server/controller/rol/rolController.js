@@ -11,6 +11,24 @@ async function listarRol(req, res){
       }
     }
 
+async function createRol(req, res){
+  const dataRol=req.body;
+
+  try {
+
+    const rol = await Rol.create({
+      nombre_rol:dataRol.nombre_rol,
+      fecha:dataRol.fecha,
+      estado:1
+    });
+    res.status(201).json(rol)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener rol' });
+  }
+}    
+
     module.exports={
-        listarRol
+        listarRol,
+        createRol
     }

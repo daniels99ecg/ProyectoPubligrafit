@@ -1,8 +1,10 @@
 
+
 import ShowCliente from './page/Cliente/Cliente'
 import CreateCliente from './page/Cliente/ClienteCreate'
 import UpdateCliente from './page/Cliente/ClienteUpdate'
 import { ClienteContextProvider } from './context/Clientes/ClienteContext'
+
 
 import { Route, Routes } from 'react-router-dom'
 import User from './page/Usuario/usuario'
@@ -10,20 +12,23 @@ import UserCreate from './page/Usuario/usuarioCreate'
 import UserUpdate from './page/Usuario/usuarioUpdate'
 
 import { UserContextProvider } from './context/Usuario/UserContext'
-import Rol from './page/Rol/rol'
+import { RolContextProvider } from './context/Rol/RolContext'
+import Rol from './page/Rol/Rol'
 import RolCreate from './page/Rol/RolCreate'
 import Login from './page/Login/login'
+
 function App() {
 
   return (
     <>
 <ClienteContextProvider>
     <UserContextProvider>
+     <RolContextProvider>
      <Routes>
      <Route path='/' element={<Login/>}/>
 
-
       {/* Usuarios */}
+      
       <Route path='/usuario' element={<User/>}/>
       <Route path='/usuario/create' element={<UserCreate/>}/>
       <Route path='/editu/:id_usuario' element={<UserUpdate/>}/>
@@ -39,6 +44,7 @@ function App() {
       <Route path='/cliente/create' element={<CreateCliente/>}/> 
       <Route path='/editc/:documento' element={<UpdateCliente/>}/> 
      </Routes>
+     </RolContextProvider> 
      </UserContextProvider>
      </ClienteContextProvider>
      

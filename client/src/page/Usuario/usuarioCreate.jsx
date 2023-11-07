@@ -1,6 +1,6 @@
 import { Form ,Formik} from 'formik'
 import Nav from '../../components/nav'
-import { useState, useEffect } from 'react'
+import {  useEffect } from 'react'
 import { useUser } from "../../context/Usuario/UserContext";
 
 
@@ -14,7 +14,6 @@ function UserCreate() {
     
    },[])
 
-  
     return (
       <>
 
@@ -24,8 +23,12 @@ function UserCreate() {
         <div className='dashboard-content'>
             <div className='container'>
                 <div className='card'>
+                <div className='card-body'>
+
+                <div className="card-header">
+                <h2 className="text-center">Registar Usuario</h2>                      </div>
     <div className='w-75 p-3 mx-auto'>
-    <h2 className="text-center">Registar Usuario</h2>
+   
 
    <Formik
    initialValues={
@@ -110,7 +113,7 @@ function UserCreate() {
         </div>
     </div>
 
-
+</div>
       </>
     )
   }

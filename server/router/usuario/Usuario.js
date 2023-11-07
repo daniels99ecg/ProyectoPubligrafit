@@ -2,8 +2,6 @@ const Router=require("express").Router()
 const UsuarioController=require("../../controller/usuario/usuarioController")
 
 
-
-
 Router.get("/", UsuarioController.listarUsuario);
 
 Router.get("/:id", UsuarioController.listarporid);
@@ -14,11 +12,14 @@ Router.put("/update/:id", UsuarioController.actualizarUsuario)
 
 Router.post("/login/", UsuarioController.login)
 
+Router.get("/verefy", UsuarioController.verifyToken)
+
 Router.put("/disable/:id", UsuarioController.desactivarCliente)
 
 Router.put("/activate/:id", UsuarioController.activarCliente)
 
 Router.delete("/delete/:id_usuario", UsuarioController.eliminar)
+
 
 
 

@@ -90,7 +90,7 @@ function ListarInsumos() {
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() => navigate(`/edit/${params.row.id_insumo}`)}
+                      onClick={() => navigate(`/editI/${params.row.id_insumo}`)}
                       disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',

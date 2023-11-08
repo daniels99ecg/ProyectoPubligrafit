@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik' 
 import Swal from 'sweetalert2'
 import Nav from '../../componentes/nav'
+import { useInsumo } from "../../context/Insumos/InsumoContext"
 
 
 function primeraMayuscula(input) {
@@ -29,37 +30,11 @@ function UpdateInsumo(){
 
     const params = useParams()
     const navigate = useNavigate()
+    const {insumoActualizar, listarInsumo, validarInsumoActualizar}=useInsumo()
 
-    const [listarInsumo, setListarInsumo] = useState(
-        {
-            id_insumo: '',
-            nombre: '',
-            precio: '',
-            cantidad: '' 
-
-        })
 
         useEffect (() => {
-
-            async function insumoActualizar (){
-
-                try{
-                
-                    const insumoUpdate = await getListarInsumo(params.id_insumo)
-                    const response = insumoUpdate.data
-        
-                    setListarInsumo({
-                        id_insumo: response.id_insumo,
-                        nombre: response.nombre,
-                        precio: response.precio,
-                        cantidad: response.cantidad
-                    })
-                } catch (error) {
-                    console.log(error)
-                }
-            }
- 
-    insumoActualizar()
+    insumoActualizar(params.id_insumo)
 
         }, [params.id_insumo])
 
@@ -84,75 +59,7 @@ function UpdateInsumo(){
             onSubmit={async (values) => {
                 console.log(values)
 
-                try {
-                    let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
-                    let NumberPattern = /^[0-9]+$/;
-                  
-                    if (values.nombre === "" || values.precio === "" || values.cantidad === "") {
-                      Swal.fire({
-                        icon: 'error',
-                        title: 'Campos Vacíos',
-                        text: 'Por favor ingrese datos.',
-                      });
-                    } else if (!Caracteres.test(values.nombre)) {
-                      Swal.fire({
-                        icon: 'error',
-                        title: 'Nombre',
-                        text: 'Por favor ingrese solo letras.',
-                      });
-                    } else if (!NumberPattern.test(values.cantidad)) {
-                      Swal.fire({
-                        icon: 'error',
-                        title: 'Cantidad',
-                        text: 'Por favor ingrese solo números.',
-                      });
-                    } else if (!NumberPattern.test(values.precio)) {
-                      Swal.fire({
-                        icon: 'error',
-                        title: 'Precio',
-                        text: 'Por favor ingrese solo números.',
-                      });
-                    } else {
-                      const swalWithBootstrapButtons = Swal.mixin({
-                        customClass: {
-                          confirmButton: 'btn btn-success',
-                          cancelButton: 'btn btn-danger'
-                        },
-                        buttonsStyling: false
-                      });
-                  
-                      swalWithBootstrapButtons.fire({
-                        title: '¿Confirmar el envío del formulario?',
-                        text: "No podrá revertir esto.",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Aceptar',
-                        cancelButtonText: 'Cancelar',
-                        buttons: true
-                      }).then(async (result) => {
-                        if (result.isConfirmed) {
-                          // Línea de código importante para cambiar de tipo "button" a "submit"
-                          await putActualizarInsumos(params.id_insumo, values);
-                          navigate("/insumo");
-                  
-                          swalWithBootstrapButtons.fire(
-                            '¡Insumo Actualizado!',
-                            'Su archivo ha sido eliminado.',
-                            'success'
-                          );
-                        } else if (result.dismiss === Swal.DismissReason.cancel) {
-                          swalWithBootstrapButtons.fire(
-                            'Se canceló el envío para la actualización',
-                            'Su archivo imaginario está a salvo :)',
-                            'error'
-                          );
-                        }
-                      });
-                    }
-                  } catch (error) {
-                    console.log(error);
-                  }
-
+                validarInsumoActualizar(params.id_insumo, values)
                 } 
 
             }

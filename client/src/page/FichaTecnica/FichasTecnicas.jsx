@@ -94,7 +94,7 @@ function ListarFichasTecnicas() {
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() => navigate(`/edit/${params.row.id_ft}`)}
+                      onClick={() => navigate(`/editF/${params.row.id_ft}`)}
                       disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',

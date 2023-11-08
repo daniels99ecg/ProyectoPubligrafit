@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik' 
 import Swal from 'sweetalert2'
 import Nav from '../../componentes/nav'
-
+import { useProducto } from "../../context/Productos/ProductoContext"
 
 function primeraMayuscula(input) {
     return input
@@ -29,41 +29,12 @@ function UpdateProducto(){
 
     const params = useParams()
     const navigate = useNavigate()
+    const {productoActualizar,listarProducto, validarProductoActualizar}= useProducto()
 
-    const [listarProducto, setListarProducto] = useState(
-        {
-            id_producto: '',
-            fk_categoria: '',
-            nombre_producto: '',
-            precio: '',
-            imagen: '',
-            stock: '',
-
-        })
 
         useEffect (() => {
-
-            async function productoActualizar (){
-
-                try{
-                
-                    const productoUpdate = await getListarProducto(params.id_producto)
-                    const response = productoUpdate.data
-        
-                    setListarProducto({
-                        id_producto: response.id_producto,
-                        fk_categoria: response.fk_categoria,
-                        nombre_producto: response.nombre_producto,
-                        precio: response.precio,
-                        imgane: response.imagen,
-                        stock: response.stock
-                    })
-                } catch (error) {
-                    console.log(error)
-                }
-            }
  
-    productoActualizar()
+    productoActualizar(params.id_producto)
 
         }, [params.id_producto])
 
@@ -87,79 +58,8 @@ function UpdateProducto(){
             enableReinitialize = {true}      
             onSubmit={async (values) => {
                 console.log(values)
-
-                try {
-                    let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
-                    let NumberPattern = /^[0-9]+$/;
-                    if(values.nombre_producto =="" || values.precio =="" || values.stock =="" || values.imagen=="" ){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Campos Vacios',
-                            text: 'Por favor ingresar datos!',
-                            
-                          })
-                    }else if((!Caracteres.test(values.nombre_producto))){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Nombre Producto',
-                            text: 'Por favor ingresar solo letras!',
-                            
-                          })
-                    }else if((!NumberPattern.test(values.stock))){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Cantidad',
-                            text: 'Por favor ingresar solo numeros!',
-                            
-                          })
-                    }else if((!NumberPattern.test(values.precio))){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Precio',
-                            text: 'Por favor ingresar solo numeros!',
-                            
-                          })
-                    }else{
-                        const swalWithBootstrapButtons = Swal.mixin({
-                            customClass: {
-                              confirmButton: 'btn btn-success',
-                              cancelButton: 'btn btn-danger'
-                            },
-                            buttonsStyling: false
-                          })
-                          
-                          swalWithBootstrapButtons.fire({
-                            title: 'Confirmar en envio del formulario?',
-                            text: "You won't be able to revert this!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Aceptar!',
-                            cancelButtonText: 'Cancelar!',
-                            reverseButtons: true
-                          }).then(async (result) => {
-                            if (result.isConfirmed) {
-                              // Línea de código importante para cambiar de tipo "button" a "submit"
-                              await putActualizarProductos(params.id_producto, values);
-                              navigate("/producto");
-                      
-                              swalWithBootstrapButtons.fire(
-                                '¡Insumo Actualizado!',
-                                'Su archivo ha sido eliminado.',
-                                'success'
-                              );
-                            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                              swalWithBootstrapButtons.fire(
-                                'Se canceló el envío para la actualización',
-                                'Su archivo imaginario está a salvo :)',
-                                'error'
-                              );
-                            }
-                          });
-                        }
-                      } catch (error) {
-                        console.log(error);
-                      }
-                } 
+                validarProductoActualizar(params.id_producto, values)
+            }
 
             }
         >

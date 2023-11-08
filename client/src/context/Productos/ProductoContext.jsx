@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarProductos, postCreateProducto, eliminarProducto, putActivarProducto, putDesactivarProducto} from "../../api/Rutas.producto"
+import {getListarProductos, postCreateProducto,getListarProducto, putActualizarProductos,eliminarProducto, putActivarProducto, putDesactivarProducto} from "../../api/Rutas.producto"
 import Swal from 'sweetalert2'
 export const ProductoContext = createContext()
 
@@ -190,10 +190,115 @@ const validacionProducto = async (values)=>{
       } catch (error) {
         console.log(error)
       }
+
     }
+    const [listarProducto, setListarProducto] = useState(
+      {
+          id_producto: '',
+          fk_categoria: '',
+          nombre_producto: '',
+          precio: '',
+          imagen: '',
+          stock: '',
+
+      })
+      async function productoActualizar (id_producto){
+
+        try{
+        
+            const productoUpdate = await getListarProducto(id_producto)
+            const response = productoUpdate.data
+
+            setListarProducto({
+                id_producto: response.id_producto,
+                fk_categoria: response.fk_categoria,
+                nombre_producto: response.nombre_producto,
+                precio: response.precio,
+                imgane: response.imagen,
+                stock: response.stock
+            })
+        } catch (error) {
+            console.log(error)
+        }
+      }
+      const validarProductoActualizar= async (id_producto, values)=>{
+        try {
+          let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
+          let NumberPattern = /^[0-9]+$/;
+          if(values.nombre_producto =="" || values.precio =="" || values.stock =="" || values.imagen=="" ){
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Campos Vacios',
+                  text: 'Por favor ingresar datos!',
+                  
+                })
+          }else if((!Caracteres.test(values.nombre_producto))){
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Nombre Producto',
+                  text: 'Por favor ingresar solo letras!',
+                  
+                })
+          }else if((!NumberPattern.test(values.stock))){
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Cantidad',
+                  text: 'Por favor ingresar solo numeros!',
+                  
+                })
+          }else if((!NumberPattern.test(values.precio))){
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Precio',
+                  text: 'Por favor ingresar solo numeros!',
+                  
+                })
+          }else{
+              const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                  },
+                  buttonsStyling: false
+                })
+                
+                swalWithBootstrapButtons.fire({
+                  title: 'Confirmar en envio del formulario?',
+                  text: "You won't be able to revert this!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Aceptar!',
+                  cancelButtonText: 'Cancelar!',
+                  reverseButtons: true
+                }).then(async (result) => {
+                  if (result.isConfirmed) {
+                    // Línea de código importante para cambiar de tipo "button" a "submit"
+                    await putActualizarProductos(id_producto, values);
+                    navigate("/producto");
+            
+                    swalWithBootstrapButtons.fire(
+                      '¡Insumo Actualizado!',
+                      'Su archivo ha sido eliminado.',
+                      'success'
+                    );
+                  } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire(
+                      'Se canceló el envío para la actualización',
+                      'Su archivo imaginario está a salvo :)',
+                      'error'
+                    );
+                  }
+                });
+              }
+            } catch (error) {
+              console.log(error);
+            }
+      } 
+      
+
 return(
     <ProductoContext.Provider
-    value={{listar,ShowProducto,searchTerm,setSearchTerm, activarProducto, eliminarProductos, desactivarProducto, validacionProducto ,filtrarDesactivados}}>
+    value={{listar,ShowProducto,searchTerm,setSearchTerm, validarProductoActualizar,productoActualizar,listarProducto,activarProducto, eliminarProductos, desactivarProducto, validacionProducto ,filtrarDesactivados}}>
     {children}
     </ProductoContext.Provider>
 )

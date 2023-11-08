@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarInsumos, postCreateInsumo, eliminarInsumo, putActivarInsumo, putDesactivarInsumo} from "../../api/Rutas.api"
+import {getListarInsumos, postCreateInsumo, getListarInsumo, putActualizarInsumos,eliminarInsumo, putActivarInsumo, putDesactivarInsumo} from "../../api/Rutas.api"
 import Swal from 'sweetalert2'
 export const InsumoContext = createContext()
 
@@ -184,9 +184,104 @@ const validacionInsumo = async (values)=>{
         console.log(error)
       }
     }
+    const [listarInsumo, setListarInsumo] = useState(
+      {
+          id_insumo: '',
+          nombre: '',
+          precio: '',
+          cantidad: '' 
+
+      })
+    const validarInsumoActualizar= async (id_insumo, values)=>{
+    try {
+      let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
+      let NumberPattern = /^[0-9]+$/;
+    
+      if (values.nombre === "" || values.precio === "" || values.cantidad === "") {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campos Vacíos',
+          text: 'Por favor ingrese datos.',
+        });
+      } else if (!Caracteres.test(values.nombre)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Nombre',
+          text: 'Por favor ingrese solo letras.',
+        });
+      } else if (!NumberPattern.test(values.cantidad)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Cantidad',
+          text: 'Por favor ingrese solo números.',
+        });
+      } else if (!NumberPattern.test(values.precio)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Precio',
+          text: 'Por favor ingrese solo números.',
+        });
+      } else {
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        });
+    
+        swalWithBootstrapButtons.fire({
+          title: '¿Confirmar el envío del formulario?',
+          text: "No podrá revertir esto.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
+          buttons: true
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            // Línea de código importante para cambiar de tipo "button" a "submit"
+            await putActualizarInsumos(id_insumo, values);
+            navigate("/insumo");
+    
+            swalWithBootstrapButtons.fire(
+              '¡Insumo Actualizado!',
+              'Su archivo ha sido eliminado.',
+              'success'
+            );
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire(
+              'Se canceló el envío para la actualización',
+              'Su archivo imaginario está a salvo :)',
+              'error'
+            );
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function insumoActualizar (id_insumo){
+
+    try{
+    
+        const insumoUpdate = await getListarInsumo(id_insumo)
+        const response = insumoUpdate.data
+
+        setListarInsumo({
+            id_insumo: response.id_insumo,
+            nombre: response.nombre,
+            precio: response.precio,
+            cantidad: response.cantidad
+        })
+    } catch (error) {
+        console.log(error)
+    }
+  }
 return(
     <InsumoContext.Provider
-    value={{listar,ShowInsumos,searchTerm,setSearchTerm, activarInsumo, eliminarInsumos, desactivarInsumo, validacionInsumo ,filtrarDesactivados}}>
+    value={{listar,ShowInsumos,searchTerm,setSearchTerm, validarInsumoActualizar,insumoActualizar,listarInsumo,insumoActualizar,activarInsumo, eliminarInsumos, desactivarInsumo, validacionInsumo ,filtrarDesactivados}}>
     {children}
     </InsumoContext.Provider>
 )

@@ -6,6 +6,7 @@ const Compras=sequelize.define('compra', { //Crear el modelo de la base de datos
 id_compra:{
     type:DataTypes.INTEGER,
     primaryKey:true,
+    autoIncrement:true
 },
 
 proveedor:DataTypes.STRING,

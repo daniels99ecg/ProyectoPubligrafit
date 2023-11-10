@@ -12,8 +12,11 @@ const sequelize=require("../../database/db")
                 fecha:DataTypes.DATE,
                 estado:DataTypes.BOOLEAN
        },{
-              timestamps: false // Desactiva las columnas createdAt y updatedAt
+              timestamps: false, // Desactiva las columnas createdAt y updatedAt
+             
             }
-       )
+       );
 
-module.exports=Rol;
+      
+
+module.exports = Rol

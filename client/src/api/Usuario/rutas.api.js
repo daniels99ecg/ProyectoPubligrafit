@@ -28,13 +28,7 @@ export const loginIngreso = async (email, contrasena) => {
     throw error; // Maneja el error adecuadamente en tu componente React
   }
 };
-export const getListarRoles=async ()=>{
-  return await axios.get('http://localhost:3001/rol')
-}
 
-export const crearRol=async (task)=>{
-  return await axios.post(`http://localhost:3001/rol/create`, task)
-}
 
 export const putDesactivarCliente = async (id_usuario) => {
   return await axios.put(`http://localhost:3001/usuario/disable/${id_usuario}`);
@@ -50,6 +44,12 @@ export const eliminar = async (id_usuario) => {
 
 export const verifyToken = async()=>{
   return await axios.get('http://localhost:3001/usuario/verefy/')
+}
+
+
+
+export const getListarRoles=async ()=>{
+  return await axios.get('http://localhost:3001/rol')
 }
 
 

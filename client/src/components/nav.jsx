@@ -13,13 +13,13 @@ function Nav() {
             <i><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
 </i>
             
-            </a><a href="#" className="brand-logo">
+            </a><a href="/dashboard" className="brand-logo">
           
               <span>PubliGrafit</span>
               </a>
               </header>
           <nav className="dashboard-nav-list">
-            <a href="#" className="dashboard-nav-item active">
+            <a href="/dashboard" className="dashboard-nav-item active">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="currentColor" className="bi bi-laptop" viewBox="0 0 16 16" style={{marginLeft: -50}}>
                 <path d="M13.5 3a.5.5 0 0 1 .5.5V11H2V3.5a.5.5 0 0 1 .5-.5h11zm-11-1A1.5 1.5 0 0 0 1 3.5V12h14V3.5A1.5 1.5 0 0 0 13.5 2h-11zM0 12.5h16a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5z"></path>
               </svg>
@@ -83,7 +83,7 @@ function Nav() {
             <a href="#" className="dashboard-nav-item"><i className="fa fa-user"></i> Perfil </a>
             <div className="nav-item-divider"></div>
           <a
-                    href="#" className="dashboard-nav-item">
+                    href="/" className="dashboard-nav-item">
                       <i className="fa fa-sign-out"></i>
                        Logout
                        </a>

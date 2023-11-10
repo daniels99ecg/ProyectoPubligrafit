@@ -8,6 +8,7 @@ import { RolContextProvider } from './context/Rol/RolContext'
 import Rol from './page/Rol/Rol'
 import RolCreate from './page/Rol/RolCreate'
 import Login from './page/Login/login'
+import Dashboard from './page/Dashboard/dashboard'
 
 function App() {
 
@@ -17,7 +18,7 @@ function App() {
      <RolContextProvider>
      <Routes>
      <Route path='/' element={<Login/>}/>
-
+      <Route path='/dashboard' element={<Dashboard/>}/>
       {/* Usuarios */}
       
       <Route path='/usuario' element={<User/>}/>

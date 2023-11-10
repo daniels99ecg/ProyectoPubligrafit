@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getListarRoles, putActivarCliente,putDesactivarCliente } from "../../api/rutas.api"
+import { getListarRoles, putActivarCliente,putDesactivarCliente } from "../../api/Usuario/rutas.api"
 import Nav from '../../components/nav'
 import { DataGrid } from '@mui/x-data-grid';
 import { useRol } from "../../context/Rol/RolContext";
@@ -19,8 +19,11 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
               <div className='dashboard-content'>
                   <div className='container'>
                       <div className='card'>
-                          
+                     
                           <div className='card-body'>
+                          <div className="card-header">
+                        <h1>Gestionar Rol</h1>
+                      </div>
                           <br />
    
     <div className='row'>

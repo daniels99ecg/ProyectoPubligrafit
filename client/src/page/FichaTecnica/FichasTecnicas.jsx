@@ -27,13 +27,16 @@ function ListarFichasTecnicas() {
         <div className='container'>
             <div className='card'>
                 <div className='card-body'>
+                <div className="card-header">
+                        <h1>Gestionar Fichas Tecnicas</h1>
+                      </div>
                 <br />
         <div className="row">
           <div className="col-md-3">
             <a className="btn btn-primary ms-4" href="/fichaTecnica/create" role="button">Nuevo Registro</a>
           </div>
           {/* Botón de búsqueda */}
-          <div className="col-md-3">
+          <div className="col-md-3 " style={{ marginLeft: 'auto' }}>
             <input
               type="text"
               placeholder="Buscar"

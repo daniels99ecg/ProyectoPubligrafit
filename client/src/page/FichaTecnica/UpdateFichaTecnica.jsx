@@ -49,6 +49,9 @@ function UpdateFichaTecnica(){
             <div className='card'>
 
                 <div className='card-body'>
+                <div className="card-header">
+                        <h1>Actualizar Ficha Tecnica</h1>
+                      </div>
                 <br />
 <div className='card w-75 p-3 mx-auto mt-5'>
         <Formik 
@@ -64,7 +67,7 @@ function UpdateFichaTecnica(){
                 ({handleChange, handleSubmit, values}) => (
                     <Form  onSubmit={handleSubmit} className='row g-3'>
                 <div className="col-md-6">
-                <label htmlFor="id_ft">Insumo</label>
+                <label htmlFor="id_ft">Id</label>
                 <input type="text" name='id_ft' onChange={handleChange} value={values.id_ft} className="form-control" readOnly/>
                 </div>
 

@@ -15,6 +15,9 @@ function CreateFichaTecnica() {
           <div className='container'>
             <div className='card'>
               <div className='card-body'>
+              <div className="card-header">
+                        <h1>Registrar Ficha Tecnica</h1>
+                      </div>
                 <br />
                 <div className='card w-75 p-3 mx-auto mt-5'>
                   <Formik
@@ -57,15 +60,16 @@ function CreateFichaTecnica() {
                         <label htmlFor="Detalle">Detalles</label>
                         <Field type="text" name='detalle' className="form-control" />
                         </div>
+                        <br />
                         
-                        <div className="row col-11 text-center"> 
-                        <div  className="col-5">
+                        <div  className="col-auto">
                             <button  className="btn btn-primary">Registrar</button>
                         </div>
-                        <div  className="col-1">
+                        
+                        <div  className="col-auto">
                             <a href='/fichaTecnica' className='btn btn-danger'>Cancelar</a>
                         </div>
-                        </div>
+                        
                         
                         </Form>
                     )}

@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarFichasTecnicas, postCreateFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica} from "../../api/Rutas.ficha"
+import {getListarFichasTecnicas, postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica} from "../../api/Rutas.ficha"
 import Swal from 'sweetalert2'
 export const FichaTecnicaContext = createContext()
 
@@ -26,9 +26,9 @@ export const FichaTecnicaContextProvider = ({children})=>{
         item.id_ft.toString().includes(searchTerm) ||
         item.fk_insumo.toString().includes(searchTerm) ||
         item.cantidad_insumo.toString().includes(searchTerm) ||
-        item.detalle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      
         item.costo_insumo.toString().includes(searchTerm) ||
-        item.costo_producto_final.toString().includes(searchTerm) ||
+        item.costo_final_producto.toString().includes(searchTerm) ||
         item.detalle.toLowerCase().includes(searchTerm.toLowerCase()) 
        
       );
@@ -113,15 +113,15 @@ const validacionFichaTecnica = async (values)=>{
         else if((!NumberPattern.test(values.costo_final_producto))){
           Swal.fire({
               icon: 'error',
-              title: 'Campos Vacio',
-              text: 'Costo final del producto!',
+              title: 'Costo final',
+              text: 'Por favor ingresar solo numeros!',
               
             })
       }
         else if((!Caracteres.test(values.detalle))){
             Swal.fire({
                 icon: 'error',
-                title: 'Campos Vacio',
+                title: 'Detalles',
                 text: 'Por favor ingresar datos!',
                 
               })
@@ -244,7 +244,7 @@ const validacionFichaTecnica = async (values)=>{
       else if((!NumberPattern.test(values.costo_final_producto))){
         Swal.fire({
             icon: 'error',
-            title: 'Campos Vacio',
+            title: 'Costo Final',
             text: 'Costo final del producto!',
             
           })
@@ -252,7 +252,7 @@ const validacionFichaTecnica = async (values)=>{
       else if((!Caracteres.test(values.detalle))){
           Swal.fire({
               icon: 'error',
-              title: 'Campos Vacio',
+              title: 'Detalles',
               text: 'Por favor ingresar datos!',
               
             })

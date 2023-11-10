@@ -26,13 +26,17 @@ function listarProductos(){
           <div className='container'>
               <div className='card'>
                   <div className='card-body'>
+                  <div className="card-header">
+                        <h1>Gestionar Productos</h1>
+                      </div>
+                <br />
                   <br />
           <div className="row">
             <div className="col-md-3">
               <a className="btn btn-primary ms-4" href="/producto/create" role="button">Nuevo Registro</a>
             </div>
             {/* Botón de búsqueda */}
-            <div className="col-md-3">
+            <div className="col-md-3" style={{ marginLeft: 'auto' }}>
               <input
                 type="text"
                 placeholder="Buscar"

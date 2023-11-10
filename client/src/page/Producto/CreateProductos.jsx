@@ -15,6 +15,9 @@
              <div className='container'>
                <div className='card'>
                  <div className='card-body'>
+                 <div className="card-header">
+                        <h1>Registrar Producto</h1>
+                      </div>
                    <br />
                    <div className='card w-75 p-3 mx-auto mt-5'>
                      <Formik

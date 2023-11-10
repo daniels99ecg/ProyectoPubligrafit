@@ -66,7 +66,11 @@ h1, .h1 {
   font-weight: normal;
 }
 
+<<<<<<< HEAD
  .card {
+=======
+.card {
+>>>>>>> cb3eb0c5eb97d0c42d4281e7d3d9556b83ad124a
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -77,13 +81,22 @@ h1, .h1 {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+<<<<<<< HEAD
   min-width: 0  ;
+=======
+  min-width: 0;
+>>>>>>> cb3eb0c5eb97d0c42d4281e7d3d9556b83ad124a
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
+<<<<<<< HEAD
   border-radius: 15;
 } 
+=======
+  border-radius: 0;
+}
+>>>>>>> cb3eb0c5eb97d0c42d4281e7d3d9556b83ad124a
 
 .card-body {
   -webkit-box-flex: 1;
@@ -96,7 +109,11 @@ h1, .h1 {
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
+<<<<<<< HEAD
   background-color: rgba(0, 0, 0, 0.03);
+=======
+  background-color: rgba(0, 0, 0, 0.01);
+>>>>>>> cb3eb0c5eb97d0c42d4281e7d3d9556b83ad124a
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
   text-align: center;
 }
@@ -165,7 +182,10 @@ h1, .h1 {
   align-items: center;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> cb3eb0c5eb97d0c42d4281e7d3d9556b83ad124a
 .dashboard-nav header .menu-toggle {
   display: none;
   margin-right: auto;
@@ -437,11 +457,20 @@ h1, .h1 {
       left: 0;
   }
 }
+<<<<<<< HEAD
 
 
 
 /* Boton para cambiar el estado */
 
+=======
+.logonav{
+  width: 30%; 
+  background:white; 
+  border-radius:100px; 
+  margin-left:-5%;
+}
+>>>>>>> cb3eb0c5eb97d0c42d4281e7d3d9556b83ad124a
 
 :root {
   --color-green: #00a878;
@@ -486,4 +515,7 @@ h1, .h1 {
   background-color: #fffefe; 
   color: #636262; 
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> cb3eb0c5eb97d0c42d4281e7d3d9556b83ad124a

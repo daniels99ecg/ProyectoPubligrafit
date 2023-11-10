@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import {getListarUsuarios, crearUsuario, getListarRoles, putActivarCliente, putDesactivarCliente, eliminar, cargaractualizarUsuario,actualizarUsuario} from '../../api/rutas.api'
+import {getListarUsuarios, crearUsuario, getListarRoles, putActivarCliente, putDesactivarCliente, eliminar, cargaractualizarUsuario,actualizarUsuario} from '../../api/Usuario/rutas.api'
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
 

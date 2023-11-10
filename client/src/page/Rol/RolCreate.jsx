@@ -1,8 +1,10 @@
-import { Form, Formik } from 'formik'
+import { Form, Formik,FieldArray } from 'formik'
 import Nav from '../../components/nav'
 import { useEffect, useState } from 'react'
-import { crearRol } from '../../api/rutas.api'
 import { useRol } from '../../context/Rol/RolContext'
+
+
+
 function RolCreate(){
     const {crearRoles}=useRol()
 
@@ -13,20 +15,30 @@ function RolCreate(){
         <div className='dashboard-content'>
             <div className='container'>
                 <div className='card'>
+                <div className='card-body'>
+                <div className="card-header">
+                <h2 className="text-center">Registar Rol</h2>  
+                </div>
     <div className='w-75 p-3 mx-auto'>
-    <h2 className="text-center">Registar Rol</h2>
+
         <Formik
         initialValues={
             {
                 nombre_rol:"",
-                fecha:""
+                fecha:"",
+                permisos:[{
+                    id_permiso:""
+                }
+                ]
+                
             }
             
         }
         enableReinitialize={true}
         onSubmit={async (values)=>{
         console.log(values)
-        crearRoles(values)
+       
+            const response = await crearRoles(values)    
 
    }}
         >
@@ -39,13 +51,53 @@ function RolCreate(){
                     <input type='date' name='fecha' className='form-control' placeholder='Fecha' onChange={handleChange}/>
                     </div>
 
+                    <FieldArray
+                          name='permisos'
+                          render={(arrayHelpers) => (
+                            
+                            <div>
+                                
+                              {values.permisos.map((permiso, index) => (
+                                
+                                <div key={index} className='col-md-6'>
+                                  <input
+                                    type='text'
+                                    name={`permisos.${index}.id_permiso`}
+                                    className='form-control'
+                                    placeholder='Permiso'
+                                    onChange={handleChange}
+                                  />
+                                  <br />
+                                  <button className='btn btn-danger'
+                                    type='button'
+                                    onClick={() => arrayHelpers.remove(index)}
+                                  >
+                                    Eliminar Permiso
+                                  </button>
+                                </div>
+                              ))}
+                              <br />
+                              <div className='col-auto'>
+                                <button className='btn btn-primary'
+                                  type='button'
+                                  onClick={() =>
+                                    arrayHelpers.push({ id_permiso: '' })
+                                  }
+                                >
+                                  Agregar Permiso
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        />
+
                     <div className="col-auto">
       <button className="btn btn-primary" type='submit'>
         Registrar
       </button>
 </div>
 <div className="col-auto">
-      <a href='/usuario' className='btn btn-danger'>Cancelar</a>
+      <a href='/rol' className='btn btn-danger'>Cancelar</a>
       </div>
 
             </Form>
@@ -56,6 +108,7 @@ function RolCreate(){
                 </div>
             </div>
         </div>
+    </div>
     </div>
     </>
     )

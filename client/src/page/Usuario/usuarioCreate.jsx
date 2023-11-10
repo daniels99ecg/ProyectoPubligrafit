@@ -2,7 +2,8 @@ import { Form ,Formik} from 'formik'
 import Nav from '../../components/nav'
 import {  useEffect } from 'react'
 import { useUser } from "../../context/Usuario/UserContext";
-
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 function UserCreate() {
 
@@ -26,7 +27,8 @@ function UserCreate() {
                 <div className='card-body'>
 
                 <div className="card-header">
-                <h2 className="text-center">Registar Usuario</h2>                      </div>
+                <h2 className="text-center">Registrar Usuario</h2>  
+                </div>
     <div className='w-75 p-3 mx-auto'>
    
 
@@ -75,19 +77,23 @@ function UserCreate() {
       <label>Contraseña</label>
       <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" />
 </div>
-<div className="col-md-6">
-      <label>Rol</label>
 
-<select name="fk_rol2" onChange={handleChange} value={values.fk_rol2} className="form-control">
-<option value="Seleccionar">Seleccionar</option>
-  {
-    Listar.map(Listar=>(
-      <option key={Listar.id_rol} value={Listar.id_rol}>
-      {Listar.nombre_rol}
-    </option>
-    ))
-  }
-</select>
+<div className="col-md-6">
+<Autocomplete 
+
+          disablePortal
+          id="fixed-tags-demo"
+          options={Listar}
+          getOptionLabel={(option) => option.nombre_rol}
+          onChange={(event, newValue) => {
+            // Aquí puedes manejar el cambio de valor seleccionado en Autocomplete
+            // Puedes actualizar el estado o realizar otras acciones necesarias
+            handleChange({ target: { name: 'fk_rol2', value: newValue ? newValue.id_rol : '' } });
+          }}
+          value={Listar.find((rol) => rol.id_rol === values.fk_rol2) || null}
+          sx={{ width: '100%',   marginTop: '8px' }}
+          renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' }}/>}
+        />
 
 </div>
 <br />

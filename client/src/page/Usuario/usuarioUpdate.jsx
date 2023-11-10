@@ -1,18 +1,16 @@
   import { Form ,Formik} from 'formik'
-  import {cargaractualizarUsuario, crearUsuario, getListarRoles, actualizarUsuario} from '../../api/rutas.api'
   import { useParams, useNavigate} from 'react-router-dom'
   import Nav from '../../components/nav'
-  import { useState, useEffect } from 'react'
+  import { useEffect } from 'react'
   import { useUser } from "../../context/Usuario/UserContext";
 
-  import Swal from 'sweetalert2'; // Import SweetAlert2
 
 
   function UserCreate() {
     const navigate = useNavigate();
 
     const params=useParams()
-    const {Listar, creacionValidacion, cargarRol,ListarActualizar, setListarActualizar,cargarUsuariosActualizar,actualizarValidar}=useUser()
+    const {Listar, cargarRol,ListarActualizar, cargarUsuariosActualizar,actualizarValidar}=useUser()
 
     useEffect(()=>{
       
@@ -31,11 +29,13 @@
       <div className='dashboard-content'>
           <div className='container'>
               <div className='card'>
+              <div className='card-body'>
+              <div className="card-header">
+                <h2 className="text-center">Actualizar Usuario</h2>  
+                </div>
               <div className='w-75 p-3 mx-auto'>
 
-      <h2 className="text-center">
-                {params.id_usuario ? "Actualizar Usuario": "Registar Usuario"}
-              </h2>
+   
 
     <Formik
     initialValues={ListarActualizar}
@@ -109,6 +109,7 @@
                   </div>
               </div>
           </div>
+      </div>
       </div>
         </>
       )

@@ -1,4 +1,4 @@
-import { loginIngreso } from "../../api/rutas.api";
+import { loginIngreso } from "../../api/Usuario/rutas.api";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import  { useState } from 'react';

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
-import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol } from "../../api/rutas.api"
+import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol } from "../../api/Rol/rutas.api"
 
 export const RolContext = createContext()
 

@@ -1,6 +1,3 @@
-
-
-
 import ShowCliente from './page/Cliente/Cliente'
 import CreateCliente from './page/Cliente/ClienteCreate'
 import UpdateCliente from './page/Cliente/ClienteUpdate'
@@ -33,10 +30,15 @@ import {InsumoContextProvider} from './context/Insumos/InsumoContext'
 import { ProductoContextProvider } from './context/Productos/ProductoContext'
 import { FichaTecnicaContextProvider } from './context/FichasTecnicas/FichaTecnicaContext'
 
+
+import Compras from './page/Compras/Compras'
+import ComprasCreate from './page/Compras/ComprasCreate'
+import { CompraContextProvider } from './context/Compras/ComprasContext'
 function App() {
 
   return (
     <>
+    <CompraContextProvider>
       <InsumoContextProvider>
      <ProductoContextProvider>
       <FichaTecnicaContextProvider>
@@ -73,6 +75,8 @@ function App() {
       <Route path='/editF/:id_ft' element={<UpdateFichaTecnica/>}/>
       <Route path='/editI/:id_insumo' element={<UpdateInsumo/>}/>
       <Route path='/editP/:id_producto' element={<UpdateProducto/>}/>
+      <Route path='/compras' element={<Compras/>}/>
+      <Route path='/compras/create' element={<ComprasCreate/>}/>
 
       
      </Routes>
@@ -83,7 +87,7 @@ function App() {
       </FichaTecnicaContextProvider>
     </ProductoContextProvider>
     </InsumoContextProvider>
-
+    </CompraContextProvider>
       
 
     

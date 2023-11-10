@@ -1,4 +1,4 @@
-const Insumo=require("../models/Insumo")
+const Insumo=require("../models/Insumo/Insumo")
 
 async function listarInsumos(req, res){
     try {

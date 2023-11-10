@@ -1,6 +1,6 @@
 const {DataTypes}=require("sequelize")
 const sequelize= require("../database/db")
-const Insumo= require("./Insumo")
+const Insumo= require("./Insumo/Insumo")
 
 const FichaTecnica=sequelize.define("fichas_tecnicas",{
     id_ft:{

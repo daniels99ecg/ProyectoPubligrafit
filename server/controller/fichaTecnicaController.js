@@ -1,5 +1,5 @@
 const FichaTecnica=require("../models/FichaTecnica")
-const Insumo=require("../models/Insumo")
+const Insumo=require("../models/Insumo/Insumo")
 
 
 async function listarFichasTecnicas(req, res){

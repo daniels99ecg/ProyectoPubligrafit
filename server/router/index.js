@@ -4,6 +4,7 @@ const Rol=require("../router/rol/Rol")
 const Producto=require("../router/producto/Producto");
 const Insumo=require("../router/insumos/Insumo");
 const FichaTecnica = require("../router/fichaTecnica/FichaTecnica");
+const Compras=require("../router/Compras/Compras")
 
 function resApi(app){
 app.use("/usuario", Usuario)
@@ -12,6 +13,8 @@ app.use("/cliente", Cliente)
 app.use("/producto", Producto)
 app.use("/insumo", Insumo)
 app.use("/fichaTecnica", FichaTecnica)
+app.use("/compras", Compras)
+
 }
 
 

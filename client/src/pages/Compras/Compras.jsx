@@ -2,15 +2,12 @@ import { getListarCompras } from "../../api/rutas.api";
 import { useState, useEffect } from "react";
 import '../../css/style.css'
 import Nav from '../../components/nav'
-
+import {DataGrid} from '@mui/x-data-grid'
+import { useCompra } from "../../context/Compras/ComprasContext";
 function Compras (){ //Inicializar
-const [listar,setListar] = useState([])
-const [searchTerm, setSearchTerm] = useState(""); //Para hacer la busqueda por filtro
+const {cargarCompras,setSearchTerm,filtrarDesactivados} = useCompra()
 useEffect(()=>{
-    async function cargarCompras(){
-        const response=await getListarCompras()
-        setListar(response.data)
-    }
+    
     cargarCompras()
 
 },[])
@@ -21,21 +18,24 @@ useEffect(()=>{
       <Nav/>
 
 
-<div class='dashboard-app'>
+<div className='dashboard-app'>
   
-    <div class='dashboard-content'>
-        <div class='container'>
-            <div class='card'>
+    <div className='dashboard-content'>
+        <div className='container'>
+            <div className='card'>
                 {/* <div class='card-header'>
                     <h1>Welcome back Jim</h1>
                 </div> */}
-                <div class='card-body'>
+                <div className='card-body'>
+                <div className="card-header">
+                        <h1>Gestionar Compras</h1>
+                      </div>
                 <br />
         <div className='row'>
     <div className="col-md-2">  
     <a className="btn btn-primary " href="/compras/create" role="button">Nuevo Registro</a>
     </div>
-    <div className="col-md-3">
+    <div className="col-md-3" style={{marginLeft: 'auto'}}>
     <input
                   type="text"
                   placeholder="Buscar..."
@@ -45,38 +45,48 @@ useEffect(()=>{
                 </div>
                 </div>
                 <br />
-        <div className="card" style={{marginLeft:15}}>
+        <div style={{marginLeft:15}}>
           <br />
-        <table className="table">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Proveedor</th>
-      <th scope="col">Cantidad</th>
-      <th scope="col">Fecha</th>
-      <th scope="col">Total</th>
-      <th scope="col">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {
-        listar.filter((item)=>
-        item.proveedor.toLowerCase().includes(searchTerm.toLowerCase())
-        ).
-        map(listar=>(
-            <tr key={listar.id_compra}>
-      <th>{listar.id_compra}</th>
-      <th>{listar.proveedor}</th>
-      <th>{listar.cantidad}</th>
-      <th>{listar.fecha}</th>
-      <th>{listar.total}</th>
-      <td><button className="btn btn-primary">Detalles</button></td>
-            </tr>  
-        ))
-    
-}
-  </tbody>
-</table>
+        <DataGrid 
+        rows={filtrarDesactivados.map((item)=>({
+          ...item,
+          id:item.id_compra,
+        }))}
+        columns={[
+          {field:'id_compra',headerName:'Id',flex:1},
+          {field:'proveedor',headerName:'Proveedor',flex:1},
+          {field:'cantidad',headerName:'Cantidad',flex:1},
+          {field:'fecha',headerName:'Fecha',flex:1},
+          {field:'total',headerName:'Total',flex:1},
+          {
+            field: 'estado',
+            headerName: 'Estado',
+            flex: 1,
+            renderCell: (params) => (
+              <div className="switch-button">
+                 <input
+                   type="checkbox"
+                    id={`switch-label-${params.row.id_usuario}`}
+                    checked={params.row.estado}
+                    onChange={(e) => {
+                    e.preventDefault(); // Evitar la navegación por defecto
+                if (params.row.estado) {
+                  //desactivarCliente(params.row.id_usuario);
+              } else {
+                  //activarCliente(params.row.id_usuario);
+            }
+      }}
+    className="switch-button__checkbox"
+  />
+  <label
+    htmlFor={`switch-label-${params.row.id_usuario}`}
+    className="switch-button__label"
+  ></label>
+              </div>
+            ),
+          },
+        ]}
+        />
 </div>
 
                     </div>

@@ -96,7 +96,7 @@ h1, .h1 {
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0.01);
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
   text-align: center;
 }
@@ -441,4 +441,51 @@ h1, .h1 {
   background:white; 
   border-radius:100px; 
   margin-left:-5%;
+}
+
+/* Boton para cambiar el estado */
+
+
+:root {
+  --color-green: #00a878;
+  --color-red: red;
+  --color-button: #fdffff;
+  --color-black: #000;
+}
+.switch-button {
+  display: inline-block;
+}
+.switch-button .switch-button__checkbox {
+  display: none;
+}
+.switch-button .switch-button__label {
+  background-color: var(--color-red);
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: 1rem;
+  display: inline-block;
+  position: relative;
+}
+
+.switch-button .switch-button__label:before {
+  transition: .1s;
+  display: block;
+  position: absolute;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--color-button);
+  content: '';
+  border-radius: 50%;
+  box-shadow: inset 0px 0px 0px 1px var(--color-black);
+}
+.switch-button .switch-button_checkbox:checked + .switch-button_label {
+  background-color: var(--color-green);
+}
+.switch-button .switch-button_checkbox:checked + .switch-button_label:before {
+  transform: translateX(2rem);
+}
+
+.cliente-desactivado {
+  background-color: #fffefe; 
+  color: #636262; 
 }

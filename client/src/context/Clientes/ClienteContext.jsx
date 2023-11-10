@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getListarClientes, postCrearClientes, putDesactivarCliente, putActivarCliente } from "../../api/Rutas.Cliente.api";
+import { getListarClientes, postCrearClientes, putDesactivarCliente, putActivarCliente } from "../../api/Cliente/Rutas.Cliente.api";
 import Swal from 'sweetalert2';
 export const ClienteContext = createContext()
 

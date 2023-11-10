@@ -1,7 +1,7 @@
 
 import Nav from '../../components/nav'
-// import { BarChart } from '@mui/x-charts/BarChart';
-// import { PieChart } from '@mui/x-charts/PieChart';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { PieChart } from '@mui/x-charts/PieChart';
 function dashboard(){
     return(
         <>

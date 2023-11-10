@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom"
-import { putActualizarInsumos, getListarInsumo } from '../../api/Rutas.api'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik' 

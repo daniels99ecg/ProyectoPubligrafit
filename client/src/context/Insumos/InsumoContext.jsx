@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarInsumos, postCreateInsumo, getListarInsumo, putActualizarInsumos,eliminarInsumo, putActivarInsumo, putDesactivarInsumo} from "../../api/Rutas.api"
+import {getListarInsumos, postCreateInsumo, getListarInsumo, putActualizarInsumos,eliminarInsumo, putActivarInsumo, putDesactivarInsumo} from "../../api/Insumo/Rutas.api"
 import Swal from 'sweetalert2'
 export const InsumoContext = createContext()
 

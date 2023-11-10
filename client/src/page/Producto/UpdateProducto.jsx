@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom"
-import { putActualizarProductos, getListarProducto } from '../../api/Rutas.producto'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik' 

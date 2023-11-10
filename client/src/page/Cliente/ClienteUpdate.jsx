@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { putActualizarCliente, showClienteUpdate } from '../../api/Rutas.Cliente.api'
+import { putActualizarCliente, showClienteUpdate } from '../../api/Cliente/Rutas.Cliente.api'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik' 

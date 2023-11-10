@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarFichasTecnicas, postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica} from "../../api/Rutas.ficha"
+import {getListarFichasTecnicas, postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica} from "../../api/Ficha/Rutas.ficha"
 import Swal from 'sweetalert2'
 export const FichaTecnicaContext = createContext()
 

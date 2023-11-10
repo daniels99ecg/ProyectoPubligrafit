@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom"
-import { putActualizarFichasTecnicas, getListarFichaTecnica } from '../../api/Rutas.ficha'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik' 

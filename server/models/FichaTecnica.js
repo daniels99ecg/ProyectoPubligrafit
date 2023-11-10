@@ -11,7 +11,7 @@ const FichaTecnica=sequelize.define("fichas_tecnicas",{
     fk_insumo:{
         type:DataTypes.STRING,
         allowNull:false
-    },
+    }, 
     cantidad_insumo:{
         type:DataTypes.INTEGER,
         allowNull:false

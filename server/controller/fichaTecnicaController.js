@@ -74,7 +74,7 @@ async function actualizarFichaTecnica(req, res) {
         }
         await fichaTecnicaExistente.update(
             {   
-                fk_ft: fichaTecnica.fk_ft,
+                id_ft: fichaTecnica.id_ft,
                 cantidad_insumo: fichaTecnica.cantidad_insumo,
                 costo_insumo:  fichaTecnica.costo_insumo,
                 imagen_producto_final: fichaTecnica.imagen_producto_final,

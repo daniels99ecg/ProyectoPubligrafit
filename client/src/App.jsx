@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {Route,Routes} from 'react-router-dom'
-import Compras from './pages/Compras/Compras'
-import ComprasCreate from './pages/Compras/ComprasCreate'
+import Compras from './page/Compras/Compras'
+import ComprasCreate from './page/Compras/ComprasCreate'
 import { CompraContextProvider } from './context/Compras/ComprasContext'
 function App() {
   

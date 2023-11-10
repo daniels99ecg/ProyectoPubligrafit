@@ -1,5 +1,5 @@
 import {createContext, useContext, useState} from 'react'
-import { getListarCompras, postCrearCompras } from "../../api/rutas.api";
+import { getListarCompras, postCrearCompras } from "../../api/Compras/rutas.api";
 
 export const CompraContext=createContext()
 export const useCompra=()=>{

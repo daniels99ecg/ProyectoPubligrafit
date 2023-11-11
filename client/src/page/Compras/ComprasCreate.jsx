@@ -1,6 +1,6 @@
 import '../../css/style.css'
 import Nav from '../../components/nav'
-import {Formik, Form} from "Formik"
+import {Formik, Form} from "formik"
 import { useEffect, useState } from 'react'
 import { useCompra } from "../../context/Compras/ComprasContext";
 

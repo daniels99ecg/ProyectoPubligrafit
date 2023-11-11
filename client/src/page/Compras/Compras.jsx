@@ -1,4 +1,3 @@
-import { getListarCompras } from "../../api/rutas.api";
 import { useState, useEffect } from "react";
 import '../../css/style.css'
 import Nav from '../../components/nav'

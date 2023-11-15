@@ -13,7 +13,7 @@ const RolXPermiso=sequelize.define('rol_x_permiso',{
            autoIncrement:true
     },
     fk_rol:DataTypes.INTEGER,
-    fk_permiso:DataTypes.STRING
+    fk_permiso: DataTypes.STRING 
 },{
     timestamps: false // Desactiva las columnas createdAt y updatedAt
   }

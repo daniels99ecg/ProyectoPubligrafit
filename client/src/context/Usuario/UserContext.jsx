@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import {getListarUsuarios, crearUsuario, getListarRoles, putActivarCliente, putDesactivarCliente, eliminar, cargaractualizarUsuario,actualizarUsuario} from '../../api/Usuario/rutas.api'
+import {getListarUsuarios, enviarUsuario, getListarRoles, putActivarCliente, putDesactivarCliente, eliminar, cargaractualizarUsuario,actualizarUsuario} from '../../api/Usuario/rutas.api'
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
 
@@ -37,82 +37,108 @@ async function cargarUsuario(){
       
         }
        
-    
-async function creacionValidacion(values){
-        
-        try{
+  
+async function creacionValidacion(values) {
+          try {
             // Perform your validation checks here
-            if( values.nombres=="" || values.apellidos==""||values.email==""||values.contrasena==""){
+            if (values.id_usuario===""||values.nombres === "" || values.apellidos === "" || values.email === "" || values.contrasena === "" ||values.fk_rol2==="") {
+        
+              Swal.fire({
+                icon: 'error',
+                title: 'Campos Vacios',
+                text: 'Por favor ingresar datos!',
+              });
+            } else if (!values.email.includes("@") || !values.email.includes(".com")) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Correo no valido',
+                text: 'Por favor ingresar un correo valido!',
+              });
+            } else {
+              const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                  confirmButton: 'btn btn-success',
+                  cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+              });
+        
+              swalWithBootstrapButtons.fire({
+                title: 'Confirmar el envio del formulario?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar!',
+                buttons: true
+              }).then(async (result) => {
+                if (result.isConfirmed) {
+                  try {
+                    const response = await enviarUsuario(values);
+                    console.log(response);
+              
+                    if (response.data && response.data.error) {
+                      // Verificar errores específicos
+                      if (response.data.error === 'el id de usuario ya existe') {
+                        console.log('Mostrar alerta de usuario existente');
+              
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'El ID de usuario ya existe. Por favor, elige otro ID.',
+                        });
+                      } else {
+                        console.log('Mostrar alerta de otro error');
+              
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: response.data.error,
+                        });
+                      }
+                    } else {
+                      // Verificar si se creó el usuario correctamente
+                      if (response.data && response.data.usuario) {
+                        // Si no hay errores, redirige a la página de usuario
+                        navigate("/usuario");
+              
+                        swalWithBootstrapButtons.fire(
+                          'Registro Enviado!',
+                          'Your file has been deleted.',
+                          'success'
+                        );
+                      } else {
+                        navigate("/usuario");
+              
+                        swalWithBootstrapButtons.fire(
+                          'Registro Enviado!',
+                          'Your file has been deleted.',
+                          'success'
+                        );
+                      }
+                    }
+                  } catch (error) {
+                    console.error(error);
+                    swalWithBootstrapButtons.fire(
+                      'Error',
+                      'Ocurrió un error al crear el usuario.',
+                      'error'
+                    );
+                  }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  swalWithBootstrapButtons.fire(
+                    'Se cancelo el envio',
+                    'Your imaginary file is safe :)',
+                    'error'
+                  );
+                }
+              });
+            }              
+          } catch (error) {
+            console.log(error);
+          }
+        }
            
-             Swal.fire({
-                 icon: 'error',
-                 title: 'Campos Vacios',
-                 text: 'Por favor ingresar datos!',
-                 
-               })
-             }else if(!values.email.includes("@") || !values.email.includes(".com")){
-               Swal.fire({
-                   icon: 'error',
-                   title: 'Correo no valido',
-                   text: 'Por favor ingresar un correo valido!',
-                   
-                 })
-               }else{
-           
-                 const swalWithBootstrapButtons = Swal.mixin({
-                   customClass: {
-                     confirmButton: 'btn btn-success',
-                     cancelButton: 'btn btn-danger'
-                   },
-                   buttonsStyling: false
-                 })
-                 
-                 swalWithBootstrapButtons.fire({
-                   title: 'Confirmar el envio del formulario?',
-                   text: "You won't be able to revert this!",
-                   icon: 'warning',
-                   showCancelButton: true,
-                   confirmButtonText: 'Aceptar!',
-                   cancelButtonText: 'Cancelar!',
-                   Buttons: true
-                 }).then(async(result) => {
-                   if (result.isConfirmed) {
-           
-                    const responde=await crearUsuario(values)
-                    console.log(responde)
-                    
-                     navigate("/usuario");
-
-                     swalWithBootstrapButtons.fire(
-                       'Registro Enviado!',
-                       'Your file has been deleted.',
-                       'success'
-                     )
-                   
-                   } else if (
-                     /* Read more about handling dismissals below */
-                     result.dismiss === Swal.DismissReason.cancel
-                   ) {
-                     swalWithBootstrapButtons.fire(
-                       'Se cancelo el envio',
-                       'Your imaginary file is safe :)',
-                       'error'
-                     )
-                   }
-                  
-
-                 })
-                
-                
-               }
-             
-                 
-                   // actions.resetForm()
-                   
-               }catch (error){
-                   console.log(error)
-               }
-      }    
 
 async function cargarRol(){
       const response =  await getListarRoles()

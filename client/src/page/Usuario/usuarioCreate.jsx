@@ -59,7 +59,7 @@ function UserCreate() {
         
           <div className="col-md-6">
       <label>Id usuario</label>
-      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control"/>
+      <input  type='text' name="id_usuario" onChange={handleChange} value={values.id_usuario} className="form-control"/>
       </div>
       <div className="col-md-6">
       <label>Nombre</label>

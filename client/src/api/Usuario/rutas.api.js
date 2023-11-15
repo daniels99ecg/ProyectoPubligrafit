@@ -5,9 +5,18 @@ import axios from 'axios'
   return await axios.get('http://localhost:3001/usuario')
 }
 
- export const crearUsuario= async (task)=>{
-   return await axios.post('http://localhost:3001/usuario/create', task)  
-}
+export const enviarUsuario = async (task) => {
+  try {
+    const response = await axios.post('http://localhost:3001/usuario/create', task);
+    return response.data; // Devuelve los datos exitosos
+  } catch (error) {
+    if (error.response) {
+      
+      return { error: 'Error del servidor', data: error.response.data };
+    }
+  }
+};
+
 
 export const cargaractualizarUsuario=async (id_usuario)=>{
   return await axios.get(`http://localhost:3001/usuario/${id_usuario}`)

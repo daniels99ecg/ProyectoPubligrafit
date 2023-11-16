@@ -30,11 +30,14 @@ async function createRol(req, res) {
           // Verifica si se proporciona un array de permisos en dataRol
           if (dataRol.permisos && Array.isArray(dataRol.permisos)) {
             for (const permiso of dataRol.permisos) {
+          
+
               await RolXPermiso.create({
                 fk_rol: rol.id_rol,
                 fk_permiso: permiso.id_permiso,
               }, { transaction: t });
-            }
+            
+          }
           }
     
           await t.commit();

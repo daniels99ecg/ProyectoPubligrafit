@@ -9,6 +9,11 @@ export const getListarRoles=async ()=>{
     return await axios.post(`http://localhost:3001/rol/create`, task)
   }
 
+export const listarPermiso=async ()=>{
+  return await axios.get(`http://localhost:3001/rol/permiso`)
+
+}
+
   export const putDesactivarCliente = async (id_rol) => {
     return await axios.put(`http://localhost:3001/rol/disable/${id_rol}`);
   }
@@ -16,4 +21,5 @@ export const getListarRoles=async ()=>{
   export const putActivarCliente = async (id_rol) => {
     return await axios.put(`http://localhost:3001/rol/activate/${id_rol}`);
   }
+  
   

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
-import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol } from "../../api/Rol/rutas.api"
+import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol, listarPermiso } from "../../api/Rol/rutas.api"
 
 export const RolContext = createContext()
 
@@ -31,6 +31,13 @@ async function cargarRol(){
       );
         setListar(filterList) //Se le pasa los datos al setListar 
  }
+
+async function cargarpermiso(){
+  const response =await listarPermiso()
+  setListar(response.data)
+}
+
+
 
 const crearRoles=async(values)=>{
 try {
@@ -80,7 +87,7 @@ const activarCliente = async (id_rol) => {
     }
   };
     return( 
-        <RolContext.Provider value={{listar, cargarRol, desactivarCliente, activarCliente, crearRoles,searchTerm,setSearchTerm}}>
+        <RolContext.Provider value={{listar, cargarRol, desactivarCliente, activarCliente, crearRoles,searchTerm,setSearchTerm, cargarpermiso}}>
             {children}
         </RolContext.Provider>
       )

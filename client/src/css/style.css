@@ -66,11 +66,7 @@ h1, .h1 {
   font-weight: normal;
 }
 
-<<<<<<< HEAD
-.card {
-=======
  .card {
->>>>>>> 162f22fbb74be2a7cb6962b68a58d33bb7eda270
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -81,22 +77,13 @@ h1, .h1 {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-<<<<<<< HEAD
-  min-width: 0;
-=======
   min-width: 0  ;
->>>>>>> 162f22fbb74be2a7cb6962b68a58d33bb7eda270
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
-<<<<<<< HEAD
-  border-radius: 0;
-}
-=======
   border-radius: 15;
 } 
->>>>>>> 162f22fbb74be2a7cb6962b68a58d33bb7eda270
 
 .card-body {
   -webkit-box-flex: 1;
@@ -449,17 +436,8 @@ h1, .h1 {
       left: 0;
   }
 }
-<<<<<<< HEAD
-.logonav{
-  width: 30%; 
-  background:white; 
-  border-radius:100px; 
-  margin-left:-5%;
-}
-=======
 
 
->>>>>>> 162f22fbb74be2a7cb6962b68a58d33bb7eda270
 
 /* Boton para cambiar el estado */
 
@@ -496,25 +474,28 @@ h1, .h1 {
   border-radius: 50%;
   box-shadow: inset 0px 0px 0px 1px var(--color-black);
 }
-<<<<<<< HEAD
-.switch-button .switch-button_checkbox:checked + .switch-button_label {
-  background-color: var(--color-green);
-}
-.switch-button .switch-button_checkbox:checked + .switch-button_label:before {
-=======
 .switch-button .switch-button__checkbox:checked + .switch-button__label {
   background-color: var(--color-green);
 }
 .switch-button .switch-button__checkbox:checked + .switch-button__label:before {
->>>>>>> 162f22fbb74be2a7cb6962b68a58d33bb7eda270
   transform: translateX(2rem);
 }
 
 .cliente-desactivado {
   background-color: #fffefe; 
   color: #636262; 
-<<<<<<< HEAD
 }
-=======
+
+.detalleC{
+  width: 190px;
 }
->>>>>>> 162f22fbb74be2a7cb6962b68a58d33bb7eda270
+
+.plus{
+  text-align: end;
+  box-shadow: none;
+}
+.boton-plus{
+  text-decoration: none;
+  border: 0;
+  background-color: transparent;
+}

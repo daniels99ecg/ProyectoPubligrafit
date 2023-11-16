@@ -67,6 +67,7 @@ function RolCreate(){
                                     placeholder='Permiso'
                                     onChange={handleChange}
                                   />
+                                  
                                   <br />
                                   <button className='btn btn-danger'
                                     type='button'

@@ -57,33 +57,7 @@ useEffect(()=>{
           {field:'cantidad',headerName:'Cantidad',flex:1},
           {field:'fecha',headerName:'Fecha',flex:1},
           {field:'total',headerName:'Total',flex:1},
-          {
-            field: 'estado',
-            headerName: 'Estado',
-            flex: 1,
-            renderCell: (params) => (
-              <div className="switch-button">
-                 <input
-                   type="checkbox"
-                    id={`switch-label-${params.row.id_usuario}`}
-                    checked={params.row.estado}
-                    onChange={(e) => {
-                    e.preventDefault(); // Evitar la navegación por defecto
-                if (params.row.estado) {
-                  //desactivarCliente(params.row.id_usuario);
-              } else {
-                  //activarCliente(params.row.id_usuario);
-            }
-      }}
-    className="switch-button__checkbox"
-  />
-  <label
-    htmlFor={`switch-label-${params.row.id_usuario}`}
-    className="switch-button__label"
-  ></label>
-              </div>
-            ),
-          },
+            
         ]}
         />
 </div>

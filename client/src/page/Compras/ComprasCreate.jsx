@@ -34,15 +34,15 @@ function UserCreate(){
 initialValues={
     {
 
-    proveedor:'',
-    cantidad:'',
-    fecha:'',
-    total:'',
-    insumo:{fk_insumo:''},
-    cantidad:'',
-    precio:'',
-    iva:'',
-    subtotal:'',
+    proveedor:"",
+    cantidad:"",
+    fecha:"",
+    total:"",
+    insumo:{fk_insumo:""},
+    cantidad:"",
+    precio:"",
+    iva:"",
+    subtotal:"",
 
     }
 }
@@ -62,40 +62,48 @@ validacionCreacionCompras(values)
 <label htmlFor="">Fecha</label>
 <input type="date" name='fecha' className='form-control' onChange={handleChange} value={values.fecha}/>
 </div>
-<div className="col-md-6">
+{/* <div className="col-md-6">
 <label htmlFor="">Cantidad</label>
 <input type="text" name='cantidad' className='form-control' onChange={handleChange} value={values.cantidad}/>
-</div>
+</div> */}
 
-<div className="col-md-6">
+<div className="col">
 <label htmlFor="">Total</label>
-<input type="text" name='total' className='form-control'onChange={handleChange} value={values.total}/>
+<input type="text" name='total'  className='form-control'onChange={handleChange} value={values.total}/>
 </div>
 
+<p></p>
+<hr />
 
-<div className="col-md-6">
-<label htmlFor="">fk_insumo</label>
-<input type="text" name='insumo.fk_insumo' className='form-control'onChange={handleChange} value={values.insumo.fk_insumo}/>
+<div className="detalleC">
+<label htmlFor="">Insumo</label>
+<input type="text" name='insumo.fk_insumo' className='form-control'onChange={handleChange} />
 </div>
 
-<div className="col-md-6">
+<div className="detalleC">
 <label htmlFor="">Cantidad</label>
 <input type="text" name='cantidad' className='form-control'onChange={handleChange} value={values.cantidad}/>
 </div>
 
-<div className="col-md-6">
+<div className="detalleC">
 <label htmlFor="">Precio</label>
 <input type="text" name='precio' className='form-control'onChange={handleChange} value={values.precio}/>
 </div>
 
-<div className="col-md-6">
+<div className="detalleC">
 <label htmlFor="">Iva</label>
 <input type="text" name='iva' className='form-control'onChange={handleChange} value={values.iva}/>
 </div>
 
-<div className="col-md-6">
+<div className="detalleC">
 <label htmlFor="">Subtotal</label>
 <input type="text" name='subtotal' className='form-control'onChange={handleChange} value={values.subtotal}/>
+</div>
+
+<div className="plus">
+<button className='boton-plus'><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 48 48">
+<path fill="#4caf50" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#fff" d="M21,14h6v20h-6V14z"></path><path fill="#fff" d="M14,21h20v6H14V21z"></path>
+</svg></button>
 </div>
 
 

@@ -41,12 +41,73 @@ async function cargarpermiso(){
 
 const crearRoles=async(values)=>{
 try {
-  await crearRol(values)
-  navigate("/rol")
+  if( values.nombre_rol=="" || values.fecha==""||values.permisos==""){
+           
+    Swal.fire({
+        icon: 'error',
+        title: 'Campos Vacios',
+        text: 'Por favor ingresar datos!',
+        
+      })
+    }else{
+           
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Confirmar el envio del formulario?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar!',
+        cancelButtonText: 'Cancelar!',
+        Buttons: true
+      }).then(async(result) => {
+        if (result.isConfirmed) {
+
+      
+          await crearRol(values)
+          navigate("/rol")
+
+          swalWithBootstrapButtons.fire(
+            'Registro Enviado!',
+            'Your file has been deleted.',
+            'success'
+          )
+        
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Se cancelo el envio',
+            'Your imaginary file is safe :)',
+            'error'
+          )
+        }
+       
+
+      })
+     
+     
+    }
+
 } catch (error) {
   console.log(error)
 }
 }
+
+const filtrarDesactivados = listar.sort((a, b) => {
+  if (a.estado === b.estado) {
+    return 0;
+  }
+  return a.estado ? -1 : 1;
+});
 
 const desactivarCliente = async (id_rol) => {
     try {
@@ -87,7 +148,7 @@ const activarCliente = async (id_rol) => {
     }
   };
     return( 
-        <RolContext.Provider value={{listar, cargarRol, desactivarCliente, activarCliente, crearRoles,searchTerm,setSearchTerm, cargarpermiso}}>
+        <RolContext.Provider value={{listar, cargarRol, desactivarCliente, activarCliente, crearRoles,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados}}>
             {children}
         </RolContext.Provider>
       )

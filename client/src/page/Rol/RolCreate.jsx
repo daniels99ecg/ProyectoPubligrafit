@@ -62,6 +62,7 @@ function RolCreate() {
                           <Autocomplete
                             multiple
                             id='permisos'
+                            name="permisos"
                             options={listar || []}
                             getOptionLabel={(option) => option.nombre_permiso}
                             getOptionSelected={(option, value) =>

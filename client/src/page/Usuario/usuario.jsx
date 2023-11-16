@@ -97,7 +97,9 @@ function User() {
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() => navigate(`/editu/${params.row.id_usuario}`)}
+                      onClick={() =>{ navigate(`/editu/${params.row.id_usuario}`) 
+                       window.location.reload();
+                    }}
                       disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',

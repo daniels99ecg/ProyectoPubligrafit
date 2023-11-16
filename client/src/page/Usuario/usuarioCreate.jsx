@@ -43,6 +43,23 @@ function UserCreate() {
     contrasena:""
     }
    }
+   validate={(values)=>{
+    const errors={}
+
+    if (!values.nombres || !values.apellidos) {
+      errors.nombres = 'Este campo es requerido';
+      errors.apellidos = 'Este campo es requerido';
+
+    }else if (!/^[a-zA-Z]+$/.test(values.nombres)) {
+      errors.nombres = 'Este campo solo debe contener letras';
+
+    }else if(!/^[a-zA-Z]+$/.test(values.apellidos)){
+      errors.apellidos = 'Este campo solo debe contener letras';
+
+    }
+    return errors;
+
+   }}
    enableReinitialize={true}
    onSubmit={async (values)=>{
     console.log(values)
@@ -53,7 +70,7 @@ function UserCreate() {
    }}
    
    >
-  {({handleChange, handleSubmit, values})=>(
+  {({handleChange, handleSubmit, values, errors})=>(
     
       <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
         
@@ -63,11 +80,19 @@ function UserCreate() {
       </div>
       <div className="col-md-6">
       <label>Nombre</label>
-      <input  type='text' name='nombres' onChange={handleChange} value={values.nombres} className="form-control"/>
+      <input  type='text' name='nombres' onChange={handleChange} value={values.nombres} className={`form-control ${errors.nombres ? 'is-invalid' : ''}`}
+                          />
+                          {errors.nombres && (
+                            <div className='invalid-feedback'>{errors.nombres}</div>
+                          )}
       </div>
       <div className="col-md-6">
       <label>Apellido</label>
-      <input  type='text' name='apellidos' onChange={handleChange} value={values.apellidos} className="form-control"/>
+      <input  type='text' name='apellidos' onChange={handleChange} value={values.apellidos} className={`form-control ${errors.apellidos ? 'is-invalid' : ''}`}
+                          />
+                          {errors.apellidos && (
+                            <div className='invalid-feedback'>{errors.apellidos}</div>
+                          )}
 </div>
 <div className="col-md-6">
       <label>Correo</label>
@@ -75,7 +100,7 @@ function UserCreate() {
 </div>
 <div className="col-md-6">
       <label>Contraseña</label>
-      <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" />
+      <input  type='password' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" />
 </div>
 
 <div className="col-md-6">

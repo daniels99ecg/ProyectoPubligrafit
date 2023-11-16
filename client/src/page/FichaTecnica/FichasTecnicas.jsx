@@ -46,7 +46,7 @@ function ListarFichasTecnicas() {
           </div>
         </div>
         <br />
-        <div style={{ height: 500, width: '100%' }}>
+        <div style={{ height: 400, width: '100%' }}>
           <DataGrid
             rows={filtrarDesactivados.map((item) => ({
               ...item,
@@ -62,33 +62,7 @@ function ListarFichasTecnicas() {
               { field: 'costo_final_producto', headerName: 'Costo Final', flex: 1 },
               { field: 'detalle', headerName: 'Detalles', flex: 1 },
              
-              {
-                field: 'estado',
-                headerName: 'Estado',
-                flex: 1,
-                renderCell: (params) => (
-                  <div className="switch-button">
-                     <input
-                       type="checkbox"
-                        id={`switch-label-${params.row.id_ft}`}
-                        checked={params.row.estado}
-                        onChange={(e) => {
-                        e.preventDefault(); // Evitar la navegación por defecto
-                    if (params.row.estado) {
-                      desactivarFichaTecnica(params.row.id_ft);
-                  } else {
-                      activarFichaTecnica(params.row.id_ft);
-                }
-          }}
-        className="switch-button__checkbox"
-      />
-      <label
-        htmlFor={`switch-label-${params.row.id_ft}`}
-        className="switch-button__label"
-      ></label>
-                  </div>
-                ),
-              },
+              
               {
                 field: 'acciones',
                 headerName: 'Acciones',
@@ -98,7 +72,6 @@ function ListarFichasTecnicas() {
                     <button
                       className="btn btn-outline-secondary me-1"
                       onClick={() => navigate(`/editF/${params.row.id_ft}`)}
-                      disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',
                         borderColor: '#0d6efd',
@@ -127,8 +100,7 @@ function ListarFichasTecnicas() {
                     <button
                       className="btn btn-danger"
                       onClick={() => eliminarFichasTecnicas(params.row.id_ft)}
-                      disabled={!params.row.estado}
-                    >
+                      >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -157,12 +129,7 @@ function ListarFichasTecnicas() {
                 },
               },
             }}
-            getRowClassName={(params) => {
-              if (!params.row.estado) {
-                return 'cliente-desactivado';
-              }
-              return
-            }}
+          
           />
         </div>
         </div>

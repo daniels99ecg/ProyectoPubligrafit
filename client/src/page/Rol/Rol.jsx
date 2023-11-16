@@ -5,7 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useRol } from "../../context/Rol/RolContext";
 
 function Rol(){
-const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchTerm}=useRol()
+const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchTerm,filtrarDesactivados}=useRol()
 
 //Para hacer la busqueda por filtro 
 
@@ -45,7 +45,7 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
 
 
         <DataGrid
-            rows={listar.map((item) => ({
+            rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.id_rol,
              
@@ -84,7 +84,12 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
               }
             ]}
             autoHeight
-            
+            getRowClassName={(params) => {
+              if (!params.row.estado) {
+                return 'cliente-desactivado';
+              }
+              return
+            }}
             initialState={{
               pagination: {
                 paginationModel: {

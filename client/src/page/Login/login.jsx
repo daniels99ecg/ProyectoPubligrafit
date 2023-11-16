@@ -16,7 +16,7 @@ function Login(){
   
       if (response.token) {
         localStorage.setItem('token', response.token);
-        navigate('/usuario');
+        navigate('/dashboard');
       } else {
         setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
       }

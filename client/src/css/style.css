@@ -485,3 +485,17 @@ h1, .h1 {
   background-color: #fffefe; 
   color: #636262; 
 }
+
+.detalleC{
+  width: 190px;
+}
+
+.plus{
+  text-align: end;
+  box-shadow: none;
+}
+.boton-plus{
+  text-decoration: none;
+  border: 0;
+  background-color: transparent;
+}

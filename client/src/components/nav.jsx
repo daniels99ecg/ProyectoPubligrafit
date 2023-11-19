@@ -2,6 +2,7 @@ import '../css/style.css'
 
 import '../js/pruebas'
 function Nav() {
+  
   return (
     <>
     <div className='dashboard' >

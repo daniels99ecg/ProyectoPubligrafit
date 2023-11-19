@@ -23,14 +23,14 @@ export const UserContextProvider = ({ children }) => {
 
 async function cargarUsuario(){
         const response =  await getListarUsuarios()
-
         
         const filterList = response.data.filter((item) => 
           item.id_usuario.toString().includes(searchTerm) ||
           item.nombres.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.email.toString().includes(searchTerm)
-         
+          item.email.toString().includes(searchTerm)||
+          item.rol.nombre_rol.toLowerCase().includes(searchTerm)
+
         );
     
         setListar(filterList);
@@ -40,15 +40,7 @@ async function cargarUsuario(){
   
 async function creacionValidacion(values) {
           try {
-            // Perform your validation checks here
-            if (values.id_usuario===""||values.nombres === "" || values.apellidos === "" || values.email === "" || values.contrasena === "" ||values.fk_rol2==="") {
-        
-              Swal.fire({
-                icon: 'error',
-                title: 'Campos Vacios',
-                text: 'Por favor ingresar datos!',
-              });
-            } else if (!values.email.includes("@") || !values.email.includes(".com")) {
+           if (!values.email.includes("@") || !values.email.includes(".com")) {
               Swal.fire({
                 icon: 'error',
                 title: 'Correo no valido',
@@ -87,6 +79,15 @@ async function creacionValidacion(values) {
                           title: 'Error',
                           text: 'El ID de usuario ya existe. Por favor, elige otro ID.',
                         });
+                      } else if (response.data.error === 'El correo electrónico ya está registrado') {
+                        // Mostrar alerta específica para correo existente
+                        swalWithBootstrapButtons.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'El correo electrónico ya está registrado. Por favor, elige otro correo electrónico.',
+                        });
+
+
                       } else {
                         console.log('Mostrar alerta de otro error');
               

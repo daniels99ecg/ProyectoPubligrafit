@@ -51,6 +51,7 @@ function App() {
      <RolContextProvider>
      <Routes>
      <Route path='/' element={<Login/>}/>
+
       <Route path='/dashboard' element={<Dashboard/>}/>
       {/* Usuarios */}
       
@@ -82,7 +83,7 @@ function App() {
 
       <Route path='/compras' element={<Compras/>}/>
       <Route path='/compras/create' element={<ComprasCreate/>}/>
-      
+    
      </Routes>
      </RolContextProvider> 
      </UserContextProvider>

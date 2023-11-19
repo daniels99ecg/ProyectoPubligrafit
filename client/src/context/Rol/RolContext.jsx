@@ -18,7 +18,6 @@ export const useRol=()=>{
     const navigate=useNavigate()
     const [listar, setListar]=useState([])//Lista todos los roles
     const [searchTerm, setSearchTerm] = useState("");
-
 async function cargarRol(){
        
         const response= await getListarRoles()//LLamar la ruta del server
@@ -73,6 +72,7 @@ try {
       
           await crearRol(values)
           navigate("/rol")
+          window.location.reload()
 
           swalWithBootstrapButtons.fire(
             'Registro Enviado!',

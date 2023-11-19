@@ -11,7 +11,18 @@ function RolCreate() {
   useEffect(() => {
     cargarpermiso();
   }, []);
+  const obtenerFechaActual = () => {
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    let mes = hoy.getMonth() + 1;
+    let dia = hoy.getDate();
 
+    // Agrega un cero inicial para meses y días de un solo dígito
+    mes = mes < 10 ? `0${mes}` : mes;
+    dia = dia < 10 ? `0${dia}` : dia;
+
+    return `${anio}-${mes}-${dia}`;
+  };
   return (
     <>
       <Nav />
@@ -27,7 +38,7 @@ function RolCreate() {
                   <Formik
                     initialValues={{
                       nombre_rol: '',
-                      fecha: '',
+                      fecha: obtenerFechaActual(), 
                       permisos: [],
                     }}
                     enableReinitialize={true}
@@ -55,6 +66,10 @@ function RolCreate() {
                             className='form-control'
                             placeholder='Fecha'
                             onChange={handleChange}
+                            value={values.fecha}
+                            variant='outlined'
+                            disabled  
+                            fullWidth
                           />
                         </div>
 

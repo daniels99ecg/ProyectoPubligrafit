@@ -27,10 +27,10 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
                           <br />
    
     <div className='row'>
-    <div className="col-md-2">  
+    <div className="col-md-2 col-12 mb-2">  
     <a className="btn btn-primary " href="/rol/create" role="button">Nuevo Registro</a>
     </div>
-    <div className="col-md-3" style={{ marginLeft: 'auto' }}>
+    <div className="col-md-3 col-12" style={{ marginLeft: 'auto' }}>
     <input
                   type="text"
                   placeholder="Buscar..."

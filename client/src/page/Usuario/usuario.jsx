@@ -32,11 +32,11 @@ function User() {
                       </div>
                     <br />
 <div className='row'>
-<div className="col-md-2">  
+<div className="col-md-2 col-12 mb-2">  
 <a className="btn btn-primary" href="/usuario/create" role="button">Nuevo Registro</a>
 
 </div>
-<div className="col-md-3" style={{ marginLeft: 'auto' }}>
+<div className="col-md-3 col-12" style={{ marginLeft: 'auto' }}>
 <input
               type="text"
               placeholder="Buscar..."
@@ -47,7 +47,7 @@ function User() {
             </div>
 <br />
 
-<div style={{ height: 360, width: '100%' }}>
+<div style={{ height: 360 }}>
 <DataGrid 
             rows={filtrarDesactivados.map((item) => ({
               ...item,
@@ -59,7 +59,7 @@ function User() {
               { field: 'nombres', headerName: 'Nombre', flex: 1 },
               { field: 'apellidos', headerName: 'Apellido', flex: 1 },
               { field: 'email', headerName: 'Email', flex: 1 },
-              { field: 'contrasena', headerName: 'Contraseña', flex: 1 },
+              // { field: 'contrasena', headerName: 'Contraseña', flex: 1 },
               { field: 'nombreRol', headerName: 'Rol', flex: 1 },
           
               {
@@ -94,7 +94,7 @@ function User() {
                 headerName: 'Acciones',
                 flex: 1,
                 renderCell: (params) => (
-                  <div>
+                  <div className="d-flex">
                     <button
                       className="btn btn-outline-secondary me-1"
                       onClick={() =>{ navigate(`/editu/${params.row.id_usuario}`) 
@@ -159,7 +159,7 @@ function User() {
                 },
               },
             }} 
-            pageSizeOptions={[5]}
+            pageSizeOptions={[5]} 
             getRowClassName={(params) => {
               if (!params.row.estado) {
                 return 'cliente-desactivado';

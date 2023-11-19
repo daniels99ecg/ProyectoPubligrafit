@@ -43,7 +43,7 @@ function UserCreate() {
     contrasena:""
     }
    }
-   validate={(values)=>{
+   validate={async(values)=>{
     const errors={}
 
     if (!values.nombres || !values.apellidos) {
@@ -55,8 +55,23 @@ function UserCreate() {
 
     }else if(!/^[a-zA-Z]+$/.test(values.apellidos)){
       errors.apellidos = 'Este campo solo debe contener letras';
-
     }
+    if (!values.id_usuario) {
+        errors.id_usuario = 'Este campo es requerido';
+      } else if (!/^[0-9]+$/.test(values.id_usuario)) {
+        errors.id_usuario = 'Este campo solo debe contener números';
+      }
+    if (!values.email) {
+      errors.email = 'Este campo es requerido';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      errors.email = 'Correo electrónico no válido';
+    }
+    if (!values.contrasena) {
+      errors.contrasena = 'Este campo es requerido';
+    } else if (values.contrasena.length < 8) {
+      errors.contrasena = 'La contraseña debe tener al menos 8 caracteres';
+    }
+     
     return errors;
 
    }}
@@ -70,38 +85,75 @@ function UserCreate() {
    }}
    
    >
-  {({handleChange, handleSubmit, values, errors})=>(
+  {({handleChange, handleSubmit, values, errors, isValid})=>(
     
       <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
         
           <div className="col-md-6">
-      <label>Id usuario</label>
-      <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control"/>
-      </div>
+      <label>Documento</label>
+      <input  
+      type='text'
+       name='id_usuario' 
+       onChange={handleChange}
+        value={values.id_usuario} 
+        className={`form-control ${values.id_usuario && /^[0-9]+$/.test(values.id_usuario) ? 'is-valid' : 'is-invalid'}`}
+                          />
+                          {errors.id_usuario && (
+                            <div className='invalid-feedback'>{errors.id_usuario}</div>
+                          )}
+                        </div>
       <div className="col-md-6">
-      <label>Nombre</label>
-      <input  type='text' name='nombres' onChange={handleChange} value={values.nombres} className={`form-control ${errors.nombres ? 'is-invalid' : ''}`}
+                          <label>Nombre</label>
+                          <input
+                            type='text'
+                            name='nombres'
+                            onChange={handleChange}
+                            value={values.nombres}
+                            className={`form-control ${values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? 'is-valid' : 'is-invalid'}`}
                           />
                           {errors.nombres && (
                             <div className='invalid-feedback'>{errors.nombres}</div>
                           )}
-      </div>
+                        </div>
       <div className="col-md-6">
       <label>Apellido</label>
-      <input  type='text' name='apellidos' onChange={handleChange} value={values.apellidos} className={`form-control ${errors.apellidos ? 'is-invalid' : ''}`}
-                          />
+      <input
+        type='text'
+         name='apellidos'
+          onChange={handleChange} 
+          value={values.apellidos}
+          className={`form-control ${values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? 'is-valid' : 'is-invalid'}`}
+          />
                           {errors.apellidos && (
                             <div className='invalid-feedback'>{errors.apellidos}</div>
                           )}
 </div>
 <div className="col-md-6">
       <label>Correo</label>
-      <input  type='text' name='email' onChange={handleChange} value={values.email} className="form-control"/>
-</div>
+      <input 
+       type='text'
+        name='email'
+        onChange={handleChange} 
+        value={values.email} 
+        className={`form-control ${values.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) ? 'is-valid' : 'is-invalid'}`}
+        />
+        {errors.email && (
+          <div className='invalid-feedback'>{errors.email}</div>
+        )}
+      </div>
 <div className="col-md-6">
       <label>Contraseña</label>
-      <input  type='password' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" />
-</div>
+      <input  
+      type='password' 
+      name='contrasena' 
+      onChange={handleChange} 
+      value={values.contrasena} 
+      className={`form-control ${errors.contrasena ? 'is-invalid' : 'is-valid'}`}
+       />
+      {errors.contrasena && (
+          <div className='invalid-feedback'>{errors.contrasena}</div>
+        )}    
+        </div>
 
 <div className="col-md-6">
 <Autocomplete 
@@ -124,7 +176,7 @@ function UserCreate() {
 <br />
 
 <div className="col-auto">
-      <button className="btn btn-primary" type='submit'>
+      <button className="btn btn-primary" type='submit' disabled={!isValid}>
         Registrar
       </button>
 </div>

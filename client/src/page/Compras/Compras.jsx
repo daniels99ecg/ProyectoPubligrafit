@@ -4,12 +4,12 @@ import Nav from '../../components/nav'
 import {DataGrid} from '@mui/x-data-grid'
 import { useCompra } from "../../context/Compras/ComprasContext";
 function Compras (){ //Inicializar
-const {cargarCompras,setSearchTerm,filtrarDesactivados} = useCompra()
+const {cargarCompras,setSearchTerm,searchTerm,filtrarDesactivados} = useCompra()
 useEffect(()=>{
     
     cargarCompras()
 
-},[])
+},[searchTerm])
 
 
     return (

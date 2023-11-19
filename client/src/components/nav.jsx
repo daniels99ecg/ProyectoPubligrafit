@@ -1,8 +1,12 @@
 import '../css/style.css'
 
 import '../js/pruebas'
+
+import Cookies from 'js-cookie';
 function Nav() {
-  
+  const handleLogout = () => {
+    Cookies.remove('token');
+  };
   return (
     <>
     <div className='dashboard' >
@@ -83,11 +87,9 @@ function Nav() {
             </div>
             <a href="#" className="dashboard-nav-item"><i className="fa fa-user"></i> Perfil </a>
             <div className="nav-item-divider"></div>
-          <a
-                    href="/" className="dashboard-nav-item">
-                      <i className="fa fa-sign-out"></i>
-                       Logout
-                       </a>
+            <a href="/" className="dashboard-nav-item" onClick={handleLogout}>
+  <i className="fa fa-sign-out"></i> Logout
+</a>
           </nav>
         </div>
         <header className='dashboard-toolbar'>

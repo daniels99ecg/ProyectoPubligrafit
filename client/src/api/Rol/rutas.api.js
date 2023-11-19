@@ -14,8 +14,6 @@ export const listarPermiso=async ()=>{
 
 }
 
-
-
   export const putDesactivarCliente = async (id_rol) => {
     return await axios.put(`http://localhost:3001/rol/disable/${id_rol}`);
   }

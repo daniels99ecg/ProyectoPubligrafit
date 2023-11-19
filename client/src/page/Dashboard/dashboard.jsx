@@ -2,7 +2,12 @@
 import Nav from '../../components/nav'
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { useEffect } from 'react';
+
 function dashboard(){
+
+
+
     return(
         <>
         <Nav/>

@@ -71,6 +71,14 @@ async function crearUsuario(req, res){
         return res.status(400).json({ error: 'el id de usuario ya existe' });
       }
 
+      // Verificar si el correo electrónico ya existe
+    const existingUsuarioEmail = await Usuario.findOne({
+      where: { email: dataUsuario.email }
+    });
+
+    if (existingUsuarioEmail) {
+      return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
+    }
       const hashedPassword = await bcrypt.hash(dataUsuario.contrasena, 10);
 
       const usuario = await Usuario.create({
@@ -143,8 +151,13 @@ async function actualizarUsuario(req, res){
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Authentication failed' });
     }
+    if (!usuario.estado) {
+      return res.status(401).json({ error: 'User is not authorized to login' });
+    }
 
     const token = jwt.sign({ userId: usuario.id_usuario }, secretKey, { expiresIn: '1h' });
+    res.cookie('token', token, { httpOnly: true });
+
     res.status(200).json({ token });
   }
 

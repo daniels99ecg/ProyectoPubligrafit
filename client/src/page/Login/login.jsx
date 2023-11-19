@@ -2,6 +2,7 @@ import { loginIngreso } from "../../api/Usuario/rutas.api";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import  { useState } from 'react';
+import Cookies from 'js-cookie';
 
 function Login(){
 
@@ -13,10 +14,12 @@ function Login(){
     try {
       const response = await loginIngreso(email, contrasena);
       console.log('Valores enviados:', response);
-  
+
       if (response.token) {
-        localStorage.setItem('token', response.token);
-        navigate('/usuario');
+        Cookies.set('token', response.token);
+
+        navigate('/dashboard');
+        window.location.reload();
       } else {
         setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
       }

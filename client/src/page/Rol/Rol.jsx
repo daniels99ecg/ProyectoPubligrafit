@@ -5,7 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useRol } from "../../context/Rol/RolContext";
 
 function Rol(){
-const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchTerm}=useRol()
+const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchTerm,filtrarDesactivados}=useRol()
 
 //Para hacer la busqueda por filtro 
 
@@ -27,10 +27,10 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
                           <br />
    
     <div className='row'>
-    <div className="col-md-2">  
+    <div className="col-md-2 col-12 mb-2">  
     <a className="btn btn-primary " href="/rol/create" role="button">Nuevo Registro</a>
     </div>
-    <div className="col-md-3" style={{ marginLeft: 'auto' }}>
+    <div className="col-md-3 col-12" style={{ marginLeft: 'auto' }}>
     <input
                   type="text"
                   placeholder="Buscar..."
@@ -45,7 +45,7 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
 
 
         <DataGrid
-            rows={listar.map((item) => ({
+            rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.id_rol,
              
@@ -84,7 +84,12 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
               }
             ]}
             autoHeight
-            
+            getRowClassName={(params) => {
+              if (!params.row.estado) {
+                return 'cliente-desactivado';
+              }
+              return
+            }}
             initialState={{
               pagination: {
                 paginationModel: {

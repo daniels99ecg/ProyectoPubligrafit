@@ -8,7 +8,7 @@ function Login(){
 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  const [user, setUser] = useState(null);
   const handleSubmit = async (values, { setSubmitting }) => {
     const { email, contrasena } = values;
     try {
@@ -18,13 +18,17 @@ function Login(){
       if (response.token) {
         Cookies.set('token', response.token);
 
-        navigate('/dashboard');
+        setUser(response.user);
+        
+        localStorage.setItem('user', JSON.stringify(response.user));
+
+        navigate('/dashboard',{ state: { user: response.user } });
         window.location.reload();
       } else {
         setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
       }
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+      // console.error('Error al iniciar sesión:', error);
       setError('Error al iniciar sesión, inténtalo de nuevo.');
     }
     setSubmitting(false);
@@ -71,7 +75,9 @@ return(
       </Formik>
     </div>
    </div> 
+
     </>
+    
 
 )
 

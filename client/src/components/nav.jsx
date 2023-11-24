@@ -85,7 +85,7 @@ function Nav() {
 </svg>
                     Clientes</a></div>
             </div>
-            <a href="#" className="dashboard-nav-item"><i className="fa fa-user"></i> Perfil </a>
+            <a href="/profile" className="dashboard-nav-item"><i className="fa fa-user"></i> Perfil </a>
             <div className="nav-item-divider"></div>
             <a href="/" className="dashboard-nav-item" onClick={handleLogout}>
   <i className="fa fa-sign-out"></i> Logout

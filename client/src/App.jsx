@@ -11,6 +11,7 @@ import RolCreate from './page/Rol/RolCreate';
 import Login from './page/Login/login';
 import Dashboard from './page/Dashboard/dashboard';
 
+import Profile from './page/Perfil/perfil';
 function App() {
 
   return (
@@ -33,6 +34,9 @@ function App() {
       {/* Rol */}
       <Route path='/rol' element={<ProtectedRoute element={<Rol/>}/> } />
       <Route path='/rol/create' element={<ProtectedRoute element={<RolCreate/>}/> } />
+
+      {/*Perfil*/}
+      <Route path='profile' element={<ProtectedRoute element={<Profile />}/>}/>
 
      </Routes>
      </RolContextProvider> 

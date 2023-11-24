@@ -1,9 +1,12 @@
-import { Form ,Formik} from 'formik'
+import { Form ,Formik, Field} from 'formik'
 import Nav from '../../components/nav'
 import {  useEffect } from 'react'
 import { useUser } from "../../context/Usuario/UserContext";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
+import React from 'react';
 
 function UserCreate() {
 
@@ -15,6 +18,9 @@ function UserCreate() {
     
    },[])
 
+
+
+   
     return (
       <>
 
@@ -79,6 +85,7 @@ function UserCreate() {
    onSubmit={async (values)=>{
     console.log(values)
     
+ 
 
    creacionValidacion(values)
 
@@ -89,67 +96,132 @@ function UserCreate() {
     
       <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
         
-          <div className="col-md-6">
-      <label>Documento</label>
-      <input  
-      type='text'
-       name='id_usuario' 
-       onChange={handleChange}
-        value={values.id_usuario} 
-        className={`form-control ${values.id_usuario && /^[0-9]+$/.test(values.id_usuario) ? 'is-valid' : 'is-invalid'}`}
-                          />
-                          {errors.id_usuario && (
-                            <div className='invalid-feedback'>{errors.id_usuario}</div>
-                          )}
-                        </div>
+        <div className='col-md-6'>
+        <Field
+          type='text'
+          name='id_usuario'
+          onChange={handleChange}
+          label='Documento'
+          as={TextField}
+          value={values.id_usuario}
+          className={` ${
+            values.id_usuario && /^[0-9]+$/.test(values.id_usuario) ? 'is-valid' : 'is-invalid'
+          }`}
+          InputProps={{
+            endAdornment: (
+              <React.Fragment>
+                {values.id_usuario && /^[0-9]+$/.test(values.id_usuario) ? (
+                  <CheckIcon style={{ color: 'green' }} />
+                ) : (
+                  <ErrorIcon style={{ color: 'red' }} />
+                )}
+              </React.Fragment>
+            ),
+          }}
+          sx={{ width: '100%' }}
+        />
+        {errors.id_usuario && <div className='invalid-feedback'>{errors.id_usuario}</div>}
+      </div>
       <div className="col-md-6">
-                          <label>Nombre</label>
-                          <input
+                          <Field
                             type='text'
                             name='nombres'
                             onChange={handleChange}
                             value={values.nombres}
-                            className={`form-control ${values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? 'is-valid' : 'is-invalid'}`}
+                            label='Nombre'
+                            as={TextField}
+                            className={`${values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? 'is-valid' : 'is-invalid'}`}
+                            InputProps={{
+                              endAdornment: (
+                                <React.Fragment>
+                                  {values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? (
+                                    <CheckIcon style={{ color: 'green' }} />
+                                  ) : (
+                                    <ErrorIcon style={{ color: 'red' }} />
+                                  )}
+                                </React.Fragment>
+                              ),
+                            }}
+                            sx={{ width: '100%' }}
                           />
                           {errors.nombres && (
                             <div className='invalid-feedback'>{errors.nombres}</div>
                           )}
                         </div>
       <div className="col-md-6">
-      <label>Apellido</label>
-      <input
+      <Field
         type='text'
          name='apellidos'
           onChange={handleChange} 
           value={values.apellidos}
-          className={`form-control ${values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? 'is-valid' : 'is-invalid'}`}
+          label='Apellido'
+          as={TextField}
+          className={` ${values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? 'is-valid' : 'is-invalid'}`}
+          InputProps={{
+            endAdornment: (
+              <React.Fragment>
+                {values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? (
+                  <CheckIcon style={{ color: 'green' }} />
+                ) : (
+                  <ErrorIcon style={{ color: 'red' }} />
+                )}
+              </React.Fragment>
+            ),
+          }}
+          sx={{ width: '100%' }}
           />
                           {errors.apellidos && (
                             <div className='invalid-feedback'>{errors.apellidos}</div>
                           )}
 </div>
 <div className="col-md-6">
-      <label>Correo</label>
-      <input 
+      <Field 
        type='text'
         name='email'
         onChange={handleChange} 
         value={values.email} 
-        className={`form-control ${values.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) ? 'is-valid' : 'is-invalid'}`}
-        />
+        label='Correo'
+        as={TextField}
+        className={` ${values.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) ? 'is-valid' : 'is-invalid'}`}
+        
+        InputProps={{
+          endAdornment: (
+            <React.Fragment>
+              {values.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) ? (
+                <CheckIcon style={{ color: 'green' }} />
+              ) : (
+                <ErrorIcon style={{ color: 'red' }} />
+              )}
+            </React.Fragment>
+          ),
+        }}
+        sx={{ width: '100%' }}/>
         {errors.email && (
           <div className='invalid-feedback'>{errors.email}</div>
         )}
       </div>
 <div className="col-md-6">
-      <label>Contraseña</label>
-      <input  
+      <Field  
       type='password' 
       name='contrasena' 
       onChange={handleChange} 
       value={values.contrasena} 
-      className={`form-control ${errors.contrasena ? 'is-invalid' : 'is-valid'}`}
-       />
+      label='Contraseña'
+      as={TextField}
+      className={` ${errors.contrasena ? 'is-invalid' : 'is-valid'}`}
+       
+      InputProps={{
+        endAdornment: (
+          <React.Fragment>
+            {values.contrasena  ? (
+              <CheckIcon style={{ color: 'green' }} />
+            ) : (
+              <ErrorIcon style={{ color: 'red' }} />
+            )}
+          </React.Fragment>
+        ),
+      }}
+      sx={{ width: '100%' }}/>
       {errors.contrasena && (
           <div className='invalid-feedback'>{errors.contrasena}</div>
         )}    
@@ -168,7 +240,7 @@ function UserCreate() {
             handleChange({ target: { name: 'fk_rol2', value: newValue ? newValue.id_rol : '' } });
           }}
           value={Listar.find((rol) => rol.id_rol === values.fk_rol2) || null}
-          sx={{ width: '100%',   marginTop: '8px' }}
+          sx={{ width: '100%' }}
           renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' }}/>}
         />
 

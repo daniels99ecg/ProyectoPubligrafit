@@ -32,12 +32,12 @@ export const loginIngreso = async (email, contrasena) => {
       email: email,
       contrasena: contrasena,
     });
-    return response.data; // Esto podría incluir el token u otros datos relevantes
+    const { token, user } = response.data; // Asumiendo que la respuesta incluye tanto el token como la información del usuario
+    return { token, user }; // Esto podría incluir el token u otros datos relevantes
   } catch (error) {
     throw error; // Maneja el error adecuadamente en tu componente React
   }
 };
-
 
 export const putDesactivarCliente = async (id_usuario) => {
   return await axios.put(`http://localhost:3001/usuario/disable/${id_usuario}`);

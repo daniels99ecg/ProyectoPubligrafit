@@ -154,30 +154,40 @@ async function actualizarUsuario(req, res){
     if (!usuario.estado) {
       return res.status(401).json({ error: 'User is not authorized to login' });
     }
+    const rol = await Rol.findByPk(usuario.fk_rol2);
 
-    const token = jwt.sign({ userId: usuario.id_usuario }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: usuario.id_usuario, email: usuario.email, nombre: usuario.nombres, rol: rol ? rol.nombre : 'Sin rol',  }, secretKey, { expiresIn: '1h' });
     res.cookie('token', token, { httpOnly: true });
 
-    res.status(200).json({ token });
+    res.status(200).json({ 
+      token,
+      user: {
+        id: usuario.id_usuario,
+        email: usuario.email,
+        nombre: usuario.nombres,
+        rol: rol ? rol.nombre_rol : 'Sin rol',
+      },
+     });
   }
+ 
+  // const verifyToken = async (req, res) => {
+  //   const { token } = req.cookies;
+  //   if (!token) return res.send(false);
 
-  const verifyToken = async (req, res) => {
-    const { token } = req.cookies;
-    if (!token) return res.send(false);
+  //   jwt.verify(token, secretKey, async (error, user) => {
+  //     if (error) return res.sendStatus(401);
 
-    jwt.verify(token, secretKey, async (error, user) => {
-      if (error) return res.sendStatus(401);
+  //     const userFound = await Usuario.findByPk(user.id);
+  //     if (!userFound) return res.sendStatus(401);
 
-      const userFound = await Usuario.findByPk(user.id);
-      if (!userFound) return res.sendStatus(401);
+  //     return res.json({
+  //       id: userFound._id,
+  //       username: userFound.username,
+  //       email: userFound.email,
+  //     });
+  //   });
+  // };
 
-      return res.json({
-        id: userFound._id,
-        username: userFound.username,
-        email: userFound.email,
-      });
-    });
-  };
 
   async function desactivarCliente(req, res) {
     try {
@@ -242,9 +252,7 @@ async function actualizarUsuario(req, res){
       login,
       desactivarCliente,
       activarCliente,
-      eliminar,
-      verifyToken
-
+      eliminar
   }
       
       

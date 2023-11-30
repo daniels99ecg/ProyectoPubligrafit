@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Form, Formik } from 'formik' 
+import { Form, Formik, Field } from 'formik' 
+import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
 import Swal from 'sweetalert2'
 import Nav from '../../components/nav';
 import { useInsumo } from "../../context/Insumos/InsumoContext"
@@ -70,8 +73,14 @@ function UpdateInsumo(){
                 ({handleChange, handleSubmit, values}) => (
                     <Form  onSubmit={handleSubmit} className='row g-3'>
                 <div className="col-md-6">
-                <label htmlFor="id_insumo">Id</label>
-                <input type="text" name='id_insumo' onChange={handleChange} value={values.id_insumo} className="form-control" readOnly/>
+                <Field 
+                type="text" 
+                name='id_insumo' 
+                label="ID insumo"
+                as={TextField}
+                onChange={handleChange} 
+                value={values.id_insumo} 
+                className="form-control" readOnly/>
                 </div>
 
                 <div className="col-md-6">

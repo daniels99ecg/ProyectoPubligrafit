@@ -14,10 +14,13 @@ import UserUpdate from './page/Usuario/usuarioUpdate'
 
 import { UserContextProvider } from './context/Usuario/UserContext'
 import { RolContextProvider } from './context/Rol/RolContext'
+import ProtectedRoute from './ProtectedRoute';
 import Rol from './page/Rol/Rol'
 import RolCreate from './page/Rol/RolCreate'
 import Login from './page/Login/login'
+import Recuperar from './page/Login/recuperaContraseña'
 import Dashboard from './page/Dashboard/dashboard'
+import Profile from './page/Perfil/perfil';
 
 
 import ShowProducto from './page/Producto/Productos'
@@ -38,6 +41,10 @@ import Compras from './page/Compras/Compras'
 import ComprasCreate from './page/Compras/ComprasCreate'
 import { CompraContextProvider } from './context/Compras/ComprasContext'
 
+function NotFound() {
+  return <div className='text-center'>404 Pagina No Disponible</div>;
+}
+
 function App() {
 
   return (
@@ -51,39 +58,47 @@ function App() {
      <RolContextProvider>
      <Routes>
      <Route path='/' element={<Login/>}/>
+     <Route path='/cambiarcontrasena' element={<Recuperar/>}/>
 
-      <Route path='/dashboard' element={<Dashboard/>}/>
+     <Route
+        path="/dashboard"
+        element={<ProtectedRoute element={<Dashboard />} />}
+      />
       {/* Usuarios */}
       
-      <Route path='/usuario' element={<User/>}/>
-      <Route path='/usuario/create' element={<UserCreate/>}/>
-      <Route path='/editu/:id_usuario' element={<UserUpdate/>}/>
+      <Route path='/usuario' element={<ProtectedRoute element={<User/>}/> } />
+      <Route path='/usuario/create' element={<ProtectedRoute element={<UserCreate/>}/> } />
+      <Route path='/editu/:id_usuario' element={<ProtectedRoute element={<UserUpdate/>}/> } />
 
       {/* Rol */}
+      <Route path='/rol' element={<ProtectedRoute element={<Rol/>}/> } />
+      <Route path='/rol/create' element={<ProtectedRoute element={<RolCreate/>}/> } />
 
-      <Route path='/rol' element={<Rol/>}/>
-      <Route path='/rol/create' element={<RolCreate/>}/>
+      {/*Perfil*/}
+      <Route path='profile' element={<ProtectedRoute element={<Profile />}/>}/>
 
       {/* Cliente */}
 
-      <Route path='/cliente' element={<ShowCliente/>}/>
-      <Route path='/cliente/create' element={<CreateCliente/>}/> 
-      <Route path='/editc/:documento' element={<UpdateCliente/>}/> 
+      <Route path='/cliente' element={<ProtectedRoute element={<ShowCliente />}/>} />
+      <Route path='/cliente/create' element={<ProtectedRoute element={<CreateCliente />}/>} /> 
+      <Route path='/editc/:documento' element={<ProtectedRoute element={<UpdateCliente />}/>} /> 
 
 
-      <Route path='/producto' element={<ShowProducto/>}/>
-      <Route path='/fichaTecnica' element={<ShowFichasTecnicas/>}/>
-      <Route path='/insumo' element={<ShowInsumos/>}/>
-      <Route path='/insumo/create' element={<CreateInsumos/>}/>
-      <Route path='/producto/create' element={<CreateProductos/>}/>
-      <Route path='/fichaTecnica/create' element={<CreateFichasTecnicas/>}/>
-      <Route path='/editF/:id_ft' element={<UpdateFichaTecnica/>}/>
-      <Route path='/editI/:id_insumo' element={<UpdateInsumo/>}/>
-      <Route path='/editP/:id_producto' element={<UpdateProducto/>}/>
+      <Route path='/producto' element={<ProtectedRoute element={<ShowProducto />}/>} />
+      <Route path='/fichaTecnica' element={<ProtectedRoute element={<ShowFichasTecnicas />}/>} />
+      <Route path='/insumo' element={<ProtectedRoute element={<ShowInsumos />}/>} />
+      <Route path='/insumo/create' element={<ProtectedRoute element={<CreateInsumos />}/>} />
+      <Route path='/producto/create' element={<ProtectedRoute element={<CreateProductos />}/>} />
+      <Route path='/fichaTecnica/create' element={<ProtectedRoute element={<CreateFichasTecnicas />}/>} />
+      <Route path='/editF/:id_ft' element={<ProtectedRoute element={<UpdateFichaTecnica />}/>} />
+      <Route path='/editI/:id_insumo' element={<ProtectedRoute element={<UpdateInsumo />}/>} />
+      <Route path='/editP/:id_producto' element={<ProtectedRoute element={<UpdateProducto />}/>} />
 
-      <Route path='/compras' element={<Compras/>}/>
-      <Route path='/compras/create' element={<ComprasCreate/>}/>
+      <Route path='/compras' element={<ProtectedRoute element={<Compras />}/>} />
+      <Route path='/compras/create' element={<ProtectedRoute element={<ComprasCreate />}/>} />
     
+      <Route path='*' element={<NotFound />} />
+
      </Routes>
      </RolContextProvider> 
      </UserContextProvider>

@@ -12,7 +12,9 @@ Router.put("/update/:id", UsuarioController.actualizarUsuario)
 
 Router.post("/login/", UsuarioController.login)
 
-Router.get("/verefy", UsuarioController.verifyToken)
+Router.post("/cambiarcontrasena/", UsuarioController.cambiarContrasena)
+
+// Router.get("/verefy", UsuarioController.verifyToken)
 
 Router.put("/disable/:id", UsuarioController.desactivarCliente)
 

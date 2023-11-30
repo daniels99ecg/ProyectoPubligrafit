@@ -1,4 +1,4 @@
-import { Form, Formik } from 'formik';
+import { Form, Formik,Field } from 'formik';
 import Nav from '../../components/nav';
 import { useEffect } from 'react';
 import { useRol } from '../../context/Rol/RolContext';
@@ -51,18 +51,20 @@ function RolCreate() {
                     {({ handleChange, handleSubmit, setFieldValue, values }) => (
                       <Form onSubmit={handleSubmit} className='row g-3' id='pruebas'>
                         <div className='col-md-6'>
-                          <input
+                          <Field
                             type='text'
                             name='nombre_rol'
+                            label='Nombre Rol'
+                            as={TextField}
                             className='form-control'
-                            placeholder='Nombre Rol'
                             onChange={handleChange}
                           />
                         </div>
                         <div className='col-md-6'>
-                          <input
+                          <Field
                             type='date'
                             name='fecha'
+                            as={TextField}
                             className='form-control'
                             placeholder='Fecha'
                             onChange={handleChange}

@@ -50,7 +50,7 @@ function CreateFichaTecnica() {
                         </div>
                         <div className="col-md-6">
                         <label htmlFor="Imagen">Imagen</label>
-                        <Field type="text" name='imagen_producto_final' className="form-control" />
+                        <Field type="file" name='imagen_producto_final' className="form-control" />
                         </div>
                         <div className="col-md-6 ">
                         <label htmlFor="Costo_Final">Costo Final</label>

@@ -32,7 +32,18 @@ export const loginIngreso = async (email, contrasena) => {
       email: email,
       contrasena: contrasena,
     });
-    return response.data; // Esto podría incluir el token u otros datos relevantes
+    const { token, user } = response.data; // Asumiendo que la respuesta incluye tanto el token como la información del usuario
+    return { token, user }; // Esto podría incluir el token u otros datos relevantes
+  } catch (error) {
+    throw error; // Maneja el error adecuadamente en tu componente React
+  }
+};
+export const cambiarContrasena = async (email, contrasena) => {
+  try {
+    const response = await axios.post('http://localhost:3001/usuario/cambiarcontrasena/', {
+      email: email,
+      contrasena: contrasena,
+    });
   } catch (error) {
     throw error; // Maneja el error adecuadamente en tu componente React
   }

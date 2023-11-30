@@ -1,8 +1,12 @@
 import '../css/style.css'
-
 import '../js/pruebas'
+import Cookies from 'js-cookie';
 function Nav() {
+  const handleLogout = () => {
+    Cookies.remove('token');
+  };
   
+
   return (
     <>
     <div className='dashboard' >
@@ -37,11 +41,13 @@ function Nav() {
                     <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"></path>
                   </svg>
                   Roles</a>
+                 
                 <a href="/usuario" className="dashboard-nav-dropdown-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="22" fill="currentColor" className="bi bi-people-fill" viewBox="0 0 16 16">
                     <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
                   </svg>
                   Usuarios</a>
+                
                 </div>
             </div>
             <div className='dashboard-nav-dropdown'>
@@ -81,13 +87,11 @@ function Nav() {
 </svg>
                     Clientes</a></div>
             </div>
-            <a href="#" className="dashboard-nav-item"><i className="fa fa-user"></i> Perfil </a>
+            <a href="/profile" className="dashboard-nav-item"><i className="fa fa-user"></i> Perfil </a>
             <div className="nav-item-divider"></div>
-          <a
-                    href="/" className="dashboard-nav-item">
-                      <i className="fa fa-sign-out"></i>
-                       Logout
-                       </a>
+            <a href="/" className="dashboard-nav-item" onClick={handleLogout}>
+  <i className="fa fa-sign-out"></i> Logout
+</a>
           </nav>
         </div>
         <header className='dashboard-toolbar'>

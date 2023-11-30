@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import  { useState } from 'react';
 import Cookies from 'js-cookie';
 
-function Login(){
+function Recuperar(){
 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  const [user, setUser] = useState(null);
   const handleSubmit = async (values, { setSubmitting }) => {
     const { email, contrasena } = values;
     try {
@@ -18,13 +18,17 @@ function Login(){
       if (response.token) {
         Cookies.set('token', response.token);
 
-        navigate('/dashboard');
+        setUser(response.user);
+        
+        localStorage.setItem('user', JSON.stringify(response.user));
+
+        navigate('/dashboard',{ state: { user: response.user } });
         window.location.reload();
       } else {
         setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
       }
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+      // console.error('Error al iniciar sesión:', error);
       setError('Error al iniciar sesión, inténtalo de nuevo.');
     }
     setSubmitting(false);
@@ -63,7 +67,7 @@ return(
               <button type="submit" disabled={isSubmitting} className="btn btn-primary" >
                 Iniciar sesión
               </button>
-              <span><a href="">Recuperar Contraseña</a></span>
+              <span><a href="/cambiarcontrasena">Recuperar Contraseña</a></span>
 
             </div>
           </Form>
@@ -71,10 +75,12 @@ return(
       </Formik>
     </div>
    </div> 
+
     </>
+    
 
 )
 
 }
 
-export default Login
+export default Recuperar

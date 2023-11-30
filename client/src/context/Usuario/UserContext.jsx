@@ -37,109 +37,99 @@ async function cargarUsuario(){
       
         }
        
-  
 async function creacionValidacion(values) {
           try {
-           if (!values.email.includes("@") || !values.email.includes(".com")) {
-              Swal.fire({
-                icon: 'error',
-                title: 'Correo no valido',
-                text: 'Por favor ingresar un correo valido!',
-              });
-            } else {
-              const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                  confirmButton: 'btn btn-success',
-                  cancelButton: 'btn btn-danger'
-                },
-                buttonsStyling: false
-              });
+            const swalWithBootstrapButtons = Swal.mixin({
+              customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+              },
+              buttonsStyling: false
+            });
         
-              swalWithBootstrapButtons.fire({
-                title: 'Confirmar el envio del formulario?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar!',
-                buttons: true
-              }).then(async (result) => {
-                if (result.isConfirmed) {
-                  try {
-                    const response = await enviarUsuario(values);
-                    console.log(response);
-              
-                    if (response.data && response.data.error) {
-                      // Verificar errores específicos
-                      if (response.data.error === 'el id de usuario ya existe') {
-                        console.log('Mostrar alerta de usuario existente');
-              
-                        Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'El ID de usuario ya existe. Por favor, elige otro ID.',
-                        });
-                      } else if (response.data.error === 'El correo electrónico ya está registrado') {
-                        // Mostrar alerta específica para correo existente
-                        swalWithBootstrapButtons.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'El correo electrónico ya está registrado. Por favor, elige otro correo electrónico.',
-                        });
-
-
-                      } else {
-                        console.log('Mostrar alerta de otro error');
-              
-                        Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: response.data.error,
-                        });
-                      }
+            swalWithBootstrapButtons.fire({
+              title: 'Confirmar el envío del formulario?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Aceptar!',
+              cancelButtonText: 'Cancelar!',
+              buttons: true
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try {
+                  const response = await enviarUsuario(values);
+                  console.log(response);
+        
+                  if (response.data && response.data.error) {
+                    // Verificar errores específicos
+                    if (response.data.error === 'el id de usuario ya existe') {
+                      console.log('Mostrar alerta de usuario existente');
+        
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'El ID de usuario ya existe. Por favor, elige otro ID.',
+                      });
+                    } else if (response.data.error === 'El correo electrónico ya está registrado') {
+                      // Mostrar alerta específica para correo existente
+                      swalWithBootstrapButtons.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'El correo electrónico ya está registrado. Por favor, elige otro correo electrónico.',
+                      });
                     } else {
-                      // Verificar si se creó el usuario correctamente
-                      if (response.data && response.data.usuario) {
-                        // Si no hay errores, redirige a la página de usuario
-                        navigate("/usuario");
-              
-                        swalWithBootstrapButtons.fire(
-                          'Registro Enviado!',
-                          'Your file has been deleted.',
-                          'success'
-                        );
-                      } else {
-                        navigate("/usuario");
-              
-                        swalWithBootstrapButtons.fire(
-                          'Registro Enviado!',
-                          'Your file has been deleted.',
-                          'success'
-                        );
-                      }
+                      console.log('Mostrar alerta de otro error');
+        
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.data.error,
+                      });
                     }
-                  } catch (error) {
-                    console.error(error);
-                    swalWithBootstrapButtons.fire(
-                      'Error',
-                      'Ocurrió un error al crear el usuario.',
-                      'error'
-                    );
+                  } else {
+                    // Verificar si se creó el usuario correctamente
+                    if (response.data && response.data.usuario) {
+                      // Si no hay errores, redirige a la página de usuario
+                      navigate("/usuario");
+        
+                      swalWithBootstrapButtons.fire(
+                        'Registro Enviado!',
+                        'Your file has been deleted.',
+                        'success'
+                      );
+                    } else {
+                      navigate("/usuario");
+        
+                      swalWithBootstrapButtons.fire(
+                        'Registro Enviado!',
+                        'Your file has been deleted.',
+                        'success'
+                      );
+                    }
                   }
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                } catch (error) {
+                  console.error(error);
                   swalWithBootstrapButtons.fire(
-                    'Se cancelo el envio',
-                    'Your imaginary file is safe :)',
+                    'Error',
+                    'Ocurrió un error al crear el usuario.',
                     'error'
                   );
                 }
-              });
-            }              
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire(
+                  'Se canceló el envío',
+                  'Your imaginary file is safe :)',
+                  'error'
+                );
+              }
+            });
           } catch (error) {
             console.log(error);
           }
         }
-           
+        
+        
 
 async function cargarRol(){
       const response =  await getListarRoles()

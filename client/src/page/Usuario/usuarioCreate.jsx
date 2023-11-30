@@ -257,8 +257,6 @@ function UserCreate() {
     </Formik> 
 
     </div>
-  
-   
                 </div>
             </div>
         </div>

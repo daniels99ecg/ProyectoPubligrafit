@@ -14,37 +14,56 @@ async function listarCompras(req, res){
 }
 
 
-async function crearCompras(req, res){
+async function crearCompras(req, res) {
     const datacompra = req.body;
-    try { 
-        await sequelize.transaction(async (t) => {
-            const compras = await Compras.create({
+
+    try {
+        const nuevaCompra = await sequelize.transaction(async (t) => {
+            // Crear la compra
+            const createdCompra = await Compras.create({
                 proveedor: datacompra.proveedor,
                 cantidad: datacompra.cantidad,
                 fecha: datacompra.fecha,
                 total: datacompra.total
             }, { transaction: t });
 
-            if (compras) {
-                await Compras_detalle.create({
-                    fk_compra: compras.id_compra,
-                    fk_insumo: datacompra.insumo.fk_insumo,
-                    cantidad: datacompra.cantidad,
-                    precio: datacompra.precio,
-                    iva: datacompra.iva,
-                    subtotal: datacompra.subtotal
-                }, { transaction: t });
-                await t.commit();
-                res.status(201).json(compras);
-            } else {
-                res.status(500).json({ error: 'Error al crear la compra' });
+            if (!createdCompra) {
+                throw new Error('Error al crear la compra');
             }
+
+            // Crear el detalle de la compra para cada insumo
+            const insumos = datacompra.insumos || [];
+            const detallesPromises = insumos.map(async (insumo) => {
+                const nuevoDetalle = await Compras_detalle.create({
+                    fk_compra: createdCompra.id_compra,
+                    fk_insumo: insumo.fk_insumo,
+                    cantidad: insumo.cantidad,
+                    precio: insumo.precio,
+                    iva: insumo.iva,
+                    subtotal: insumo.subtotal
+                }, { transaction: t });
+
+                if (!nuevoDetalle) {
+                    throw new Error('Error al crear el detalle de la compra');
+                }
+            });
+
+            // Esperar a que todas las inserciones en detalle se completen
+            await Promise.all(detallesPromises);
+
+            return createdCompra; // Devolver la compra creada para enviarla como respuesta
         });
+
+        // Respuesta al cliente con el objeto de compra creado
+        res.status(201).json(nuevaCompra);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al realizar la compra' });
     }
 }
+
+
+
 module.exports={
     listarCompras,
     crearCompras

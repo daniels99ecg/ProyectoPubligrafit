@@ -55,7 +55,9 @@ function User() {
               nombreRol:item.rol.nombre_rol
             }))}
             columns={[
-              { field: 'id_usuario', headerName: 'Documento', flex: 0 },
+              { field: 'tipo_documento', headerName: 'Tipo de Documento', flex: 0 },
+
+              { field: 'documento', headerName: 'Documento', flex: 0 },
               { field: 'nombres', headerName: 'Nombre', flex: 1 },
               { field: 'apellidos', headerName: 'Apellido', flex: 1 },
               { field: 'email', headerName: 'Email', flex: 1 },

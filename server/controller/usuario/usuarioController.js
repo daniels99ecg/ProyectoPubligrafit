@@ -27,6 +27,8 @@
         ],
         attributes: [
           'id_usuario',
+          "tipo_documento",
+          'documento',
           'nombres',
           'apellidos',
           'email',
@@ -67,7 +69,7 @@
     try {
       // Verificar si el ID de usuario ya existe
       const existingUsuario = await Usuario.findOne({
-        where: { id_usuario: dataUsuario.id_usuario }
+        where: { documento: dataUsuario.documento }
       });
   
       if (existingUsuario) {
@@ -87,7 +89,8 @@
       const hashedPassword = await bcrypt.hash(dataUsuario.contrasena, 10);
   
       const usuario = await Usuario.create({
-        id_usuario: dataUsuario.id_usuario,
+        tipo_documento:dataUsuario.tipo_documento,
+        documento: dataUsuario.documento,
         fk_rol2: dataUsuario.fk_rol2,
         nombres: dataUsuario.nombres,
         apellidos: dataUsuario.apellidos,

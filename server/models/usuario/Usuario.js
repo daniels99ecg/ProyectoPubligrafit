@@ -1,4 +1,3 @@
-
 const {DataTypes, Model}=require("sequelize")
 const sequelize=require("../../database/db");
 const Rol = require("../rol/Rol");
@@ -9,6 +8,8 @@ const Rol = require("../rol/Rol");
                 type:DataTypes.INTEGER,
                 primaryKey:true,
                 },
+              tipo_documento:DataTypes.STRING,
+              documento:DataTypes.STRING,  
               fk_rol2:DataTypes.INTEGER,
               nombres:DataTypes.STRING,
               apellidos:DataTypes.STRING,

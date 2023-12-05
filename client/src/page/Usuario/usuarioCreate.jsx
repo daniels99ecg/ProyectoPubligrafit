@@ -38,7 +38,8 @@ function UserCreate() {
    <Formik
    initialValues={
     {
-    id_usuario:"",
+    documento:"",
+    tipo_documento:"",
     fk_rol2:"",
     nombres:"",
     apellidos:"",
@@ -59,10 +60,10 @@ function UserCreate() {
     }else if(!/^[a-zA-Z]+$/.test(values.apellidos)){
       errors.apellidos = 'Este campo solo debe contener letras';
     }
-    if (!values.id_usuario) {
-        errors.id_usuario = 'Este campo es requerido';
-      } else if (!/^[0-9]+$/.test(values.id_usuario)) {
-        errors.id_usuario = 'Este campo solo debe contener números';
+    if (!values.documento) {
+        errors.documento = 'Este campo es requerido';
+      } else if (!/^[0-9]+$/.test(values.documento)) {
+        errors.documento = 'Este campo solo debe contener números';
       }
     if (!values.email) {
       errors.email = 'Este campo es requerido';
@@ -91,22 +92,40 @@ function UserCreate() {
   {({handleChange, handleSubmit, values, errors, isValid})=>(
     
       <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
-        
+        <div className="col-md-6">
+  <Autocomplete
+    disablePortal
+    id="tipo-documento-autocomplete"
+    options={[
+      { id: 'Cc', label: 'Cédula de Ciudadanía' },
+      { id: 'Ti', label: 'Tarjeta de Identidad' },
+      { id: 'Ce', label: 'Cédula de Extranjería' },
+      // Agrega más opciones según tus necesidades
+    ]}
+    getOptionLabel={(option) => option.label}
+    onChange={(event, newValue) => {
+      handleChange({ target: { name: 'tipo_documento', value: newValue ? newValue.id : '' } });
+    }}
+    value={null} // Puedes establecer un valor predeterminado si lo necesitas
+    sx={{ width: '100%' }}
+    renderInput={(params) => <TextField {...params} label="Tipo de Documento" sx={{ width: '100%' }} />}
+  />
+</div>
         <div className='col-md-6'>
         <Field
           type='text'
-          name='id_usuario'
+          name='documento'
           onChange={handleChange}
           label='Documento'
           as={TextField}
-          value={values.id_usuario}
+          value={values.documento}
           className={` ${
-            values.id_usuario && /^[0-9]+$/.test(values.id_usuario) ? 'is-valid' : 'is-invalid'
+            values.documento && /^[0-9]+$/.test(values.documento) ? 'is-valid' : 'is-invalid'
           }`}
           InputProps={{
             endAdornment: (
               <React.Fragment>
-                {values.id_usuario && /^[0-9]+$/.test(values.id_usuario) ? (
+                {values.documento && /^[0-9]+$/.test(values.documento) ? (
                   <CheckIcon style={{ color: 'green' }} />
                 ) : (
                   <ErrorIcon style={{ color: 'red' }} />
@@ -116,7 +135,7 @@ function UserCreate() {
           }}
           sx={{ width: '100%' }}
         />
-        {errors.id_usuario && <div className='invalid-feedback'>{errors.id_usuario}</div>}
+        {errors.documento && <div className='invalid-feedback'>{errors.documento}</div>}
       </div>
       <div className="col-md-6">
                           <Field
@@ -223,7 +242,7 @@ function UserCreate() {
         )}    
         </div>
 
-<div className="col-md-6">
+<div className="col-md-12">
 <Autocomplete 
 
           disablePortal
@@ -241,7 +260,7 @@ function UserCreate() {
         />
 
 </div>
-<br />
+
 
 <div className="col-auto">
       <button className="btn btn-primary" type='submit' disabled={!isValid}>
@@ -257,6 +276,8 @@ function UserCreate() {
     </Formik> 
 
     </div>
+  
+   
                 </div>
             </div>
         </div>

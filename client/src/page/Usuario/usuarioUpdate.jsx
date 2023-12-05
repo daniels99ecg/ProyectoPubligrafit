@@ -1,12 +1,9 @@
-  import { Form ,Formik, Field} from 'formik'
+  import { Form ,Formik} from 'formik'
   import { useParams, useNavigate} from 'react-router-dom'
   import Nav from '../../components/nav'
   import { useEffect } from 'react'
   import { useUser } from "../../context/Usuario/UserContext";
-  import TextField from '@mui/material/TextField';
-  import CheckIcon from '@mui/icons-material/Check';
-  import ErrorIcon from '@mui/icons-material/Error';
-  import Autocomplete from '@mui/material/Autocomplete';
+
 
 
   function UserCreate() {
@@ -57,75 +54,38 @@
         <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
           
             <div className="col-md-6">
-        <Field
-          type='text'
-           name='id_usuario' 
-           onChange={handleChange} 
-           label='Documento'
-            as={TextField}
-           value={values.id_usuario} 
-           className="form-control" 
-           disabled={params.id_usuario ? true : false}/>
+        <label>Id usuario</label>
+        <input  type='text' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control" disabled={params.id_usuario ? true : false}/>
         </div>
         <div className="col-md-6">
-        <Field  
-        type='text'
-        name='nombres'
-        label='Nombre'
-        as={TextField}
-        onChange={handleChange}
-        value={values.nombres} className="form-control"/>
+        <label>Nombre</label>
+        <input  type='text' name='nombres' onChange={handleChange} value={values.nombres} className="form-control"/>
         </div>
         <div className="col-md-6">
-        <Field  
-        type='text' 
-        name='apellidos' 
-        onChange={handleChange} 
-        label='Apellido'
-        as={TextField}
-        value={values.apellidos} className="form-control"/>
+        <label>Apellido</label>
+        <input  type='text' name='apellidos' onChange={handleChange} value={values.apellidos} className="form-control"/>
   </div>
   <div className="col-md-6">
-        <Field  
-        type='text' 
-        name='email' 
-        onChange={handleChange} 
-        label='Correo'
-        as={TextField}
-        value={values.email} className="form-control"/>
+        <label>Correo</label>
+        <input  type='text' name='email' onChange={handleChange} value={values.email} className="form-control"/>
   </div>
   <div className="col-md-6">
-        <Field  
-        type='text' 
-        name='contrasena' 
-        onChange={handleChange} 
-        label='Contraseña'
-        as={TextField}
-        value={values.contrasena} 
-        className="form-control" 
-        disabled={params.id_usuario ? true : false}/>
+        <label>Contraseña</label>
+        <input  type='text' name='contrasena' onChange={handleChange} value={values.contrasena} className="form-control" disabled={params.id_usuario ? true : false}/>
   </div>
   <div className="col-md-6">
-      <Autocomplete 
+        <label>Rol</label>
 
-          disablePortal
-          id="fixed-tags-demo"
-          options={Listar}
-          getOptionLabel={(option) => option.nombre_rol}
-          onChange={(event, newValue) => {
-            // Aquí puedes manejar el cambio de valor seleccionado en Autocomplete
-            // Puedes actualizar el estado o realizar otras acciones necesarias
-            handleChange({ target: { name: 'fk_rol2', value: newValue ? newValue.id_rol : '' } });
-          }}
-          value={Listar.find((rol) => rol.id_rol === values.fk_rol2) || null}
-          sx={{ width: '100%' }}
-          renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' }}/>}
-        />
-
-
-
-
-
+  <select name="fk_rol2" onChange={handleChange} value={values.fk_rol2} className="form-control">
+  <option value="Seleccionar">Seleccionar</option>
+    {
+      Listar.map(Listar=>(
+        <option key={Listar.id_rol} value={Listar.id_rol}>
+        {Listar.nombre_rol}
+      </option>
+      ))
+    }
+  </select>
 
   </div>
   <br />

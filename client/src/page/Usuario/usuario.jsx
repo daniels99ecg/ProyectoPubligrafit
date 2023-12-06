@@ -55,18 +55,19 @@ function User() {
               nombreRol:item.rol.nombre_rol
             }))}
             columns={[
-              { field: 'tipo_documento', headerName: 'Tipo de Documento', flex: 0 },
+              { field: 'tipo_documento', headerName: 'Tipo de Documento', headerClassName: 'encabezado', flex: 0 },
 
-              { field: 'documento', headerName: 'Documento', flex: 0 },
-              { field: 'nombres', headerName: 'Nombre', flex: 1 },
-              { field: 'apellidos', headerName: 'Apellido', flex: 1 },
-              { field: 'email', headerName: 'Email', flex: 1 },
+              { field: 'documento', headerName: 'Documento', headerClassName: 'encabezado', flex: 0 },
+              { field: 'nombres', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
+              { field: 'apellidos', headerName: 'Apellido', headerClassName: 'encabezado', flex: 1 },
+              { field: 'email', headerName: 'Email', headerClassName: 'encabezado', flex: 1 },
               // { field: 'contrasena', headerName: 'Contraseña', flex: 1 },
-              { field: 'nombreRol', headerName: 'Rol', flex: 1 },
+              { field: 'nombreRol', headerName: 'Rol', headerClassName: 'encabezado', flex: 1 },
           
               {
                 field: 'estado',
                 headerName: 'Estado',
+                headerClassName: 'encabezado',
                 flex: 1,
                 renderCell: (params) => (
                   <div className="switch-button">
@@ -94,6 +95,7 @@ function User() {
               {
                 field: 'acciones',
                 headerName: 'Acciones',
+                headerClassName: 'encabezado',
                 flex: 1,
                 renderCell: (params) => (
                   <div className="d-flex">

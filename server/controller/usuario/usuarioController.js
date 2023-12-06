@@ -141,38 +141,65 @@
   }
     
 
-async function actualizarUsuario(req, res){
-    const { id } = req.params;
-    const { 
-      id_usuario,
-      fk_rol2,
-      nombres,
-      apellidos,
-      email,
-      contrasena,
-      estado } = req.body;
+  const { Op } = require('sequelize');
 
-    try {
-      const usuario = await Usuario.findByPk(id);
-      if (!usuario) {
-        return res.status(404).send('Usuario no encontrado');
+  async function actualizarUsuario(req, res) {
+      const { id } = req.params;
+      const { 
+        id_usuario,
+        documento,
+        fk_rol2,
+        nombres,
+        apellidos,
+        email,
+        contrasena,
+        estado } = req.body;
+  
+      try {
+        // Verificar si el documento ya existe, excluyendo al usuario actual
+        const existingUsuario = await Usuario.findOne({
+          where: { documento: documento, id_usuario: { [Op.ne]: id } }
+        });
+  
+        if (existingUsuario) {
+          return res.status(400).json({ error: 'El documento ya está registrado para otro usuario' });
+        }
+  
+        // Verificar si el correo electrónico ya existe
+        const existingUsuarioEmail = await Usuario.findOne({
+          where: { email: email, id_usuario: { [Op.ne]: id } }
+        });
+  
+        if (existingUsuarioEmail) {
+          return res.status(400).json({ error: 'El correo electrónico ya está registrado para otro usuario' });
+        }
+  
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) {
+          return res.status(404).send('Usuario no encontrado');
+        }
+  
+        // Actualizar campos del usuario
+        usuario.id_usuario = id_usuario;
+        usuario.documento = documento;
+        usuario.fk_rol2 = fk_rol2;
+        usuario.nombres = nombres;
+        usuario.apellidos = apellidos;
+        usuario.email = email;
+        usuario.contrasena = contrasena;
+        usuario.estado = estado;
+  
+        await usuario.save();
+  
+        console.log('Usuario actualizado:', usuario.toJSON());
+  
+        return res.status(200).json(usuario);
+      } catch (error) {
+        console.error('Error al actualizar el usuario:', error);
+        return res.status(500).send('Error al actualizar el usuario');
       }
-
-      usuario.id_usuario = id_usuario;
-      usuario.fk_rol2 = fk_rol2;
-      usuario.nombres = nombres;
-      usuario.apellidos=apellidos;
-      usuario.email=email;
-      usuario.contrasena=contrasena;
-      usuario.estado=estado
-
-      await usuario.save();
-
-      return res.status(200).json(usuario);
-    } catch (error) {
-      return res.status(500).send('Error al actualizar el usuario');
-    }
   }
+  
 
   async function login(req, res) {
 

@@ -76,23 +76,22 @@ function RolCreate() {
                         </div>
 
                         <div className='col-md-12'>
-                          <Autocomplete
-                            multiple
-                            id='permisos'
-                            name="permisos"
-                            options={listar || []}
-                            getOptionLabel={(option) => option.nombre_permiso}
-                            getOptionSelected={(option, value) =>
-                              option.id_permiso === value.id_permiso
-                            }
-                            value={values.permisos}
-                            onChange={(_, newValue) => {
-                              setFieldValue('permisos', newValue);
-                            }}
-                            renderInput={(params) => (
-                              <TextField {...params} label='Permisos' variant='outlined' />
-                            )}
-                          />
+                        <Autocomplete
+  multiple
+  id='permisos'
+  name="permisos"
+  options={listar || []}
+  getOptionLabel={(option) => option.nombre_permiso}
+  value={values.permisos}
+  onChange={(_, newValue) => {
+    setFieldValue('permisos', newValue);
+  }}
+  isOptionEqualToValue={(option, value) => option.id_permiso === value.id_permiso}
+  renderInput={(params) => (
+    <TextField {...params} label='Permisos' variant='outlined' />
+  )}
+/>
+
                         </div>
 
                         <div className='col-auto'>

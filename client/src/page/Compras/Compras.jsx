@@ -52,11 +52,11 @@ useEffect(()=>{
           id:item.id_compra,
         }))}
         columns={[
-          {field:'id_compra',headerName:'Id',flex:1},
-          {field:'proveedor',headerName:'Proveedor',flex:1},
-          {field:'cantidad',headerName:'Cantidad',flex:1},
-          {field:'fecha',headerName:'Fecha',flex:1},
-          {field:'total',headerName:'Total',flex:1},
+          {field:'id_compra',headerName:'ID', headerClassName: 'encabezado',flex:1},
+          {field:'proveedor',headerName:'Proveedor', headerClassName: 'encabezado',flex:1},
+          {field:'cantidad',headerName:'Cantidad', headerClassName: 'encabezado',flex:1},
+          {field:'fecha',headerName:'Fecha', headerClassName: 'encabezado',flex:1},
+          {field:'total',headerName:'Total', headerClassName: 'encabezado',flex:1},
             
         ]}
         />

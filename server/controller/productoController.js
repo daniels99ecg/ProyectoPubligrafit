@@ -17,7 +17,7 @@ async function listarProductos(req, res){
                 'nombre_producto',
                 'precio',
                 'imagen',
-                'stock',
+                'cantidad',
                 'estado'
             ]
         });
@@ -50,8 +50,8 @@ async function crearProducto(req, res){
             nombre_producto:dataProducto.nombre_producto,
             precio:dataProducto.precio,
             imagen:dataProducto.imagen,
-            stock:dataProducto.stock,
-            estado:dataProducto.estado
+            cantidad:dataProducto.cantidad,
+            estado:1
         })
         res.status(201).send(producto)
         
@@ -75,7 +75,7 @@ async function actualizarProducto(req, res) {
                 nombre_producto:producto.nombre_producto,
                 precio:producto.precio,
                 // imagen:producto.imagen,
-                stock:producto.stock,
+                cantidad:producto.cantidad,
                 estado:producto.estado
             },
             {
@@ -132,7 +132,7 @@ async function desactivarProducto(req, res) {
         const id = req.params.id;
         const producto = await Producto.findByPk(id);
         
-        if (!cliente) {
+        if (!producto) {
             return res.status(404).json({ error: 'Cliente no encontrado' });
         }
   

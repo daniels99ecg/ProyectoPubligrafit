@@ -1,13 +1,16 @@
 import { useNavigate } from "react-router-dom"
+import { putActualizarInsumos, getListarInsumo } from '../../api/Insumo/Rutas.api'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Form, Formik, Field } from 'formik' 
-import TextField from '@mui/material/TextField';
-import CheckIcon from '@mui/icons-material/Check';
-import ErrorIcon from '@mui/icons-material/Error';
+import { Field,  Form, Formik } from 'formik' 
 import Swal from 'sweetalert2'
 import Nav from '../../components/nav';
 import { useInsumo } from "../../context/Insumos/InsumoContext"
+import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
+import React from 'react';
+
 
 
 function primeraMayuscula(input) {
@@ -60,7 +63,19 @@ function UpdateInsumo(){
 <div className='card w-75 p-3 mx-auto mt-5'>
         <Formik 
             initialValues = {listarInsumo}      
-            enableReinitialize = {true}      
+            enableReinitialize = {true}  
+            validate={async(values)=>{
+                const errors={}
+            
+            if(!values.nombre){
+                errors.nombre = 'Este campo es requerido';
+
+              }else if (!/^[a-zA-Z]+$/.test(values.detalle)){
+                errors.nombre = 'Este campo solo debe contener letras';
+              }
+              return errors
+            }
+          }   
             onSubmit={async (values) => {
                 console.log(values)
 
@@ -70,33 +85,75 @@ function UpdateInsumo(){
             }
         >
             {
-                ({handleChange, handleSubmit, values}) => (
+                ({handleChange, handleSubmit, values, errors}) => (
                     <Form  onSubmit={handleSubmit} className='row g-3'>
                 <div className="col-md-6">
+                <label htmlFor="id_insumo"></label>
                 <Field 
                 type="text" 
                 name='id_insumo' 
-                label="ID insumo"
-                as={TextField}
-                onChange={handleChange} 
+                onChange={handleChange}
+                label='Id insumo' 
                 value={values.id_insumo} 
-                className="form-control" readOnly/>
+                className="form-control" 
+                readOnly 
+                as={TextField} 
+                 />
                 </div>
 
                 <div className="col-md-6">
-                <label htmlFor="nombre">Nombre</label>
-                <input type="text" name='nombre' onChange={handleChange} value={values.nombre} className="form-control"/>
+                <label htmlFor="nombre"></label>
+                <Field 
+                type="text" 
+                name='nombre' 
+                onChange={handleChange} 
+                label ='Nombre'
+                value={values.nombre} 
+                as={TextField} 
+                className={` ${
+                    values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? 'is-valid' : 'is-invalid'
+                  }`}
+                  InputProps={{
+                    endAdornment: (
+                      <React.Fragment>
+                        {values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? (
+                          <CheckIcon style={{ color: 'green' }} />
+                        ) : (
+                          <ErrorIcon style={{ color: 'red' }} />
+                        )}
+                      </React.Fragment>
+                    ),
+                  }}
+                  sx={{ width: '100%' }}
+                />
+                {errors.nombre && <div className='invalid-feedback'>{errors.nombre}</div>}
                 </div>
 
-                <div className="col-md-6">
-                <label htmlFor="precio">Precio</label>
-                <input type="text" name='precio' onChange={handleChange} value={values.precio} className="form-control"/>
+                {/* <div className="col-md-6">
+                <label htmlFor="precio"></label>
+                <Field
+                type="text" 
+                name='precio' 
+                onChange={handleChange}
+                label ='Precio'
+                value={values.precio} 
+                className="form-control" 
+                as={TextField} 
+                 />
                 </div>
 
                 <div className="col-md-6"> 
-                <label htmlFor="cantidad">Cantidad</label>
-                <input type="text" name='cantidad' onChange={handleChange} value={values.cantidad} className="form-control"/>
-                </div>   
+                <label htmlFor="cantidad"></label>
+                <Field
+                type="text" 
+                name='cantidad' 
+                onChange={handleChange}
+                label ='Cantidad'
+                value={values.cantidad} 
+                className="form-control" 
+                as={TextField} 
+                 />
+                </div>    */}
 
                 <div className='col-auto'>
                 <button className='btn btn-primary' type='submit'>Actualizar</button>

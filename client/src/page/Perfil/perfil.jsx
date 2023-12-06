@@ -17,6 +17,7 @@ function Profile() {
             <div className="card">
               <div className="card-body">
                 <div className="card-header">
+                  
                   <h1>Perfil</h1>
                 </div>
                 <br />
@@ -61,6 +62,7 @@ function Profile() {
                     value={user ? user.rol : 'No disponible'}
                     readOnly
                   />
+                  <br />
                 </div>
                 </div>
               </div>

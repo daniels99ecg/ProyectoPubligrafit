@@ -46,7 +46,7 @@ function ListarFichasTecnicas() {
           </div>
         </div>
         <br />
-        <div style={{ height: 400, width: '100%' }}>
+        <div style={{ height: 500, width: '100%' }}>
           <DataGrid
             rows={filtrarDesactivados.map((item) => ({
               ...item,
@@ -54,24 +54,53 @@ function ListarFichasTecnicas() {
               nombre_insumo: item.insumo.nombre
             }))}
             columns={[
-              { field: 'id_ft', headerName: 'Id', flex: 1 },
-              { field: 'nombre_insumo', headerName: 'Insumo', flex: 1 },
-              { field: 'cantidad_insumo', headerName: 'Cantidad', flex: 1 },
-              { field: 'costo_insumo', headerName: 'Costo', flex: 1 },
-              { field: 'imagen_producto_final', headerName: 'Imagen', flex: 1 },
-              { field: 'costo_final_producto', headerName: 'Costo Final', flex: 1 },
-              { field: 'detalle', headerName: 'Detalles', flex: 1 },
+              { field: 'id_ft', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
+              { field: 'nombre_insumo', headerName: 'Insumo', headerClassName: 'encabezado', flex: 1 },
+              { field: 'cantidad_insumo', headerName: 'Cantidad', headerClassName: 'encabezado', flex: 1 },
+              { field: 'costo_insumo', headerName: 'Costo', headerClassName: 'encabezado', flex: 1 },
+              { field: 'imagen_producto_final', headerName: 'Imagen', headerClassName: 'encabezado', flex: 1 },
+              { field: 'costo_final_producto', headerName: 'Costo Final', headerClassName: 'encabezado', flex: 1 },
+              { field: 'detalle', headerName: 'Detalles',  headerClassName: 'encabezado',flex: 1 },
              
-              
+              {
+                field: 'estado',
+                headerName: 'Estado',
+                headerClassName: 'encabezado',
+                flex: 1,
+                renderCell: (params) => (
+                  <div className="switch-button">
+                     <input
+                       type="checkbox"
+                        id={`switch-label-${params.row.id_ft}`}
+                        checked={params.row.estado}
+                        onChange={(e) => {
+                        e.preventDefault(); // Evitar la navegación por defecto
+                    if (params.row.estado) {
+                      desactivarFichaTecnica(params.row.id_ft);
+                  } else {
+                      activarFichaTecnica(params.row.id_ft);
+                }
+          }}
+        className="switch-button__checkbox"
+      />
+      <label
+        htmlFor={`switch-label-${params.row.id_ft}`}
+        className="switch-button__label"
+      ></label>
+                  </div>
+                ),
+              },
               {
                 field: 'acciones',
                 headerName: 'Acciones',
+                headerClassName: 'encabezado',
                 flex: 1,
                 renderCell: (params) => (
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
                       onClick={() => navigate(`/editF/${params.row.id_ft}`)}
+                      disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',
                         borderColor: '#0d6efd',
@@ -100,7 +129,8 @@ function ListarFichasTecnicas() {
                     <button
                       className="btn btn-danger"
                       onClick={() => eliminarFichasTecnicas(params.row.id_ft)}
-                      >
+                      disabled={!params.row.estado}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -129,7 +159,12 @@ function ListarFichasTecnicas() {
                 },
               },
             }}
-          
+            getRowClassName={(params) => {
+              if (!params.row.estado) {
+                return 'cliente-desactivado';
+              }
+              return
+            }}
           />
         </div>
         </div>

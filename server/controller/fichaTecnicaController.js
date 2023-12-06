@@ -20,7 +20,8 @@ async function listarFichasTecnicas(req, res){
                 'costo_insumo',
                 'imagen_producto_final',
                 'costo_final_producto',
-                'detalle'
+                'detalle',
+                'estado'
             ]
     });
         res.json(fichaTecnica);

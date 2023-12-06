@@ -23,8 +23,16 @@ export const cargaractualizarUsuario=async (id_usuario)=>{
 }
 
 export const actualizarUsuario=async (id_usuario, task)=>{
-  return await axios.put(`http://localhost:3001/usuario/update/${id_usuario}`, task)
-}
+  try{
+ const response=await axios.put(`http://localhost:3001/usuario/update/${id_usuario}`, task);
+ return response.data; // Devuelve los datos exitosos
+}catch (error) {
+    if (error.response) {
+      
+      return { error: 'Error del servidor', data: error.response.data };
+    }
+  }
+};
 
 export const loginIngreso = async (email, contrasena) => {
   try {

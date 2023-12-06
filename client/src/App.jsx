@@ -1,12 +1,6 @@
 
 
 
-import ShowCliente from './page/Cliente/Cliente'
-import CreateCliente from './page/Cliente/ClienteCreate'
-import UpdateCliente from './page/Cliente/ClienteUpdate'
-import { ClienteContextProvider } from './context/Clientes/ClienteContext'
-
-
 import { Route, Routes } from 'react-router-dom'
 import User from './page/Usuario/usuario'
 import UserCreate from './page/Usuario/usuarioCreate'
@@ -41,6 +35,12 @@ import Compras from './page/Compras/Compras'
 import ComprasCreate from './page/Compras/ComprasCreate'
 import { CompraContextProvider } from './context/Compras/ComprasContext'
 
+import ShowCliente from './page/Cliente/Cliente'
+import { ClienteContextProvider } from './context/Clientes/ClienteContext'
+import { VentaContextProvider } from './context/Ventas/VentaContext'
+import ShowVenta from './page/Venta/Venta'
+
+
 function NotFound() {
   return <div className='text-center'>404 Pagina No Disponible</div>;
 }
@@ -49,6 +49,9 @@ function App() {
 
   return (
     <>
+  
+    <VentaContextProvider>
+
         <CompraContextProvider>
       <InsumoContextProvider>
      <ProductoContextProvider>
@@ -79,10 +82,8 @@ function App() {
 
       {/* Cliente */}
 
-      <Route path='/cliente' element={<ProtectedRoute element={<ShowCliente />}/>} />
-      <Route path='/cliente/create' element={<ProtectedRoute element={<CreateCliente />}/>} /> 
-      <Route path='/editc/:documento' element={<ProtectedRoute element={<UpdateCliente />}/>} /> 
-
+      <Route path='/cliente' element={<ShowCliente/>}/>
+      <Route path='/venta' element={<ShowVenta/>}/>
 
       <Route path='/producto' element={<ProtectedRoute element={<ShowProducto />}/>} />
       <Route path='/fichaTecnica' element={<ProtectedRoute element={<ShowFichasTecnicas />}/>} />
@@ -108,8 +109,7 @@ function App() {
     </ProductoContextProvider>
     </InsumoContextProvider>
     </CompraContextProvider>
-
-      
+    </VentaContextProvider>
 
     
     </>

@@ -53,14 +53,15 @@ function ListarInsumos() {
               id: item.id_insumo,
             }))}
             columns={[
-              { field: 'id_insumo', headerName: 'Id', flex: 1 },
-              { field: 'nombre', headerName: 'Nombre', flex: 1 },
-              { field: 'precio', headerName: 'Precio', flex: 1 },
-              { field: 'cantidad', headerName: 'Cantidad', flex: 1 },
+              { field: 'id_insumo', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
+              { field: 'nombre', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
+              { field: 'precio', headerName: 'Precio', headerClassName: 'encabezado', flex: 1 },
+              { field: 'cantidad', headerName: 'Cantidad', headerClassName: 'encabezado', flex: 1 },
              
               {
                 field: 'estado',
                 headerName: 'Estado',
+                headerClassName: 'encabezado',
                 flex: 1,
                 renderCell: (params) => (
                   <div className="switch-button">
@@ -88,6 +89,7 @@ function ListarInsumos() {
               {
                 field: 'acciones',
                 headerName: 'Acciones',
+                headerClassName: 'encabezado',
                 flex: 1,
                 renderCell: (params) => (
                   <div>

@@ -51,13 +51,14 @@ const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchT
              
             }))}
             columns={[
-              { field: 'id_rol', headerName: 'Id', flex: 0 },
-              { field: 'nombre_rol', headerName: 'Nombre', flex: 0.5 },
-              { field: 'fecha', headerName: 'Fecha', flex: 0.5 },
+              { field: 'id_rol', headerName: 'ID', headerClassName: 'encabezado', flex: 0 },
+              { field: 'nombre_rol', headerName: 'Nombre', headerClassName: 'encabezado', flex: 0.5 },
+              { field: 'fecha', headerName: 'Fecha', headerClassName: 'encabezado', flex: 0.5 },
          
               {
                 field: 'estado',
                 headerName: 'Estado',
+                headerClassName: 'encabezado',
                 flex: 0.5,
                 renderCell: (params) => (
                   <div className="switch-button">

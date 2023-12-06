@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom"
+import { putActualizarProductos, getListarProducto } from '../../api/Producto/Rutas.producto'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Form, Formik } from 'formik' 
+import { Field, Form, Formik } from 'formik' 
 import Swal from 'sweetalert2'
 import Nav from '../../components/nav';
 import { useProducto } from "../../context/Productos/ProductoContext"
+import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
+import React from 'react';
+   
+
 
 function primeraMayuscula(input) {
     return input
@@ -57,7 +64,47 @@ function UpdateProducto(){
 <div className='card w-75 p-3 mx-auto mt-5'>
         <Formik 
             initialValues = {listarProducto}      
-            enableReinitialize = {true}      
+            enableReinitialize = {true}
+            validate={async(values)=>{
+                const errors={}
+
+                if (!values.id_producto) {
+                    errors.id_producto = 'Este campo es requerido';
+              
+                  }else if (!/^[0-9]+$/.test(values.id_producto)) 
+                    errors.id_producto = 'Este campo solo debe contener numeros'
+
+                if (!values.fk_categoria) {
+                  errors.fk_categoria = 'Este campo es requerido';
+            
+                }else if (!/^[0-9]+$/.test(values.fk_categoria)) {
+                  errors.fk_categoria = 'Este campo solo debe contener letras';
+                }
+                if(!values.nombre_producto){
+                  errors.nombre_producto = 'Este campo es requerido';
+
+                }else if (!/^[a-zA-Z]+$/.test(values.nombre_producto)){
+                  errors.nombre_producto = 'Este campo solo debe contener letras';
+                }
+                if(!values.precio){
+                  errors.precio = 'Este campo es requerido';
+
+                }else if (!/^[0-9]+$/.test(values.precio)){
+                  errors.precio = 'Este campo solo debe contener numeros';
+                }
+                if(!values.imagen){
+                  errors.imagen= 'Este campo es requerido';
+
+                }
+                if(!values.stock){
+                  errors.stock = 'Este campo es requerido';
+
+                }else if (!/^[0-9]+$/.test(values.stock)){
+                  errors.stock = 'Este campo solo debe contener numeros';
+                }
+                return errors
+              }
+            }     
             onSubmit={async (values) => {
                 console.log(values)
                 validarProductoActualizar(params.id_producto, values)
@@ -66,36 +113,174 @@ function UpdateProducto(){
             }
         >
             {
-                ({handleChange, handleSubmit, values}) => (
+                ({handleChange, handleSubmit, values, errors}) => (
                     <Form  onSubmit={handleSubmit} className='row g-3'>
                 <div className="col-md-6">
-                <label htmlFor="id_producto">Id</label>
-                <input type="text" name='id_producto' onChange={handleChange} value={values.id_producto} className="form-control" readOnly/>
+                <label htmlFor="id_producto"></label>
+                <Field
+                type="text" 
+                name='id_producto' 
+                onChange={handleChange}
+                label ='Id' 
+                value={values.id_producto}
+                as={TextField} 
+                className={` ${
+                    values.id_producto && /^[0-9]+$/.test(values.id_producto) ? 'is-valid' : 'is-invalid'
+                  }`}
+                  InputProps={{
+                    endAdornment: (
+                      <React.Fragment>
+                        {values.id_producto && /^[0-9]+$/.test(values.id_producto) ? (
+                          <CheckIcon style={{ color: 'green' }} />
+                        ) : (
+                          <ErrorIcon style={{ color: 'red' }} />
+                        )}
+                      </React.Fragment>
+                    ),
+                  }}
+                  sx={{ width: '100%' }}
+                />
+                {errors.id_producto && <div className='invalid-feedback'>{errors.id_producto}</div>}
                 </div>
 
                 <div className="col-md-6">
-                <label htmlFor="fk_categoria">Categoria</label>
-                <input type="text" name='fk_categoria' onChange={handleChange} value={values.fk_categoria} className="form-control"/>
+                <label htmlFor="fk_categoria"></label>
+                <Field 
+                type="text" 
+                name='fk_categoria' 
+                onChange={handleChange}
+                label ='Categoria'
+                value={values.fk_categoria} 
+                as={TextField} 
+                className={` ${
+                    values.fk_categoria && /^[0-9]+$/.test(values.fk_categoria) ? 'is-valid' : 'is-invalid'
+                  }`}
+                  InputProps={{
+                    endAdornment: (
+                      <React.Fragment>
+                        {values.fk_categoria && /^[0-9]+$/.test(values.fk_categoria) ? (
+                          <CheckIcon style={{ color: 'green' }} />
+                        ) : (
+                          <ErrorIcon style={{ color: 'red' }} />
+                        )}
+                      </React.Fragment>
+                    ),
+                  }}
+                  sx={{ width: '100%' }}
+                />
+                {errors.fk_categoria && <div className='invalid-feedback'>{errors.fk_categoria}</div>} 
                 </div>
 
                 <div className="col-md-6"> 
-                <label htmlFor="nombre_producto">Nombre</label>
-                <input type="text" name='nombre_producto' onChange={handleChange} value={values.nombre_producto} className="form-control"/>
+                <label htmlFor="nombre_producto"></label>
+                <Field
+                type="text" 
+                name='nombre_producto' 
+                onChange={handleChange}
+                label ='Nombre' 
+                value={values.nombre_producto}  
+                as={TextField} 
+                className={` ${
+                    values.nombre_producto && /^[a-zA-Z]+$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
+                  }`}
+                  InputProps={{
+                    endAdornment: (
+                      <React.Fragment>
+                        {values.nombre_producto && /^[a-zA-Z]+$/.test(values.nombre_producto) ? (
+                          <CheckIcon style={{ color: 'green' }} />
+                        ) : (
+                          <ErrorIcon style={{ color: 'red' }} />
+                        )}
+                      </React.Fragment>
+                    ),
+                  }}
+                  sx={{ width: '100%' }}
+                />
+                {errors.nombre_producto && <div className='invalid-feedback'>{errors.nombre_producto}</div>} 
                 </div>
 
                 <div className="col-md-6">
-                <label htmlFor="precio">Precio</label>
-                <input type="text" name='precio' onChange={handleChange} value={values.precio} className="form-control"/>
+                <label htmlFor="precio"></label>
+                <Field
+                type="text" 
+                name='precio' 
+                onChange={handleChange}
+                label ='Precio'
+                value={values.precio} 
+                as={TextField}
+                className={` ${
+                    values.precio && /^[0-9]+$/.test(values.precio) ? 'is-valid' : 'is-invalid'
+                  }`}
+                  InputProps={{
+                    endAdornment: (
+                      <React.Fragment>
+                        {values.precio &/^[0-9]+$/.test(values.precio) ? (
+                          <CheckIcon style={{ color: 'green' }} />
+                        ) : (
+                          <ErrorIcon style={{ color: 'red' }} />
+                        )}
+                      </React.Fragment>
+                    ),
+                  }}
+                  sx={{ width: '100%' }}
+                />
+                {errors.precio && <div className='invalid-feedback'>{errors.precio}</div>}
                 </div>
 
                 <div className="col-md-6">
-                <label htmlFor="imagen">Imagen</label>
-                <input type="text" name='imagen' onChange={handleChange} value={values.imagen} className="form-control"/>
+                <label htmlFor="imagen"></label>
+                <Field
+                type="file" 
+                name='imagen' 
+                onChange={handleChange} 
+                label ='Imagen'
+                value={values.imagen} 
+                as={TextField} 
+                className={` ${
+                    values.imagen && /^[a-zA-Z]+$/.test(values.imagen) ? 'is-valid' : 'is-invalid'
+                  }`}
+                  InputProps={{
+                    endAdornment: (
+                      <React.Fragment>
+                        {values.imagen && /^[a-zA-Z]+$/.test(values.imagen) ? (
+                          <CheckIcon style={{ color: 'green' }} />
+                        ) : (
+                          <ErrorIcon style={{ color: 'red' }} />
+                        )}
+                      </React.Fragment>
+                    ),
+                  }}
+                  sx={{ width: '100%' }}
+                />
+                {errors.imagen && <div className='invalid-feedback'>{errors.imagen}</div>}
                 </div>
 
                 <div className="col-md-6">
-                <label htmlFor="stock">Stock</label>
-                <input type="text" name='stock' onChange={handleChange} value={values.stock} className="form-control"/>
+                <label htmlFor="stock"></label>
+                <Field
+                type="text" 
+                name='stock' 
+                onChange={handleChange}
+                label ='Stock'
+                value={values.stock} 
+                as={TextField}  
+                className={` ${
+                    values.stock && /^[0-9]+$/.test(values.stock) ? 'is-valid' : 'is-invalid'
+                  }`}
+                  InputProps={{
+                    endAdornment: (
+                      <React.Fragment>
+                        {values.stock &/^[0-9]+$/.test(values.precio) ? (
+                          <CheckIcon style={{ color: 'green' }} />
+                        ) : (
+                          <ErrorIcon style={{ color: 'red' }} />
+                        )}
+                      </React.Fragment>
+                    ),
+                  }}
+                  sx={{ width: '100%' }}
+                />
+                {errors.stock && <div className='invalid-feedback'>{errors.stock}</div>}
                 </div>      
 
                 <div className='col-auto'>

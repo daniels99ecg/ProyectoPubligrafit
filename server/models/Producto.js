@@ -17,14 +17,14 @@ const Producto=sequelize.define("productos",{
         allowNull:false
     },
     precio:{
-        type:DataTypes.DECIMAL,
+        type:DataTypes.FLOAT,
         allowNull:false
     },
-    // imagen:{
-    //     type:DataTypes.BLOB,
-    //     allowNull:false
-    // },
-    stock:{
+     imagen:{
+         type:DataTypes.BLOB,
+        allowNull:false
+    },
+    cantidad:{
         type:DataTypes.INTEGER,
         allowNull:false
     },

@@ -51,18 +51,20 @@ function listarProductos(){
               rows={filtrarDesactivados.map((item) => ({
                 ...item,
                 id: item.id_producto,
+                categoria: item.categoria.categoria
               }))}
               columns={[
-                { field: 'id_producto', headerName: 'Id', flex: 1 },
-                { field: 'fk_categoria', headerName: 'Categoria', flex: 1 },
-                { field: 'nombre_producto', headerName: 'Nombre', flex: 1 },
-                { field: 'precio', headerName: 'Precio', flex: 1 },
-                { field: 'imagen', headerName: 'Imagen', flex: 1 },
-                { field: 'stock', headerName: 'Stock', flex: 1 },
+                { field: 'id_producto', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
+                { field: 'categoria', headerName: 'Categoria', headerClassName: 'encabezado', flex: 1 },
+                { field: 'nombre_producto', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
+                { field: 'precio', headerName: 'Precio', headerClassName: 'encabezado', flex: 1 },
+                { field: 'imagen', headerName: 'Imagen', headerClassName: 'encabezado', flex: 1 },
+                { field: 'cantidad', headerName: 'Cantidad', headerClassName: 'encabezado', flex: 1 },
                
                 {
                   field: 'estado',
                   headerName: 'Estado',
+                  headerClassName: 'encabezado',
                   flex: 1,
                   renderCell: (params) => (
                     <div className="switch-button">
@@ -90,6 +92,7 @@ function listarProductos(){
                 {
                   field: 'acciones',
                   headerName: 'Acciones',
+                  headerClassName: 'encabezado',
                   flex: 1,
                   renderCell: (params) => (
                     <div>
@@ -151,10 +154,11 @@ function listarProductos(){
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 8,
+                    pageSize: 5,
                   },
                 },
               }}
+              pageSizeOptions={[5]} 
               getRowClassName={(params) => {
                 if (!params.row.estado) {
                   return 'cliente-desactivado';

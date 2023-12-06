@@ -31,7 +31,9 @@ const FichaTecnica=sequelize.define("fichas_tecnicas",{
     detalle:{
         type:DataTypes.STRING,
         allowNull:false
-    }
+    },
+    estado:DataTypes.BOOLEAN
+
 },{
     timestamps:false,
     

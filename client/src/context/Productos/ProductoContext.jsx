@@ -29,7 +29,7 @@ export const ProductoContextProvider = ({children})=>{
       item.nombre_producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.precio.toString().includes(searchTerm) ||
       // item.imagen.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.stock.toString().includes(searchTerm)
+      item.cantidad.toString().includes(searchTerm)
      
     );
     setListar(filterList);
@@ -85,7 +85,7 @@ const validacionProducto = async (values)=>{
     try {
         let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
         let NumberPattern = /^[0-9]+$/;
-        if(values.nombre_producto =="" || values.precio =="" || values.stock =="" /*|| values.imagen=="" */){
+        if(values.nombre_producto =="" || values.precio =="" || values.cantidad =="" /*|| values.imagen=="" */){
             Swal.fire({
                 icon: 'error',
                 title: 'Campos Vacios',
@@ -99,10 +99,10 @@ const validacionProducto = async (values)=>{
                 text: 'Por favor ingresar solo letras!',
                 
               })
-        }else if((!NumberPattern.test(values.stock))){
+        }else if((!NumberPattern.test(values.cantidad))){
             Swal.fire({
                 icon: 'error',
-                title: 'Stock',
+                title: 'cantidad',
                 text: 'Por favor ingresar solo numeros!',
                 
               })
@@ -199,7 +199,7 @@ const validacionProducto = async (values)=>{
           nombre_producto: '',
           precio: '',
           imagen: '',
-          stock: '',
+          cantidad: '',
 
       })
       async function productoActualizar (id_producto){
@@ -215,7 +215,7 @@ const validacionProducto = async (values)=>{
                 nombre_producto: response.nombre_producto,
                 precio: response.precio,
                 imgane: response.imagen,
-                stock: response.stock
+                cantidad: response.cantidad
             })
         } catch (error) {
             console.log(error)
@@ -225,7 +225,7 @@ const validacionProducto = async (values)=>{
         try {
           let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
           let NumberPattern = /^[0-9]+$/;
-          if(values.nombre_producto =="" || values.precio =="" || values.stock =="" || values.imagen=="" ){
+          if(values.nombre_producto =="" || values.precio =="" || values.cantidad =="" || values.imagen=="" ){
               Swal.fire({
                   icon: 'error',
                   title: 'Campos Vacios',
@@ -239,7 +239,7 @@ const validacionProducto = async (values)=>{
                   text: 'Por favor ingresar solo letras!',
                   
                 })
-          }else if((!NumberPattern.test(values.stock))){
+          }else if((!NumberPattern.test(values.cantidad))){
               Swal.fire({
                   icon: 'error',
                   title: 'Cantidad',

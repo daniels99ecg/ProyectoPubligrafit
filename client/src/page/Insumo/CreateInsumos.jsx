@@ -2,6 +2,10 @@
 import { Formik, Field, Form } from 'formik';
 import Nav from '../../components/nav';
 import { useInsumo } from '../../context/Insumos/InsumoContext';
+import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
+import React from 'react';
 
 
 function CreateInsumo() {
@@ -25,21 +29,55 @@ function CreateInsumo() {
                     initialValues={{
                       id_insumo: '',
                       nombre: '',
-                      precio: '',
-                      cantidad: ''
+                     
                     }}
+                    validate={async(values)=>{
+                      const errors={}
+
+                      if (!values.nombre) {
+                        errors.nombre = 'Este campo es requerido';
+                  
+                      }else if (!/^[a-zA-Z]+$/.test(values.nombre)) {
+                        errors.nombre = 'Este campo solo debe contener letras';
+                      }
+                      return errors;
+                    }}
+
+                      
+
                     onSubmit={async (values) => {
                         validacionInsumo(values)
                     }}
                   >
-                    {({ handleChange, values }) => (
+                    {({ handleChange, values , errors}) => (
                       <Form className='row g-3'>
                         <div className="col-md-12 mx-auto">
-                          <label htmlFor="nombre">Nombre</label>
-                          <Field type="text" name='nombre' className="form-control" />
+                          <label htmlFor="nombre"></label>
+                          <Field 
+                          type="text" 
+                          name='nombre' 
+                          as={TextField} 
+                          label ='Nombre' 
+                          className={` ${
+                            values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? 'is-valid' : 'is-invalid'
+                          }`}
+                          InputProps={{
+                            endAdornment: (
+                              <React.Fragment>
+                                {values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? (
+                                  <CheckIcon style={{ color: 'green' }} />
+                                ) : (
+                                  <ErrorIcon style={{ color: 'red' }} />
+                                )}
+                              </React.Fragment>
+                            ),
+                          }}
+                          sx={{ width: '100%' }}
+                          />
+                          {errors.nombre && <div className='invalid-feedback'>{errors.nombre}</div>}
                         </div>
 
-                        <div className="col-md-6">
+                        {/* <div className="col-md-6">
                           <label htmlFor="precio">Precio</label>
                           <Field type="text" name='precio' className="form-control" />
                         </div>
@@ -47,7 +85,7 @@ function CreateInsumo() {
                         <div className="col-md-6">
                           <label htmlFor="cantidad">Cantidad</label>
                           <Field type="text" name='cantidad' className="form-control" />
-                        </div>
+                        </div> */}
 
                         <div className='col-auto'>
                           <button className='btn btn-primary' type='submit'>Registrar</button>

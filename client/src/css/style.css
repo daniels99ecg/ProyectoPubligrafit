@@ -486,3 +486,65 @@ h1, .h1 {
   background-color: #fffefe; 
   color: #636262; 
 }
+
+.encabezado  {
+  background-color: #498cf1;
+  color: white;
+}
+
+.card {
+  border-radius: 15px; /* Ajusta el valor según tu preferencia */
+}
+
+.form-control {
+  border-radius: 8px; /* Ajusta el valor según tu preferencia */
+}
+
+.error-message {
+  color: rgb(245, 53, 53);
+}
+
+.detalles-venta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.producto-detalle {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  width: 200px;
+  border-radius: 10px; /* Ajusta este valor según tus preferencias */
+}
+
+.producto-info {
+  margin-bottom: 10px;
+}
+
+.acciones button {
+  margin-right: 5px;
+}
+
+/* Card Form */
+.ms-auto {
+  float: right !important;
+  margin-top: -6%;
+}
+
+/* Botones Ventas */
+.buttons-doubles{
+margin-left: 1%;
+margin-top: 0;
+}
+
+/* Tabla detalles venta */
+.custom-table thead {
+  background-color: #808080; /* Cambia el color de fondo gris de los encabezados a tu preferencia */
+  color: #fff; /* Cambia el color del texto si es necesario */
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 6px; /* Ajusta el espacio interno de las celdas de encabezado y datos */
+}

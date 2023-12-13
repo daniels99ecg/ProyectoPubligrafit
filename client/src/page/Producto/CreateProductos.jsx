@@ -5,13 +5,19 @@
   import CheckIcon from '@mui/icons-material/Check';
   import ErrorIcon from '@mui/icons-material/Error';
   import React from 'react';
-  import { useState} from "react"
+  import Autocomplete from '@mui/material/Autocomplete';
+  import {  useEffect } from 'react'
 
    
    function CreateProducto() {
-     const {validacionProducto}=useProducto()
 
-   
+     const {validacionProducto, cargarCategoria, Listar}=useProducto()
+     useEffect(()=>{
+    
+      cargarCategoria()
+      
+     },[])
+
      return (
        <>
          <Nav />
@@ -91,29 +97,19 @@
                        {({ handleChange, handleSubmit, setFieldValue ,values, errors  }) => (
                          <Form onSubmit={handleSubmit} className='row g-3'>
                            <div className="col-md-6 ">
-                            <Field 
-                            type="text" 
-                            name='fk_categoria' 
-                            as={TextField} 
-                            label ='Categoria' 
-                            onChange={handleChange} 
-                            className={` ${
-                              values.fk_categoria && /^[0-9]+$/.test(values.fk_categoria) ? 'is-valid' : 'is-invalid'
-                            }`}
-                            InputProps={{
-                              endAdornment: (
-                                <React.Fragment>
-                                  {values.fk_categoria && /^[0-9]+$/.test(values.fk_categoria) ? (
-                                    <CheckIcon style={{ color: 'green' }} />
-                                  ) : (
-                                    <ErrorIcon style={{ color: 'red' }} />
-                                  )}
-                                </React.Fragment>
-                              ),
-                            }}
-                            sx={{ width: '100%' }}
-                          />
-                          {errors.fk_categoria && <div className='invalid-feedback'>{errors.fk_categoria}</div>}
+                           <Autocomplete 
+                              disablePortal
+                              id="fixed-tags-demo"
+                              options={Listar}  // Filtrar roles con estado true
+                              getOptionLabel={(option) => option.categoria}
+                              onChange={(event, newValue) => {
+                                handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : '' } });
+                              }}
+                              value={Listar && values && Listar.find((categoria) => categoria.id_categoria === values.fk_categoria) || null}
+                              sx={{ width: '100%' }}
+                              renderInput={(params) => <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>}
+                            />
+
                             </div>
                             <div className="col-md-6 ">
                             <Field 

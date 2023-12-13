@@ -7,6 +7,8 @@ const upload = multer({ storage: storage });
 
 
 Router.get("/", ProductoController.listarProductos);
+Router.get("/categorias", ProductoController.listarCategoria)
+
 Router.get("/:id", ProductoController.listarProducto);
 Router.post("/create", subirArchivoProducto, ProductoController.crearProducto);
 Router.put("/update/:id", ProductoController.actualizarProducto);

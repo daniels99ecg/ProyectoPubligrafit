@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarProductos, postCreateProducto,getListarProducto, putActualizarProductos,eliminarProducto, putActivarProducto, putDesactivarProducto} from "../../api/Producto/Rutas.producto"
+import {getListarProductos, postCreateProducto,getListarProducto, putActualizarProductos,eliminarProducto, putActivarProducto, putDesactivarProducto, getListarcategoria} from "../../api/Producto/Rutas.producto"
 import Swal from 'sweetalert2'
 export const ProductoContext = createContext()
 
@@ -15,6 +15,7 @@ export const useProducto = () => {
 
 export const ProductoContextProvider = ({children})=>{
   const [listar, setListar] = useState([]);
+  const [Listar, setListar2]=useState([])
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   
@@ -33,6 +34,13 @@ export const ProductoContextProvider = ({children})=>{
     );
     setListar(filterList);
 }
+
+
+const cargarCategoria=async()=>{
+ const response=await getListarcategoria()
+setListar2(response.data)
+}
+
 const desactivarProducto = async (id_producto) => {
     try {
       const response = await putDesactivarProducto(id_producto);
@@ -52,6 +60,9 @@ const desactivarProducto = async (id_producto) => {
       // Maneja el error de manera adecuada
     }
   };
+
+
+
 
   const activarProducto = async (id_producto) => {
     try {
@@ -284,7 +295,7 @@ const validacionProducto = async (values)=>{
 
 return(
     <ProductoContext.Provider
-    value={{listar,ShowProducto,searchTerm,setSearchTerm, validarProductoActualizar,productoActualizar,listarProducto,activarProducto, eliminarProductos, desactivarProducto, validacionProducto ,filtrarDesactivados}}>
+    value={{listar,ShowProducto,searchTerm,setSearchTerm,cargarCategoria,Listar, validarProductoActualizar,productoActualizar,listarProducto,activarProducto, eliminarProductos, desactivarProducto, validacionProducto ,filtrarDesactivados}}>
     {children}
     </ProductoContext.Provider>
 )

@@ -28,3 +28,9 @@ export const putDesactivarProducto = async (id_producto) => {
 export const putActivarProducto = async (id_producto) => {
     return await axios.put(`http://localhost:3001/producto/activate/${id_producto}`);
 }
+
+
+
+export const  getListarcategoria=async ()=>{
+    return await axios.get('http://localhost:3001/producto/categorias')
+}

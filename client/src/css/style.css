@@ -562,3 +562,110 @@ margin-top: 0;
 .custom-table td {
   padding: 6px; /* Ajusta el espacio interno de las celdas de encabezado y datos */
 }
+
+
+.new-cant {
+  position: relative;
+  top: -64px;
+  left: 260px;
+}
+
+.total-venta{
+  position: relative;
+  top: 10px;
+  left: 60px;
+}
+
+@media (max-width: 600px) {
+  .btn-outline-secondary,
+  .client-button {
+    position: relative;
+    right: 9px;
+    padding: 6px !important; 
+    font-size: 6px !important; 
+  }
+
+}
+
+@media (max-width: 600px) {
+  .estado-bottom {
+    position: relative;
+    right: 9px;
+    transform: scale(0.6); 
+    margin: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .info-button {
+    padding: 6px;
+  }
+  .info-button svg {
+    width: 18px; 
+    height: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .swal2-popup {
+    font-size: 12px; /* Ajusta el tamaño según sea necesario */
+  }
+}
+
+@media (max-width: 600px) {
+  .btn-primary {
+    width: 100%; /* Ajusta el ancho según sea necesario */
+  }
+
+  .form-control {
+    width: 100%; /* Ajusta el ancho según sea necesario */
+  }
+} 
+
+@media (max-width: 600px) {
+  /* Estilos específicos para pantallas más pequeñas (móviles) */
+  .button-exportar {
+    margin-left:0px; /* Ajusta el margen según sea necesario */
+    width: 100%; /* O ajusta el ancho según tus preferencias */
+  }
+}
+
+@media (max-width: 600px) {
+  /* Botones de Acción */
+  .buttons-doubles {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  /* Formulario */
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  .col-md-7,
+  .new-cant {
+    width: 100%;
+  }
+
+  /* Tabla de Detalles */
+  #detallesVenta {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  #detallesVenta th,
+  #detallesVenta td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  #detallesVenta th:nth-child(6),
+  #detallesVenta td:nth-child(6) {
+    min-width: 60px;
+  }
+
+  /* Autocomplete */
+  #fixed-tags-demo {
+    width: 100%;
+  }
+}

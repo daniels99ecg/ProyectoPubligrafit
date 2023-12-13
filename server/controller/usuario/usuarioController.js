@@ -148,6 +148,7 @@
       const { 
         id_usuario,
         documento,
+        tipo_documento,
         fk_rol2,
         nombres,
         apellidos,
@@ -182,6 +183,7 @@
         // Actualizar campos del usuario
         usuario.id_usuario = id_usuario;
         usuario.documento = documento;
+        usuario.tipo_documento=tipo_documento;
         usuario.fk_rol2 = fk_rol2;
         usuario.nombres = nombres;
         usuario.apellidos = apellidos;
@@ -235,17 +237,19 @@
       },
      });
   }
+
   async function cambiarContrasena(req, res) {
     try {
-      const { email, contrasena } = req.body;
-  
+      const { email, contrasena} = req.body;
+
+    
       // Busca al usuario por su dirección de correo electrónico
       const usuario = await Usuario.findOne({ where: { email } });
   
       if (!usuario) {
         return res.status(404).json({ error: 'Usuario no encontrado' });
       }
-  
+
       // Hashea la nueva contraseña antes de guardarla en la base de datos
       const hashedPassword = await bcrypt.hash(contrasena, 10);
   
@@ -286,7 +290,52 @@
       res.status(500).json({ error: 'Error al cambiar la contraseña' });
     }
   }
+  async function enviarEmail(req, res) {
+    try {
+      const { email } = req.body;
   
+      // Busca al usuario por su dirección de correo electrónico
+      const usuario = await Usuario.findOne({ where: { email } });
+  
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+  
+      const token = jwt.sign({ userId: usuario.id_usuario }, 'tu_secreto', { expiresIn: '1h' });
+
+      // Envía un correo electrónico informando sobre el cambio de contraseña
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'danielsenju1999@gmail.com',
+          pass: 'bvqn izon clzx gfoa'
+        }
+      });
+  
+      const mailOptions = {
+        from: 'danielsenju1999@gmail.com',
+        to: usuario.email,
+        subject: 'Cambio de Contraseña Exitoso',
+        html: `
+          <h1>¡Hola ${usuario.nombres}!</h1>
+          <p>Tu dirección para cambiar la contraseña es: http://localhost:5173/cambiarcontrasena?token=${token}</p>
+        `
+      };
+  
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('Correo electrónico enviado: ' + info.response);
+        }
+      });
+  
+      res.status(200).json({ message: 'Contraseña cambiada exitosamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al cambiar la contraseña' });
+    }
+  } 
   // const verifyToken = async (req, res) => {
   //   const { token } = req.cookies;
   //   if (!token) return res.send(false);
@@ -370,7 +419,8 @@
       desactivarCliente,
       activarCliente,
       eliminar,
-      cambiarContrasena
+      cambiarContrasena,
+      enviarEmail
   }
       
       

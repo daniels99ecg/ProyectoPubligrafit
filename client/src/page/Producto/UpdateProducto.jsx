@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom"
-import { putActualizarProductos, getListarProducto } from '../../api/Producto/Rutas.producto'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Field, Form, Formik } from 'formik' 
-import Swal from 'sweetalert2'
 import Nav from '../../components/nav';
 import { useProducto } from "../../context/Productos/ProductoContext"
 import TextField from '@mui/material/TextField';
@@ -66,14 +64,7 @@ function UpdateProducto(){
             initialValues = {listarProducto}      
             enableReinitialize = {true}
             validate={async(values)=>{
-                const errors={}
-
-                if (!values.id_producto) {
-                    errors.id_producto = 'Este campo es requerido';
-              
-                  }else if (!/^[0-9]+$/.test(values.id_producto)) 
-                    errors.id_producto = 'Este campo solo debe contener numeros'
-
+                const errors={}  
                 if (!values.fk_categoria) {
                   errors.fk_categoria = 'Este campo es requerido';
             
@@ -83,7 +74,7 @@ function UpdateProducto(){
                 if(!values.nombre_producto){
                   errors.nombre_producto = 'Este campo es requerido';
 
-                }else if (!/^[a-zA-Z]+$/.test(values.nombre_producto)){
+                }else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto)){
                   errors.nombre_producto = 'Este campo solo debe contener letras';
                 }
                 if(!values.precio){
@@ -92,17 +83,14 @@ function UpdateProducto(){
                 }else if (!/^[0-9]+$/.test(values.precio)){
                   errors.precio = 'Este campo solo debe contener numeros';
                 }
-                if(!values.imagen){
-                  errors.imagen= 'Este campo es requerido';
+                if(!values.cantidad){
+                  errors.cantidad = 'Este campo es requerido';
 
-                }
-                if(!values.stock){
-                  errors.stock = 'Este campo es requerido';
-
-                }else if (!/^[0-9]+$/.test(values.stock)){
-                  errors.stock = 'Este campo solo debe contener numeros';
+                }else if (!/^[0-9]+$/.test(values.cantidad)){
+                  errors.cantidad = 'Este campo solo debe contener numeros';
                 }
                 return errors
+             
               }
             }     
             onSubmit={async (values) => {
@@ -181,12 +169,12 @@ function UpdateProducto(){
                 value={values.nombre_producto}  
                 as={TextField} 
                 className={` ${
-                    values.nombre_producto && /^[a-zA-Z]+$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
+                    values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
                   }`}
                   InputProps={{
                     endAdornment: (
                       <React.Fragment>
-                        {values.nombre_producto && /^[a-zA-Z]+$/.test(values.nombre_producto) ? (
+                        {values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? (
                           <CheckIcon style={{ color: 'green' }} />
                         ) : (
                           <ErrorIcon style={{ color: 'red' }} />
@@ -214,7 +202,7 @@ function UpdateProducto(){
                   InputProps={{
                     endAdornment: (
                       <React.Fragment>
-                        {values.precio &/^[0-9]+$/.test(values.precio) ? (
+                        {values.precio && /^[0-9]+$/.test(values.precio) ? (
                           <CheckIcon style={{ color: 'green' }} />
                         ) : (
                           <ErrorIcon style={{ color: 'red' }} />
@@ -256,21 +244,21 @@ function UpdateProducto(){
                 </div>
 
                 <div className="col-md-6">
-                <label htmlFor="stock"></label>
+                <label htmlFor="cantidad"></label>
                 <Field
                 type="text" 
-                name='stock' 
+                name='cantidad' 
                 onChange={handleChange}
-                label ='Stock'
-                value={values.stock} 
+                label ='cantidad'
+                value={values.cantidad} 
                 as={TextField}  
                 className={` ${
-                    values.stock && /^[0-9]+$/.test(values.stock) ? 'is-valid' : 'is-invalid'
+                    values.cantidad && /^[0-9]+$/.test(values.cantidad) ? 'is-valid' : 'is-invalid'
                   }`}
                   InputProps={{
                     endAdornment: (
                       <React.Fragment>
-                        {values.stock &/^[0-9]+$/.test(values.precio) ? (
+                        {values.cantidad &&/^[0-9]+$/.test(values.precio) ? (
                           <CheckIcon style={{ color: 'green' }} />
                         ) : (
                           <ErrorIcon style={{ color: 'red' }} />
@@ -280,7 +268,7 @@ function UpdateProducto(){
                   }}
                   sx={{ width: '100%' }}
                 />
-                {errors.stock && <div className='invalid-feedback'>{errors.stock}</div>}
+                {errors.cantidad && <div className='invalid-feedback'>{errors.cantidad}</div>}
                 </div>      
 
                 <div className='col-auto'>

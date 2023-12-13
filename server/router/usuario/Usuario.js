@@ -12,7 +12,8 @@ Router.put("/update/:id", UsuarioController.actualizarUsuario)
 
 Router.post("/login/", UsuarioController.login)
 
-Router.post("/cambiarcontrasena/", UsuarioController.cambiarContrasena)
+Router.post("/cambiarcontrasena", UsuarioController.cambiarContrasena)
+Router.post("/enviaremail/", UsuarioController.enviarEmail)
 
 // Router.get("/verefy", UsuarioController.verifyToken)
 

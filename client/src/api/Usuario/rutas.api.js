@@ -48,16 +48,29 @@ export const loginIngreso = async (email, contrasena) => {
 };
 export const cambiarContrasena = async (email, contrasena) => {
   try {
-    const response = await axios.post('http://localhost:3001/usuario/cambiarcontrasena/', {
+    const response = await axios.post(`http://localhost:3001/usuario/cambiarcontrasena/`, {
       email: email,
       contrasena: contrasena,
     });
+    console.log('Contraseña cambiada exitosamente:', response.data);
+
+    return response.data; // O algo similar
+
   } catch (error) {
     throw error; // Maneja el error adecuadamente en tu componente React
   }
 };
 
-
+export const enviarContrasena = async (email) => {
+  try {
+    const response = await axios.post('http://localhost:3001/usuario/enviaremail/', {
+      email: email,
+      
+    });
+  } catch (error) {
+    throw error; // Maneja el error adecuadamente en tu componente React
+  }
+};
 export const putDesactivarCliente = async (id_usuario) => {
   return await axios.put(`http://localhost:3001/usuario/disable/${id_usuario}`);
 }

@@ -54,17 +54,19 @@ function UserCreate() {
       errors.nombres = 'Este campo es requerido';
       errors.apellidos = 'Este campo es requerido';
 
-    }else if (!/^[a-zA-Z]+$/.test(values.nombres)) {
+    }else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombres)) {
       errors.nombres = 'Este campo solo debe contener letras';
 
-    }else if(!/^[a-zA-Z]+$/.test(values.apellidos)){
+    }else if(!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.apellidos)){
       errors.apellidos = 'Este campo solo debe contener letras';
     }
     if (!values.documento) {
         errors.documento = 'Este campo es requerido';
-      } else if (!/^[0-9]+$/.test(values.documento)) {
+    }else if (!/^[0-9]+$/.test(values.documento)) {
         errors.documento = 'Este campo solo debe contener números';
-      }
+    }else if (values.documento.length < 6 || values.documento.length > 12) {
+      errors.documento = "La longitud debe estar entre 6 y 12 caracteres";
+    }
     if (!values.email) {
       errors.email = 'Este campo es requerido';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
@@ -74,6 +76,8 @@ function UserCreate() {
       errors.contrasena = 'Este campo es requerido';
     } else if (values.contrasena.length < 8) {
       errors.contrasena = 'La contraseña debe tener al menos 8 caracteres';
+    }else if (!/[!@#$%^&*(),.?":{}|<>]/.test(values.contrasena)) {
+      errors.contrasena = 'La contraseña debe contener al menos un carácter especial (!@#$%^&*(),.?":{}|<>)';
     }
      
     return errors;
@@ -97,16 +101,16 @@ function UserCreate() {
     disablePortal
     id="tipo-documento-autocomplete"
     options={[
-      { id: 'Cc', label: 'Cédula de Ciudadanía' },
-      { id: 'Ti', label: 'Tarjeta de Identidad' },
-      { id: 'Ce', label: 'Cédula de Extranjería' },
+      { id: 'CC', label: 'CC - Cédula de ciudadanía' },
+      { id: 'CE', label: 'CE - Cédula de extranjería' },
+      { id: 'TI', label: 'TI - Tarjeta de identidad' }
       // Agrega más opciones según tus necesidades
     ]}
     getOptionLabel={(option) => option.label}
     onChange={(event, newValue) => {
       handleChange({ target: { name: 'tipo_documento', value: newValue ? newValue.id : '' } });
     }}
-    value={null} // Puedes establecer un valor predeterminado si lo necesitas
+     // Puedes establecer un valor predeterminado si lo necesitas
     sx={{ width: '100%' }}
     renderInput={(params) => <TextField {...params} label="Tipo de Documento" sx={{ width: '100%' }} />}
   />
@@ -120,7 +124,12 @@ function UserCreate() {
           as={TextField}
           value={values.documento}
           className={` ${
-            values.documento && /^[0-9]+$/.test(values.documento) ? 'is-valid' : 'is-invalid'
+            values.documento &&
+            /^[0-9]+$/.test(values.documento) &&
+            values.documento.length >= 6 &&
+            values.documento.length <= 12
+              ? 'is-valid'
+              : 'is-invalid'
           }`}
           InputProps={{
             endAdornment: (
@@ -136,6 +145,7 @@ function UserCreate() {
           sx={{ width: '100%' }}
         />
         {errors.documento && <div className='invalid-feedback'>{errors.documento}</div>}
+        
       </div>
       <div className="col-md-6">
                           <Field
@@ -145,11 +155,11 @@ function UserCreate() {
                             value={values.nombres}
                             label='Nombre'
                             as={TextField}
-                            className={`${values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? 'is-valid' : 'is-invalid'}`}
+                            className={`${values.nombres && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombres) ? 'is-valid' : 'is-invalid'}`}
                             InputProps={{
                               endAdornment: (
                                 <React.Fragment>
-                                  {values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? (
+                                  {values.nombres && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombres) ? (
                                     <CheckIcon style={{ color: 'green' }} />
                                   ) : (
                                     <ErrorIcon style={{ color: 'red' }} />
@@ -171,11 +181,11 @@ function UserCreate() {
           value={values.apellidos}
           label='Apellido'
           as={TextField}
-          className={` ${values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? 'is-valid' : 'is-invalid'}`}
+          className={` ${values.apellidos && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.apellidos) ? 'is-valid' : 'is-invalid'}`}
           InputProps={{
             endAdornment: (
               <React.Fragment>
-                {values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? (
+                {values.apellidos && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.apellidos) ? (
                   <CheckIcon style={{ color: 'green' }} />
                 ) : (
                   <ErrorIcon style={{ color: 'red' }} />
@@ -244,21 +254,17 @@ function UserCreate() {
 
 <div className="col-md-12">
 <Autocomplete 
-
-          disablePortal
-          id="fixed-tags-demo"
-          options={Listar}
-          getOptionLabel={(option) => option.nombre_rol}
-          onChange={(event, newValue) => {
-            // Aquí puedes manejar el cambio de valor seleccionado en Autocomplete
-            // Puedes actualizar el estado o realizar otras acciones necesarias
-            handleChange({ target: { name: 'fk_rol2', value: newValue ? newValue.id_rol : '' } });
-          }}
-          value={Listar.find((rol) => rol.id_rol === values.fk_rol2) || null}
-          sx={{ width: '100%' }}
-          renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' }}/>}
-        />
-
+  disablePortal
+  id="fixed-tags-demo"
+  options={Listar.filter((rol) => rol.estado)}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.nombre_rol}
+  onChange={(event, newValue) => {
+    handleChange({ target: { name: 'fk_rol2', value: newValue ? newValue.id_rol : '' } });
+  }}
+  value={Listar.find((rol) => rol.id_rol === values.fk_rol2) || null}
+  sx={{ width: '100%' }}
+  renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' }}/>}
+/>
 </div>
 
 

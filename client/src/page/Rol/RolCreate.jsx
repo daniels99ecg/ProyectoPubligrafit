@@ -4,7 +4,9 @@ import { useEffect } from 'react';
 import { useRol } from '../../context/Rol/RolContext';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
+import React from 'react';
 function RolCreate() {
   const { listar, crearRoles, cargarpermiso } = useRol();
 
@@ -41,6 +43,20 @@ function RolCreate() {
                       fecha: obtenerFechaActual(), 
                       permisos: [],
                     }}
+                    validate={async(values)=>{
+                      const errors={}
+                  
+                      if (!values.nombre_rol ) {
+                        errors.nombre_rol = 'Este campo es requerido';
+                  
+                      }else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_rol)) {
+                        errors.nombre_rol = 'Este campo solo debe contener letras';
+                  
+                      }
+                       
+                      return errors;
+                  
+                     }}
                     enableReinitialize={true}
                     onSubmit={async (values) => {
                       // Aquí puedes usar values directamente, ya que permisos ahora es un array de objetos
@@ -48,7 +64,7 @@ function RolCreate() {
                       // Maneja la respuesta de la base de datos según tus necesidades
                     }}
                   >
-                    {({ handleChange, handleSubmit, setFieldValue, values }) => (
+                    {({ handleChange, handleSubmit, setFieldValue, values, errors, isValid }) => (
                       <Form onSubmit={handleSubmit} className='row g-3' id='pruebas'>
                         <div className='col-md-6'>
                           <Field
@@ -56,9 +72,24 @@ function RolCreate() {
                             name='nombre_rol'
                             label='Nombre Rol'
                             as={TextField}
-                            className='form-control'
                             onChange={handleChange}
+                            className={` ${
+                              values.nombre_rol && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_rol) ? 'is-valid' : 'is-invalid'
+                            }`}
+                            InputProps={{
+                              endAdornment: (
+                                <React.Fragment>
+                                  {values.nombre_rol && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_rol) ? (
+                                    <CheckIcon style={{ color: 'green' }} />
+                                  ) : (
+                                    <ErrorIcon style={{ color: 'red' }} />
+                                  )}
+                                </React.Fragment>
+                              ),
+                            }}
+                            sx={{ width: '100%' }}
                           />
+                          {errors.nombre_rol && <div className='invalid-feedback'>{errors.nombre_rol}</div>}
                         </div>
                         <div className='col-md-6'>
                           <Field
@@ -95,7 +126,7 @@ function RolCreate() {
                         </div>
 
                         <div className='col-auto'>
-                          <button className='btn btn-primary' type='submit'>
+                          <button className='btn btn-primary' type='submit' disabled={!isValid}>
                             Registrar
                           </button>
                         </div>

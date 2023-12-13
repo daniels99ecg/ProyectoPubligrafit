@@ -12,7 +12,7 @@ const venta = sequelize.define("ventas", {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    tipo_comprobante:{
+    metodo_pago:{
         type: DataTypes.STRING,
         allowNull: false
     },

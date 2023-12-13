@@ -25,10 +25,9 @@ export const ProductoContextProvider = ({children})=>{
 
    
       item.id_producto.toString().includes(searchTerm) ||
-      item.fk_categoria.toString().includes(searchTerm) ||
+      item.categoria.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.nombre_producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.precio.toString().includes(searchTerm) ||
-      // item.imagen.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.cantidad.toString().includes(searchTerm)
      
     );
@@ -99,20 +98,7 @@ const validacionProducto = async (values)=>{
                 text: 'Por favor ingresar solo letras!',
                 
               })
-        }else if((!NumberPattern.test(values.cantidad))){
-            Swal.fire({
-                icon: 'error',
-                title: 'cantidad',
-                text: 'Por favor ingresar solo numeros!',
-                
-              })
-        }else if((!NumberPattern.test(values.precio))){
-            Swal.fire({
-                icon: 'error',
-                title: 'Precio',
-                text: 'Por favor ingresar solo numeros!',
-                
-              })
+        
         }else{
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -122,9 +108,9 @@ const validacionProducto = async (values)=>{
                 buttonsStyling: false
               })
               
-              swalWithBootstrapButtons.fire({
+              Swal.fire({
                 title: 'Confirmar en envio del formulario?',
-                text: "You won't be able to revert this!",
+                text: "¡No podrás revertir esto!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar!',
@@ -147,7 +133,7 @@ const validacionProducto = async (values)=>{
                                     'Tu Archivo Ha Sido Registrado',
                                     'success'
                                 );
-                                resetForm();
+                                
                             }
                         })
                         .catch((error) => {
@@ -171,7 +157,7 @@ const validacionProducto = async (values)=>{
       try {
         Swal.fire({
           title: 'Eliminar Registro?',
-          text: "You won't be able to revert this!",
+          text: "¡No podras revertir esto!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',

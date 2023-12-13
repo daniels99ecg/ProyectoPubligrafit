@@ -67,7 +67,7 @@ return(
               <button type="submit" disabled={isSubmitting} className="btn btn-primary" >
                 Iniciar sesión
               </button>
-              <span><a href="/cambiarcontrasena">Recuperar Contraseña</a></span>
+              <span><a href="/enviaremail">Recuperar Contraseña</a></span>
 
             </div>
           </Form>

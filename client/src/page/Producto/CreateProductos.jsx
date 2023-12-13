@@ -5,11 +5,12 @@
   import CheckIcon from '@mui/icons-material/Check';
   import ErrorIcon from '@mui/icons-material/Error';
   import React from 'react';
-   
+  import { useState} from "react"
+
    
    function CreateProducto() {
      const {validacionProducto}=useProducto()
-   
+
    
      return (
        <>
@@ -47,7 +48,7 @@
                         if(!values.nombre_producto){
                           errors.nombre_producto = 'Este campo es requerido';
   
-                        }else if (!/^[a-zA-Z]+$/.test(values.nombre_producto)){
+                        }else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto)){
                           errors.nombre_producto = 'Este campo solo debe contener letras';
                         }
                         if(!values.precio){
@@ -56,10 +57,6 @@
                         }else if (!/^[0-9]+$/.test(values.precio)){
                           errors.precio = 'Este campo solo debe contener numeros';
                         }
-                        // if(!values.imagen){
-                        //   errors.imagen= 'Este campo es requerido';
-  
-                        // }
                         if(!values.cantidad){
                           errors.cantidad = 'Este campo es requerido';
   
@@ -73,14 +70,27 @@
 
                        onSubmit={async (values) => {
                         console.log(values)
+                        const formData = new FormData();
+                        formData.append('fk_categoria', values.fk_categoria);
+                        formData.append('nombre_producto', values.nombre_producto);
+                        formData.append('precio', values.precio);
+                        formData.append('imagen', values.imagen[0]); // Assuming 'imagen' is the key for the image
+                        formData.append('cantidad', values.cantidad);
 
-                           await validacionProducto(values)
+                        console.log("FormData:", formData);
+
+                        try {
+                          await validacionProducto(formData);
+                          
+                        } catch (error) {
+                          console.error("Error en la solicitud:", error);
+                        }
+                          
                        }}
                      >
-                       {({ handleChange, handleSubmit, values, errors  }) => (
+                       {({ handleChange, handleSubmit, setFieldValue ,values, errors  }) => (
                          <Form onSubmit={handleSubmit} className='row g-3'>
                            <div className="col-md-6 ">
-                            <label htmlFor="fk_categoria"></label>
                             <Field 
                             type="text" 
                             name='fk_categoria' 
@@ -113,12 +123,12 @@
                             label ='Nombre' 
                             onChange={handleChange} 
                             className={` ${
-                              values.nombre_producto && /^[a-zA-Z]+$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
+                              values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
                             }`}
                             InputProps={{
                               endAdornment: (
                                 <React.Fragment>
-                                  {values.nombre_producto && /^[a-zA-Z]+$/.test(values.nombre_producto) ? (
+                                  {values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? (
                                     <CheckIcon style={{ color: 'green' }} />
                                   ) : (
                                     <ErrorIcon style={{ color: 'red' }} />
@@ -156,28 +166,15 @@
                           {errors.precio && <div className='invalid-feedback'>{errors.precio}</div>}
                             </div>
                             <div className="col-md-6">
-                            <Field 
+                            <input 
                             type="file" 
                             name='imagen' 
-                            as={TextField} 
-                            label ='Imagen' 
-                            // className={` ${
-                            //   values.imagen && /^[0-9]+$/.test(values.imagen) ? 'is-valid' : 'is-invalid'
-                            // }`}
-                            // InputProps={{
-                            //   endAdornment: (
-                            //     <React.Fragment>
-                            //       {values.imagen && /^[0-9]+$/.test(values.imagen) ? (
-                            //         <CheckIcon style={{ color: 'green' }} />
-                            //       ) : (
-                            //         <ErrorIcon style={{ color: 'red' }} />
-                            //       )}
-                            //     </React.Fragment>
-                            //   ),
-                            // }}
-                            sx={{ width: '100%' }}
+                          
+                            
+                            onChange={(event) => setFieldValue('imagen', event.currentTarget.files[0])} 
+                          
+                            
                           />
-                          {/* {errors.imagen && <div className='invalid-feedback'>{errors.imagen}</div>} */}
                             </div>
                             <div className="col-md-12 mx-auto ">
                             <Field 

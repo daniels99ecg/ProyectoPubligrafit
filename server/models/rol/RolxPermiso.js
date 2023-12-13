@@ -6,7 +6,7 @@ const Permiso = require("../rol/Permiso");
 
 
 
-const RolXPermiso=sequelize.define('rol_x_permiso',{
+const RolXPermiso=sequelize.define('rol_x_permisos',{
     id_rol_x_permiso:{
            type:DataTypes.INTEGER,
            primaryKey:true,

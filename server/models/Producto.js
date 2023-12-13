@@ -10,23 +10,19 @@ const Producto=sequelize.define("productos",{
     },
     fk_categoria:{
         type:DataTypes.INTEGER,
-        allowNull:false
     },
     nombre_producto:{
         type:DataTypes.STRING,
-        allowNull:false
     },
     precio:{
         type:DataTypes.FLOAT,
-        allowNull:false
     },
      imagen:{
-         type:DataTypes.BLOB,
-        allowNull:false
+         type:DataTypes.STRING,
     },
     cantidad:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        
     },
     estado:{
         type:DataTypes.BOOLEAN,

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
-import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol, listarPermiso } from "../../api/Rol/rutas.api"
+import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol, listarPermiso, eliminar,cargaractualizarRol,actualizarRol } from "../../api/Rol/rutas.api"
 
 export const RolContext = createContext()
 
@@ -52,13 +52,13 @@ try {
            
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
-          confirmButton: 'btn btn-success',
+          confirmButton: 'btn btn-success me-3',
           cancelButton: 'btn btn-danger'
         },
         buttonsStyling: false
       })
       
-      swalWithBootstrapButtons.fire({
+      Swal.fire({
         title: 'Confirmar el envio del formulario?',
         text: "You won't be able to revert this!",
         icon: 'warning',
@@ -146,9 +146,123 @@ const activarCliente = async (id_rol) => {
       console.error(error);
       // Maneja el error de manera adecuada
     }
-  };
+  }
+  const eliminarRol=async(id_rol)=>{
+    try {
+      Swal.fire({
+        title: 'Eliminar Registro?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar'
+      }).then(async(result) => {
+        if (result.isConfirmed) {
+        
+          const responde = await eliminar(id_rol)
+          setListar(listar.filter(listar=>listar.id_rol!==id_rol))
+
+        }
+      })
+    }  catch (error) {
+      console.log(error)
+    }
+  }
+
+  const[ListarActualizar, setListarActualizar]=useState({
+    id_rol:"",
+    nombre_rol:"",
+    fecha:""
+ 
+ })
+    
+ async function cargarRolActualizar(id_rol) {
+  try {
+  
+    const response = await cargaractualizarRol(id_rol);
+    const rolData=response.data
+    setListarActualizar({
+      id_rol: rolData.id_rol,
+      nombre_rol:rolData.nombre_rol,
+      fecha:rolData.fecha,
+      
+   
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const actualizarValidar= async(id_rol, values)=>{
+  try {
+    if( values.nombre_rol=="" || values.fecha==""||values.permisos==""){
+             
+      Swal.fire({
+          icon: 'error',
+          title: 'Campos Vacios',
+          text: 'Por favor ingresar datos!',
+          
+        })
+      }else{
+             
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success me-3',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+        
+        Swal.fire({
+          title: 'Confirmar el envio del formulario?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Aceptar!',
+          cancelButtonText: 'Cancelar!',
+          Buttons: true
+        }).then(async(result) => {
+          if (result.isConfirmed) {
+  
+        
+            await actualizarRol(id_rol,values)
+            navigate("/rol")
+            window.location.reload()
+  
+            swalWithBootstrapButtons.fire(
+              'Registro Enviado!',
+              'Your file has been deleted.',
+              'success'
+            )
+          
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire(
+              'Se cancelo el envio',
+              'Your imaginary file is safe :)',
+              'error'
+            )
+          }
+         
+  
+        })
+       
+       
+      }
+  
+  } catch (error) {
+    console.log(error)
+  }
+    
+            
+  }
+
+
     return( 
-        <RolContext.Provider value={{listar, cargarRol, desactivarCliente, activarCliente, crearRoles,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados}}>
+        <RolContext.Provider value={{listar, ListarActualizar,cargarRol, desactivarCliente, activarCliente, crearRoles,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados, eliminarRol,cargarRolActualizar,actualizarValidar}}>
             {children}
         </RolContext.Provider>
       )

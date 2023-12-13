@@ -1,7 +1,11 @@
 const Producto=require("../models/Producto")
-const Categoria = require("../models/Categoria")
+const Categoria = require("../models/Categoria");
+const { request } = require("express");
+const DetalleVenta = require("../models/DetalleVenta");
 
 async function listarProductos(req, res){
+    
+    
     try {
         const producto = await Producto.findAll({
             include:[
@@ -21,7 +25,21 @@ async function listarProductos(req, res){
                 'estado'
             ]
         });
-        res.json(producto);
+        const clientesConVentas = await Promise.all(producto.map(async (producto) => {
+            const ventasAsociadas = await DetalleVenta.findOne({
+                where: {
+                    fk_producto: producto.id_producto, 
+                },
+            });
+  
+            return {
+                ...producto.toJSON(),
+                tieneVentas: !!ventasAsociadas,
+            };
+        }));
+        res.json(clientesConVentas);
+        
+       
         
     } catch (error) {
         console.error(error);
@@ -29,7 +47,15 @@ async function listarProductos(req, res){
         
     }
 }
-
+async function listarCategoria(req, res){
+    try {
+        const categoria = await Categoria.findAll();
+        res.json(categoria);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error:'Error al obtener produto'});
+    }
+}
 async function listarProducto(req, res){
     try {
         const id=req.params.id;
@@ -44,16 +70,38 @@ async function listarProducto(req, res){
 async function crearProducto(req, res){
     try {
         const dataProducto=req.body 
+
+
+        console.log("Request Body:", req.body);
+        console.log("Request File:", req.file);
+        //* Validar que se haya cargado el archivo
+
+        // if(!req.file) {
+        //     return res.json({ message: "Error la imagen del producto es requerida" });
+        // }
+        
+
+        
+        console.log(dataProducto)
+        console.log(req.file)
         const producto = await Producto.create({
             id_producto:dataProducto.id_producto,
-            fk_categoria:dataProducto.fk_categoria,
+            fk_categoria:parseInt(dataProducto.fk_categoria),
             nombre_producto:dataProducto.nombre_producto,
-            precio:dataProducto.precio,
+            precio:parseInt(dataProducto.precio),
             imagen:dataProducto.imagen,
-            cantidad:dataProducto.cantidad,
+            cantidad:parseInt(dataProducto.cantidad),
             estado:1
+            // id_producto:dataProducto.id_producto,
+            // fk_categoria:dataProducto.fk_categoria,
+            // nombre_producto:dataProducto.nombre_producto,
+            // precio:dataProducto.precio,
+            // imagen:req.file.filename,
+            // cantidad:dataProducto.cantidad,
+            // estado:1
         })
         res.status(201).send(producto)
+        
         
     } catch (error) {
         console.error(error);
@@ -74,9 +122,8 @@ async function actualizarProducto(req, res) {
             {
                 nombre_producto:producto.nombre_producto,
                 precio:producto.precio,
-                // imagen:producto.imagen,
+                imagen:req.file.filename,
                 cantidad:producto.cantidad,
-                estado:producto.estado
             },
             {
                 where: { id_producto: productoExistente.id_producto }
@@ -145,6 +192,8 @@ async function desactivarProducto(req, res) {
     }
   }
 
+  
+
 
 
 module.exports ={
@@ -154,5 +203,6 @@ module.exports ={
     actualizarProducto,
     eliminarProducto,
     activarProducto,
-    desactivarProducto
+    desactivarProducto,
+    listarCategoria
 }

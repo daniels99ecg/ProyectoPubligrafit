@@ -13,8 +13,10 @@ import Rol from './page/Rol/Rol'
 import RolCreate from './page/Rol/RolCreate'
 import Login from './page/Login/login'
 import Recuperar from './page/Login/recuperaContraseña'
+import Enviaremail from './page/Login/enviaremail'
 import Dashboard from './page/Dashboard/dashboard'
 import Profile from './page/Perfil/perfil';
+import UpdateRol from './page/Rol/UpdateRol'
 
 
 import ShowProducto from './page/Producto/Productos'
@@ -62,6 +64,7 @@ function App() {
      <Routes>
      <Route path='/' element={<Login/>}/>
      <Route path='/cambiarcontrasena' element={<Recuperar/>}/>
+     <Route path='/enviaremail' element={<Enviaremail/>}/>
 
      <Route
         path="/dashboard"
@@ -76,6 +79,7 @@ function App() {
       {/* Rol */}
       <Route path='/rol' element={<ProtectedRoute element={<Rol/>}/> } />
       <Route path='/rol/create' element={<ProtectedRoute element={<RolCreate/>}/> } />
+      <Route path='/editr/:id_rol' element={<ProtectedRoute element={<UpdateRol/>}/> } />
 
       {/*Perfil*/}
       <Route path='profile' element={<ProtectedRoute element={<Profile />}/>}/>

@@ -25,11 +25,12 @@ async function cargarUsuario(){
         const response =  await getListarUsuarios()
         
         const filterList = response.data.filter((item) => 
+          item.tipo_documento.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.documento.toString().includes(searchTerm) ||
           item.nombres.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.email.toString().includes(searchTerm)||
-          item.rol.nombre_rol.toLowerCase().includes(searchTerm)
+          item.rol.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase())
 
         );
     
@@ -49,15 +50,17 @@ async function creacionValidacion(values) {
             } else {
               const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
-                  confirmButton: 'btn btn-success',
+                  confirmButton: 'btn btn-success me-3',
                   cancelButton: 'btn btn-danger'
+
+                  
                 },
                 buttonsStyling: false
               });
         
-              swalWithBootstrapButtons.fire({
+              Swal.fire({
                 title: 'Confirmar el envio del formulario?',
-                text: "You won't be able to revert this!",
+                text: "¡No podrás revertir esto!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar!',
@@ -129,7 +132,7 @@ async function creacionValidacion(values) {
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                   swalWithBootstrapButtons.fire(
                     'Se cancelo el envio',
-                    'Your imaginary file is safe :)',
+                    'Este usuario no se registro',
                     'error'
                   );
                 }
@@ -196,7 +199,7 @@ const eliminarUsuario=async(id_usuario)=>{
         try {
           Swal.fire({
             title: 'Eliminar Registro?',
-            text: "You won't be able to revert this!",
+            text: "¡No podrás revertir esto!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -223,6 +226,7 @@ const eliminarUsuario=async(id_usuario)=>{
 
 const[ListarActualizar, setListarActualizar]=useState({
     id_usuario:"",
+    tipo_documento:"",
     documento:"",
     nombres:"",
     apellidos:"",
@@ -238,6 +242,7 @@ const[ListarActualizar, setListarActualizar]=useState({
     const usuarioData=response.data
     setListarActualizar({
       id_usuario: usuarioData.id_usuario,
+      tipo_documento:usuarioData.tipo_documento,
       documento:usuarioData.documento,
       nombres: usuarioData.nombres,
       apellidos: usuarioData.apellidos,

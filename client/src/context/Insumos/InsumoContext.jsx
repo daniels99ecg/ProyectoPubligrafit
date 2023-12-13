@@ -83,7 +83,7 @@ const validacionInsumo = async (values)=>{
         let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
         let NumberPattern = /^[0-9]+$/;
       
-        if (values.nombre === "" || values.precio === "" || values.cantidad === "") {
+        if (values.nombre === "" ) {
           Swal.fire({
             icon: 'error',
             title: 'Campos Vacíos',
@@ -95,22 +95,22 @@ const validacionInsumo = async (values)=>{
             title: 'Nombre',
             text: 'Por favor ingresar solo letras.',
           });
-        } else if (!NumberPattern.test(values.cantidad)) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Cantidad',
-            text: 'Por favor ingresar solo números.',
-          });
-        } else if (!NumberPattern.test(values.precio)) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Precio',
-            text: 'Por favor ingresar solo números.',
-          });
+        // } else if (!NumberPattern.test(values.cantidad)) {
+        //   Swal.fire({
+        //     icon: 'error',
+        //     title: 'Cantidad',
+        //     text: 'Por favor ingresar solo números.',
+        //   });
+        // } else if (!NumberPattern.test(values.precio)) {
+        //   Swal.fire({
+        //     icon: 'error',
+        //     title: 'Precio',
+        //     text: 'Por favor ingresar solo números.',
+        //   });
         } else {
           const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
-              confirmButton: 'btn btn-success',
+              confirmButton: 'btn btn-success me-3',
               cancelButton: 'btn btn-danger'
             },
             buttonsStyling: false
@@ -136,19 +136,19 @@ const validacionInsumo = async (values)=>{
                             });
                         } else {
                             navigate("/insumo");
-                            swalWithBootstrapButtons.fire(
+                            Swal.fire(
                                 'Registro Exitoso!',
                                 'Tu Archivo Ha Sido Registrado',
                                 'success'
                             );
-                            resetForm();
+                           
                         }
                     })
                     .catch((error) => {
                         console.error(error);
                     });
             } else if (result.dismiss === Swal.DismissReason.cancel) {
-                swalWithBootstrapButtons.fire(
+              Swal.fire(
                     'Registro Cancelado',
                     'Registro No Completado',
                     'error'
@@ -164,7 +164,7 @@ const validacionInsumo = async (values)=>{
       try {
         Swal.fire({
           title: 'Eliminar Registro?',
-          text: "You won't be able to revert this!",
+          text: "No podrás revertir esto!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -188,8 +188,8 @@ const validacionInsumo = async (values)=>{
       {
           id_insumo: '',
           nombre: '',
-          precio: '',
-          cantidad: '' 
+          // precio: '',
+          // cantidad: '' 
 
       })
     const validarInsumoActualizar= async (id_insumo, values)=>{
@@ -197,7 +197,7 @@ const validacionInsumo = async (values)=>{
       let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
       let NumberPattern = /^[0-9]+$/;
     
-      if (values.nombre === "" || values.precio === "" || values.cantidad === "") {
+      if (values.nombre === "" ) {
         Swal.fire({
           icon: 'error',
           title: 'Campos Vacíos',
@@ -209,30 +209,30 @@ const validacionInsumo = async (values)=>{
           title: 'Nombre',
           text: 'Por favor ingrese solo letras.',
         });
-      } else if (!NumberPattern.test(values.cantidad)) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Cantidad',
-          text: 'Por favor ingrese solo números.',
-        });
-      } else if (!NumberPattern.test(values.precio)) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Precio',
-          text: 'Por favor ingrese solo números.',
-        });
+      // } else if (!NumberPattern.test(values.cantidad)) {
+      //   Swal.fire({
+      //     icon: 'error',
+      //     title: 'Cantidad',
+      //     text: 'Por favor ingrese solo números.',
+      //   });
+      // } else if (!NumberPattern.test(values.precio)) {
+      //   Swal.fire({
+      //     icon: 'error',
+      //     title: 'Precio',
+      //     text: 'Por favor ingrese solo números.',
+      //   });
       } else {
         const swalWithBootstrapButtons = Swal.mixin({
           customClass: {
-            confirmButton: 'btn btn-success',
+            confirmButton: 'btn btn-success me-3',
             cancelButton: 'btn btn-danger'
           },
           buttonsStyling: false
         });
     
-        swalWithBootstrapButtons.fire({
+        Swal.fire({
           title: '¿Confirmar el envío del formulario?',
-          text: "No podrá revertir esto.",
+          text: "No podrá revertir esto!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonText: 'Aceptar',
@@ -244,13 +244,13 @@ const validacionInsumo = async (values)=>{
             await putActualizarInsumos(id_insumo, values);
             navigate("/insumo");
     
-            swalWithBootstrapButtons.fire(
+            Swal.fire(
               '¡Insumo Actualizado!',
-              'Su archivo ha sido eliminado.',
+              'Su archivo ha sido actualizado.',
               'success'
             );
           } else if (result.dismiss === Swal.DismissReason.cancel) {
-            swalWithBootstrapButtons.fire(
+            Swal.fire(
               'Se canceló el envío para la actualización',
               'Su archivo imaginario está a salvo :)',
               'error'

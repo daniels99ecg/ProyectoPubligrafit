@@ -50,10 +50,10 @@
         errors.nombres = 'Este campo es requerido';
         errors.apellidos = 'Este campo es requerido';
   
-      }else if (!/^[a-zA-Z]+$/.test(values.nombres)) {
+      }else if (! /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombres)) {
         errors.nombres = 'Este campo solo debe contener letras';
   
-      }else if(!/^[a-zA-Z]+$/.test(values.apellidos)){
+      }else if(! /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.apellidos)){
         errors.apellidos = 'Este campo solo debe contener letras';
       }
       if (!values.documento) {
@@ -94,7 +94,25 @@
           
          
         <input  type='hidden' name='id_usuario' onChange={handleChange} value={values.id_usuario} className="form-control" disabled/>
-        
+        <div className="col-md-6">
+  <Autocomplete
+    disablePortal
+    id="tipo-documento-autocomplete"
+    options={[
+      { id: 'Cc', label: 'Cédula de Ciudadanía' },
+      { id: 'Ti', label: 'Tarjeta de Identidad' },
+      { id: 'Ce', label: 'Cédula de Extranjería' },
+      // Agrega más opciones según tus necesidades
+    ]}
+    getOptionLabel={(option) => option ? option.label || option : ''}
+    onChange={(event, newValue) => {
+      handleChange({ target: { name: 'tipo_documento', value: newValue ? newValue.id : '' } });
+    }}
+    value={values.tipo_documento} // Puedes establecer un valor predeterminado si lo necesitas
+    sx={{ width: '100%' }}
+    renderInput={(params) => <TextField {...params} label="Tipo de Documento" sx={{ width: '100%' }} />}
+  />
+</div>
         <div className='col-md-6'>
         <Field
           type='text'
@@ -133,11 +151,11 @@
         label='Nombre'
           as={TextField}
          value={values.nombres}
-         className={`${values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? 'is-valid' : 'is-invalid'}`}
+         className={`${values.nombres &&  /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombres) ? 'is-valid' : 'is-invalid'}`}
          InputProps={{
            endAdornment: (
              <React.Fragment>
-               {values.nombres && /^[a-zA-Z]+$/.test(values.nombres) ? (
+               {values.nombres &&  /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombres) ? (
                  <CheckIcon style={{ color: 'green' }} />
                ) : (
                  <ErrorIcon style={{ color: 'red' }} />
@@ -159,11 +177,11 @@
         label='Apellido'
           as={TextField}
         value={values.apellidos} 
-        className={` ${values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? 'is-valid' : 'is-invalid'}`}
+        className={` ${values.apellidos && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.apellidos) ? 'is-valid' : 'is-invalid'}`}
           InputProps={{
             endAdornment: (
               <React.Fragment>
-                {values.apellidos && /^[a-zA-Z]+$/.test(values.apellidos) ? (
+                {values.apellidos && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.apellidos) ? (
                   <CheckIcon style={{ color: 'green' }} />
                 ) : (
                   <ErrorIcon style={{ color: 'red' }} />
@@ -205,7 +223,7 @@
       </div>
   <div className="col-md-6">
         <Field  
-        type='text' 
+        type='password' 
         name='contrasena' 
         onChange={handleChange} 
         value={values.contrasena} 
@@ -214,7 +232,7 @@
           as={TextField}
         disabled={params.id_usuario ? true : false}/>
   </div>
-  <div className="col-md-6">
+  <div className="col-md-12">
         
 
         <Autocomplete 

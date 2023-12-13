@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Field,  Form, Formik } from 'formik' 
 import Swal from 'sweetalert2'
-import Nav from '../../components/nav';
+import Nav from '../../components/nav'
 import { useInsumo } from "../../context/Insumos/InsumoContext"
 import TextField from '@mui/material/TextField';
 import CheckIcon from '@mui/icons-material/Check';
@@ -70,8 +70,8 @@ function UpdateInsumo(){
             if(!values.nombre){
                 errors.nombre = 'Este campo es requerido';
 
-              }else if (!/^[a-zA-Z]+$/.test(values.detalle)){
-                errors.nombre = 'Este campo solo debe contener letras';
+              }else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre)){
+                errors.nombre = 'Este campo solo debe contener letras y no puede tener un espacio antes o despues de digitar';
               }
               return errors
             }
@@ -85,23 +85,18 @@ function UpdateInsumo(){
             }
         >
             {
-                ({handleChange, handleSubmit, values, errors}) => (
+                ({handleChange, handleSubmit, values, errors, isValid}) => (
                     <Form  onSubmit={handleSubmit} className='row g-3'>
-                <div className="col-md-6">
-                <label htmlFor="id_insumo"></label>
-                <Field 
-                type="text" 
+                <input
+                type="hidden" 
                 name='id_insumo' 
                 onChange={handleChange}
-                label='Id insumo' 
                 value={values.id_insumo} 
                 className="form-control" 
                 readOnly 
-                as={TextField} 
                  />
-                </div>
 
-                <div className="col-md-6">
+                <div className="col-md-12">
                 <label htmlFor="nombre"></label>
                 <Field 
                 type="text" 
@@ -111,12 +106,12 @@ function UpdateInsumo(){
                 value={values.nombre} 
                 as={TextField} 
                 className={` ${
-                    values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? 'is-valid' : 'is-invalid'
+                    values.nombre && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre) ? 'is-valid' : 'is-invalid'
                   }`}
                   InputProps={{
                     endAdornment: (
                       <React.Fragment>
-                        {values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? (
+                        {values.nombre && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre) ? (
                           <CheckIcon style={{ color: 'green' }} />
                         ) : (
                           <ErrorIcon style={{ color: 'red' }} />
@@ -156,7 +151,7 @@ function UpdateInsumo(){
                 </div>    */}
 
                 <div className='col-auto'>
-                <button className='btn btn-primary' type='submit'>Actualizar</button>
+                <button className='btn btn-primary' type='submit' disabled={!isValid}>Actualizar</button>
                 </div>
 
                 <div className='col-auto'>

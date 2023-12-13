@@ -259,7 +259,7 @@ const validacionProducto = async (values)=>{
                   buttonsStyling: false
                 })
                 
-                swalWithBootstrapButtons.fire({
+                Swal.fire({
                   title: 'Confirmar en envio del formulario?',
                   text: "You won't be able to revert this!",
                   icon: 'warning',

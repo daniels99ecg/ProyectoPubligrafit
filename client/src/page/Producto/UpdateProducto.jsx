@@ -83,6 +83,11 @@ function UpdateProducto(){
                 }else if (!/^[0-9]+$/.test(values.precio)){
                   errors.precio = 'Este campo solo debe contener numeros';
                 }
+                if (!values.imagen) {
+                  errors.imagen = 'Este campo es requerido';
+                } else if (/^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen)) {
+                  errors.imagen = 'Este campo solo debe contener archivos';
+                }
                 if(!values.cantidad){
                   errors.cantidad = 'Este campo es requerido';
 
@@ -217,20 +222,18 @@ function UpdateProducto(){
 
                 <div className="col-md-6">
                 <label htmlFor="imagen"></label>
-                <Field
+                <input
                 type="file" 
                 name='imagen' 
                 onChange={handleChange} 
-                label ='Imagen'
                 value={values.imagen} 
-                as={TextField} 
                 className={` ${
-                    values.imagen && /^[a-zA-Z]+$/.test(values.imagen) ? 'is-valid' : 'is-invalid'
-                  }`}
+                    values.imagen && !/^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen) ? 'is-valid' : 'is-invalid'
+                  } form-control form-control-lg`}
                   InputProps={{
                     endAdornment: (
                       <React.Fragment>
-                        {values.imagen && /^[a-zA-Z]+$/.test(values.imagen) ? (
+                        {values.imagen && /^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen) ? (
                           <CheckIcon style={{ color: 'green' }} />
                         ) : (
                           <ErrorIcon style={{ color: 'red' }} />
@@ -238,7 +241,6 @@ function UpdateProducto(){
                       </React.Fragment>
                     ),
                   }}
-                  sx={{ width: '100%' }}
                 />
                 {errors.imagen && <div className='invalid-feedback'>{errors.imagen}</div>}
                 </div>

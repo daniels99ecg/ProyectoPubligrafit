@@ -99,7 +99,7 @@ function listarProductos() {
                             <button
                               className="btn btn-outline-secondary me-1"
                               onClick={() => {
-                                navigate(`/edituP/${item.id_producto}`)
+                                navigate(`/editP/${item.id_producto}`)
                                 window.location.reload();
                               }}
                               disabled={!item.estado}

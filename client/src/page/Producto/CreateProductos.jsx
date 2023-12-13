@@ -62,7 +62,11 @@
   
                         }else if (!/^[0-9]+$/.test(values.precio)){
                           errors.precio = 'Este campo solo debe contener numeros';
-                        }
+                        } if (!values.imagen) {
+                  errors.imagen = 'Este campo es requerido';
+                } else if (/^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen)) {
+                  errors.imagen = 'Este campo solo debe contener archivos';
+                }
                         if(!values.cantidad){
                           errors.cantidad = 'Este campo es requerido';
   
@@ -166,10 +170,25 @@
                             type="file" 
                             name='imagen' 
                             onChange={(event) => setFieldValue('imagen', event.currentTarget.files)} 
-                          
-                            
+                            label ='Imagen' 
+                            sx={{ width: '100%' }}
+                            className={` ${
+                              values.imagen && !/^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen) ? 'is-valid' : 'is-invalid'
+                            } form-control form-control-lg`}
+                            InputProps={{
+                              endAdornment: (
+                                <React.Fragment>
+                                  {values.imagen && /^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen) ? (
+                                    <CheckIcon style={{ color: 'green' }} />
+                                  ) : (
+                                    <ErrorIcon style={{ color: 'red' }} />
+                                  )}
+                                </React.Fragment>
+                              ),
+                            }}
                           />
-                            </div>
+                          {errors.imagen && <div className='invalid-feedback'>{errors.imagen}</div>}
+                          </div>
                             <div className="col-md-12 mx-auto ">
                             <Field 
                             type="text" 

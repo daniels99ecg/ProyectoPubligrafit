@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-12-2023 a las 16:18:38
+-- Tiempo de generación: 13-12-2023 a las 18:10:12
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -138,7 +138,11 @@ CREATE TABLE `detalle_ventas` (
 
 INSERT INTO `detalle_ventas` (`id_detalle_venta`, `fk_venta`, `fk_producto`, `cantidad`, `precio`, `subtotal`) VALUES
 (12, 13, 1, 1, 1000000, 1000000),
-(13, 14, 2, 10, 20000, 200000);
+(13, 14, 2, 10, 20000, 200000),
+(14, 15, 1, 3, 1000000, 3000000),
+(15, 16, 1, 1, 1000000, 1000000),
+(16, 16, 2, 1, 20000, 20000),
+(17, 16, 52, 1, 200, 200);
 
 -- --------------------------------------------------------
 
@@ -189,8 +193,7 @@ INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `estado`) VA
 (1, 'Papel Bond', 100, 4, 1),
 (2, 'Sellastrip', 500, 400, 1),
 (3, 'Guillotinas', 80000, 5, 1),
-(4, 'Plumígrafos', 15000, 15, 1),
-(9, 'Pepel iris', 500, 10, 1);
+(4, 'Plumígrafos', 15000, 15, 1);
 
 -- --------------------------------------------------------
 
@@ -228,7 +231,7 @@ CREATE TABLE `productos` (
   `fk_categoria` int(4) NOT NULL,
   `nombre_producto` varchar(50) NOT NULL,
   `precio` float NOT NULL,
-  `imagen` tinyblob NOT NULL,
+  `imagen` varchar(255) NOT NULL,
   `cantidad` int(5) NOT NULL,
   `estado` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -238,11 +241,9 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `fk_categoria`, `nombre_producto`, `precio`, `imagen`, `cantidad`, `estado`) VALUES
-(1, 1, 'Pendón', 1000000, 0x696d6167656e2e6a7067, 5, 1),
-(2, 2, 'Cuaderno Argollado', 20000, 0x696d6167656e2e6a7067, 10, 1),
-(3, 3, 'Talonario', 7000, 0x696d6167656e2e6a7067, 20, 1),
-(4, 4, 'Folleto', 7000, 0x696d6167656e2e6a7067, 100, 1),
-(7, 2, 'Cuaderno Grande', 15000, 0x5075626c694772616669742e706e67, 200, 1);
+(1, 1, 'Pendón', 1000000, 'imagen.jpg', 1, 1),
+(2, 2, 'Cuaderno Argollado', 20000, 'imagen.jpg', 9, 1),
+(52, 1, 'algomas', 200, '', 49, 1);
 
 -- --------------------------------------------------------
 
@@ -263,7 +264,8 @@ CREATE TABLE `rols` (
 
 INSERT INTO `rols` (`id_rol`, `nombre_rol`, `fecha`, `estado`) VALUES
 (121, 'Administrador', '2023-11-17', 1),
-(123, 'Empleado3', '2023-11-17', 1);
+(123, 'Empleado3', '2023-11-17', 1),
+(125, 'vendedor', '2023-12-07', 1);
 
 -- --------------------------------------------------------
 
@@ -290,7 +292,9 @@ INSERT INTO `rol_x_permisos` (`id_rol_x_permiso`, `fk_rol`, `fk_permiso`) VALUES
 (235, 121, '007produc'),
 (236, 121, '008Cliente'),
 (239, 123, '0001Rol'),
-(240, 123, '0004Insumo');
+(240, 123, '0004Insumo'),
+(246, 125, '0004Insumo'),
+(247, 125, '0006Venta');
 
 -- --------------------------------------------------------
 
@@ -315,8 +319,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `tipo_documento`, `documento`, `fk_rol2`, `nombres`, `apellidos`, `email`, `contrasena`, `estado`) VALUES
-(1, 'Cc', 1036134760, 121, 'DANIEL', 'CRUZ', 'danielsenju1999@gmail.com', '$2b$10$mb5P/gizYAtLH8Y.SsfQp.HMvmZp3/5omW5B7CHLM4RQt.z2sDJd6', 1),
-(6, 'Cc', 21939559, 123, 'MARIA', 'GOEZ', 'jaimegarcia00@hotmail.com', '$2b$10$liFxXoG3pFVIXtDIEZUcweFHsOc73mm5ZyV4mndFLwH5Z3riR7BK2', 1);
+(1, 'Cc', 1036134760, 121, 'DANIEL', 'CRUZ', 'danielsenju1999@gmail.com', '$2b$10$YP5hi/KnJBW4AOig06XDce7AwWmDQ3JaOqYtVMyTJH8r3vFZh0ni6', 1);
 
 -- --------------------------------------------------------
 
@@ -327,7 +330,7 @@ INSERT INTO `usuarios` (`id_usuario`, `tipo_documento`, `documento`, `fk_rol2`, 
 CREATE TABLE `ventas` (
   `id_venta` int(6) NOT NULL,
   `fk_id_cliente` int(11) NOT NULL,
-  `tipo_comprobante` varchar(20) NOT NULL,
+  `metodo_pago` varchar(20) NOT NULL,
   `fecha` date NOT NULL,
   `total` float(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -336,9 +339,11 @@ CREATE TABLE `ventas` (
 -- Volcado de datos para la tabla `ventas`
 --
 
-INSERT INTO `ventas` (`id_venta`, `fk_id_cliente`, `tipo_comprobante`, `fecha`, `total`) VALUES
-(13, 1, 'Ticket', '2023-12-06', 1190000),
-(14, 1, 'Ticket', '2023-12-06', 238000);
+INSERT INTO `ventas` (`id_venta`, `fk_id_cliente`, `metodo_pago`, `fecha`, `total`) VALUES
+(13, 1, 'Efectivo', '2023-12-06', 1190000),
+(14, 1, 'Efectivo', '2023-12-06', 238000),
+(15, 1, 'Efectivo', '2023-12-13', 3570000),
+(16, 1, 'Efectivo', '2023-12-13', 1214038);
 
 --
 -- Índices para tablas volcadas
@@ -464,7 +469,7 @@ ALTER TABLE `detalle_compras`
 -- AUTO_INCREMENT de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `fichas_tecnicas`
@@ -476,37 +481,37 @@ ALTER TABLE `fichas_tecnicas`
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_producto` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT de la tabla `rols`
 --
 ALTER TABLE `rols`
-  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- AUTO_INCREMENT de la tabla `rol_x_permisos`
 --
 ALTER TABLE `rol_x_permisos`
-  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
+  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=248;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_usuario` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas

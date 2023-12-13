@@ -24,6 +24,7 @@ export const ClienteContextProvider = ({ children }) => {
     const filterList = response.data.filter(
       (item) =>
         item.documento.toString().includes(searchTerm) ||
+        item.tipo_documento.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.telefono.toString().includes(searchTerm) ||

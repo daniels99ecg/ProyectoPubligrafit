@@ -3,31 +3,117 @@ import Tooltip from "@mui/material/Tooltip";
 import { useEffect, useState } from "react";
 import ReactDOM from 'react-dom';
 import { useVenta } from "../../context/Ventas/VentaContext";
-import { getListarVentas } from "../../api/Rutas.Venta.api";
+import { getListarVentas, getListaVenta } from "../../api/Rutas.Venta.api";
+import { FaCreditCard } from "react-icons/fa6";
+import { BsInfoCircleFill } from "react-icons/bs";
+import { BsCashCoin } from "react-icons/bs";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 import VentaInfo from "./VentaInfo";
+import VentaComprobante from "./VentaComprobante";
 import Nav from "../../components/nav";
 import VentaCreate from "./VentaCreate"
+import { BsDownload } from "react-icons/bs";
+import * as XLSX from "xlsx";
+import { saveAs } from 'file-saver';
 
 function listarVentas() {
   const { searchTerm, setSearchTerm, listar, setListar, showVentas } = useVenta();
-  const [selectedVenta, setSelectedVenta] = useState(null); // Esto para info
   const [showInfoVenta, setShowInfoVenta] = useState(false);
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [selectVentaDetalles, setSelectVentaDetalles] = useState(null);
+  const [selectVenta, setSelectVenta] = useState(null);
+  const [comprobanteModal, setComprobanteModal] = useState(false);
 
-const handleOpenVentaModal = () => {
-    setOpenCreateModal(true);
-};
+  const handleExportToExcel = async () => {
+    try {
+      const response = await getListarVentas();
+      const ventasConDetalles = response.data;
+  
+      const data = [];
+  
+      ventasConDetalles.forEach((row) => {
+        const ventaInfo = {
+          ID: row.id_venta,
+          Cliente: `${row.cliente.nombre} ${row.cliente.apellido}`,
+          Método: row.metodo_pago,
+          Fecha: row.fecha,
+          Total: formatearPrecios(row.total),
+        };
+  
+        row.detalles.forEach((detalle, index) => {
+          const detalleInfo = {
+            Producto: detalle.producto.nombre_producto,
+            Cantidad: detalle.cantidad,
+            Precio: formatearPrecios(detalle.precio),
+            Subtotal: formatearPrecios(detalle.subtotal),
+          };
+  
+          if (index === 0) {
+            data.push({ ...ventaInfo, ...detalleInfo });
+          } else {
+            data.push({ ...detalleInfo, ID: '', Cliente: '', Método: '', Fecha: '', Total: '' });
+          }
+        });
+      });
+  
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  
+      const fileName = 'ListadoVentas.xlsx';
+  
+      const excelBlob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  
+      saveAs(excelBlob, fileName);
+    } catch (error) {
+      console.error("Error al obtener las ventas", error);
+    }
+  };
 
-const handleSubmitForm = async (formData) => {
-};
+  const handleOpenComprobanteModal = (venta) => {
+    setSelectVenta(venta);
+    setComprobanteModal(true);
+  };
 
-const handleCloseVentaModal = () => {
-  setOpenCreateModal(false);
-  showVentas();
-};
+  const handleOpenVentaModal = () => {
+      setOpenCreateModal(true);
+  };
+
+  const handleSubmitForm = async () => {
+  };
+
+  const handleCloseVentaModal = () => {
+    setOpenCreateModal(false);
+    showVentas();
+  };
+
+  // Abrir modal info
+  const handleOpenInfoVenta = async (ventaInfo) => {
+    try {
+      const response = await getListaVenta(ventaInfo.id_venta);
+      setSelectVentaDetalles(response.data);
+      setShowInfoVenta(true);
+    } catch (error) {
+      console.error("Error al obtener detalles de la venta", error);
+    }
+  };
+
+  // Cerrar modal info
+  const handleCloseInfoVenta = () => {
+    setShowInfoVenta(false);
+    setSelectVentaDetalles(null);
+  };
+
+  // Formatear valores sin decimales
+  function formatearPrecios(valor) {
+    const valorFormateado = parseFloat(valor).toFixed(0);
+    const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
+    return formateoInt;
+  }
 
   useEffect(() => {
-    async function showVenta() {
+    async function showVentas() {
       const response = await getListarVentas();
       setListar(response.data);
     }
@@ -35,17 +121,6 @@ const handleCloseVentaModal = () => {
     showVentas();
   }, [searchTerm]);
 
-  // Abrir modal info
-  const handleOpenInfoVenta = (clienteInfo) => {
-    setSelectedVenta(clienteInfo);
-    setShowInfoVenta(true);
-  };
-
-  // Cerrar modal info
-  const handleCloseInfoVenta = () => {
-    setShowInfoVenta(false);
-    setSelectedVenta(null);
-  };
 
   return (
     <>
@@ -57,7 +132,7 @@ const handleCloseVentaModal = () => {
             <div className="card">
               <div className="card-body">
                 <div className="card-header">
-                  <h1>Listado de Ventas</h1>
+                  <h1>Listado de ventas</h1>
                 </div>
                 <br />
                 <div className="row">
@@ -70,6 +145,20 @@ const handleCloseVentaModal = () => {
         Nuevo Registro
       </button>
                   </div>
+                  <br />
+                  <br />
+                  <div className="col-md-3">
+        <button
+          className="btn btn-dark button-exportar"
+          onClick={handleExportToExcel}
+          role="button"
+        >
+          <BsDownload />
+          &nbsp;&nbsp;Exportar
+        </button>
+      </div>
+  <br />
+  <br />
                   {/* Botón de búsqueda */}
                   <div className="col-md-3" style={{ marginLeft: "auto" }}>
                     <input
@@ -83,25 +172,37 @@ const handleCloseVentaModal = () => {
                 <br />
                 <div style={{ flex: 1, height: "100%", width: "100%" }}>
                   <DataGrid
-                    rows={listar.map((row) => ({ ...row, id: row.id_venta, documentoCliente: row.cliente.documento }))}
+                    rows={listar.map((row) => ({ ...row, id: row.id_venta, nombreCliente: `${row.cliente.nombre} ${row.cliente.apellido}` }))}
                     columns={[
                       {
                         field: "id_venta",
                         headerName: "ID",
                         headerClassName: "encabezado",
-                        flex: 1,
+                        flex: 0.5,
                       },
                       {
-                        field: "documentoCliente",
-                        headerName: "Documento",
+                        field: "nombreCliente",
+                        headerName: "Cliente",
                         headerClassName: "encabezado",
                         flex: 1,
                       },
                       {
-                        field: "tipo_comprobante",
-                        headerName: "Comprobante",
+                        field: "metodo_pago",
+                        headerName: "Método",
                         headerClassName: "encabezado",
                         flex: 1,
+                        renderCell: (params) => (
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {params.row.metodo_pago === 'Efectivo' ? (
+                              <BsCashCoin style={{ color: 'green', marginRight: '5px' }} />
+                            ) : (
+                              params.row.metodo_pago === 'Transferencia' && (
+                                <FaCreditCard style={{ color: '#2E4053', marginRight: '5px' }} />
+                              )
+                            )}
+                            <span>{params.row.metodo_pago}</span>
+                          </div>
+                        ),
                       },
                       {
                         field: "fecha",
@@ -114,41 +215,56 @@ const handleCloseVentaModal = () => {
                         headerName: "Total",
                         headerClassName: "encabezado",
                         flex: 1,
+                        renderCell: (params) => (
+                          <span>{formatearPrecios(params.row.total)}</span>
+                        ),
                       },
                       {
-                        field: "info",
-                        headerName: "Info",
-                        headerClassName: "encabezado",
-                        flex: 1,
+                        field: 'info',
+                        headerName: 'Info',
+                        headerClassName: 'encabezado',
+                        flex: 0,
                         renderCell: (params) => (
                           <Tooltip title="Información" arrow>
                             <span>
                               <button
-                                className="btn btn-light"
+                                className="btn btn-light info-button"
                                 style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  padding: "10px",
-                                  borderRadius: "50%",
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  padding: '5px',
+                                  borderRadius: '50%',
+                                  backgroundColor: 'white',
                                 }}
                                 onClick={() => handleOpenInfoVenta(params.row)}
-                                disabled={!params.row.estado}
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="25"
-                                  height="25"
-                                  fill="gray"
-                                  className="bi bi-info-circle-fill"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-                                </svg>
+                                <BsInfoCircleFill
+                                  size={30}
+                                  color="grey"
+                                />
                               </button>
                             </span>
                           </Tooltip>
                         ),
                       },
+                      {
+                        field: 'factura',
+                        headerName: 'Acciones',
+                        headerClassName: 'encabezado',
+                        flex: 0,
+                        renderCell: (params) => (
+                          <Tooltip title="Factura" arrow>
+                            <span>
+                            <button
+                              onClick={() => handleOpenComprobanteModal(params.row)}
+                              className="btn btn-link"
+                            >
+                              <FaFileInvoiceDollar style={{ fontSize: '24px', color: '#1A5276' }} />
+                            </button>
+                            </span>
+                            </Tooltip>
+                        )
+                      }
                     ]}
                     autoHeight
                     pageSize={5}
@@ -156,6 +272,7 @@ const handleCloseVentaModal = () => {
                     getRowId={(row) => row.id}
                   />
                 </div>
+                
                 {openCreateModal && ReactDOM.createPortal(
         <>
           <div
@@ -193,15 +310,22 @@ const handleCloseVentaModal = () => {
         document.body
       )}
                 {showInfoVenta &&
-                  selectedVenta &&
+                  selectVentaDetalles &&
                   ReactDOM.createPortal(
                     <VentaInfo
-                      venta={selectedVenta}
+                    venta={selectVentaDetalles}
                       handleCloseModal={handleCloseInfoVenta}
                       open={showInfoVenta}
                     />,
                     document.body
                   )}
+                  {comprobanteModal && (
+        <VentaComprobante
+          venta={selectVenta}
+          handleCloseModal={() => setComprobanteModal(false)}
+          open={comprobanteModal}
+        />
+      )}
               </div>
             </div>
           </div>

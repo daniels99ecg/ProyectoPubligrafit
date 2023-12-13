@@ -30,7 +30,8 @@ const ClienteInfo = ({ cliente, handleCloseModal, open }) => {
       <div style={modalStyle}>
         <div style={contentStyle} className="cliente-info-modal">
           <div>
-            <h3 style={{ color: '#FFFAFA', background: '#4169E1'  }}>Info cliente</h3>
+            <h3 style={{ color: 'black'  }}>Información cliente</h3>
+            <hr />
             <p>
               <strong>ID Cliente:</strong> {cliente.id_cliente}
             </p>

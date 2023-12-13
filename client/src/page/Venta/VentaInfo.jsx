@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@mui/material/Modal";
 
 const VentaInfo = ({ venta, handleCloseModal, open }) => {
+  const [totalSubtotal, setTotalSubtotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 5;
+
   const modalStyle = {
     display: "flex",
     alignItems: "center",
@@ -12,24 +16,7 @@ const VentaInfo = ({ venta, handleCloseModal, open }) => {
     backgroundColor: "white",
     padding: "20px",
     borderRadius: "8px",
-    marginTop: "15%",
-  };
-
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse",
-  };
-
-  const cellStyle = {
-    borderBottom: "1px solid #ddd",
-    padding: "8px",
-    textAlign: "left",
-  };
-
-  const headerCellStyle = {
-    ...cellStyle,
-    backgroundColor: "#498cf1",
-    color: "white",
+    marginTop: "5%",
   };
 
   const buttonStyle = {
@@ -39,38 +26,107 @@ const VentaInfo = ({ venta, handleCloseModal, open }) => {
     padding: "5px",
     borderRadius: "5px",
     cursor: "pointer",
-    marginTop: "20px",
-    width: "10%",
+    width: "30%",
   };
+
+  const thStyle = {
+    borderBottom: "1px solid #dddddd",
+    borderRight: "1px solid #dddddd", 
+    padding: "8px",
+  };
+
+  const tdStyle = {
+    borderBottom: "1px solid #dddddd", 
+    padding: "0px",
+  };
+
+  const tableStyle = {
+    width: "100%",
+    textAlign: "center",
+    borderCollapse: "collapse",
+  };
+
+  const thSubtotalStyle = {
+    borderBottom: "1px solid #dddddd",
+    padding: "8px",
+  };
+
+  // Formatear valores sin decimales
+  function formatearPrecios(valor) {
+    const valorFormateado = parseFloat(valor).toFixed(0);
+    const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
+    return formateoInt;
+  }
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = venta.detalles.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  useEffect(() => {
+    const subtotalTotal = venta.detalles.reduce((total, detalle) => total + detalle.subtotal, 0);
+    setTotalSubtotal(subtotalTotal);
+  }, [venta.detalles]);
 
   return (
     <Modal open={open} onClose={handleCloseModal}>
       <div style={modalStyle}>
         <div style={contentStyle} className="venta-info-modal">
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={headerCellStyle}>Tipo Documento</th>
-                <th style={headerCellStyle}>Documento</th>
-                <th style={headerCellStyle}>Nombre</th>
-                <th style={headerCellStyle}>Apellido</th>
-                <th style={headerCellStyle}>Teléfono</th>
-                <th style={headerCellStyle}>Dirección</th>
-                <th style={headerCellStyle}>Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={cellStyle}>{venta.tipo_documento}</td>
-                <td style={cellStyle}>{venta.documento}</td>
-                <td style={cellStyle}>{venta.nombre}</td>
-                <td style={cellStyle}>{venta.apellido}</td>
-                <td style={cellStyle}>{venta.telefono}</td>
-                <td style={cellStyle}>{venta.direccion}</td>
-                <td style={cellStyle}>{venta.email}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div>
+          <h3 style={{ color: 'black'  }}>Información venta</h3>
+            <hr />
+            <p>
+              <strong>Cliente:</strong> {venta.cliente.nombre} {venta.cliente.apellido}
+            </p>
+            <p>
+              <strong>Método de Pago:</strong> {venta.metodo_pago}
+            </p>
+            <p>
+              <strong>Fecha:</strong> {venta.fecha}
+            </p>
+            <p>
+              <strong>Total:</strong> {formatearPrecios(venta.total)}
+            </p>
+             <p>
+              <strong>Subtotal:</strong> {formatearPrecios(totalSubtotal)}
+            </p>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Productos</th>
+                  <th style={thStyle}>Cantidad</th>
+                  <th style={thStyle}>Precio</th>
+                  <th style={thSubtotalStyle}>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentProducts.map((detalle) => (
+                  <tr key={detalle.id_detalle_venta}>
+                    <td style={tdStyle}>{detalle.producto.nombre_producto}</td>
+                    <td style={tdStyle}>
+                      {detalle.cantidad === 1
+                        ? `${detalle.cantidad} Und`
+                        : `${detalle.cantidad} Unds`}
+                    </td>
+                    <td style={tdStyle}>{formatearPrecios(detalle.precio)}</td>
+                    <td style={tdStyle}>{formatearPrecios(detalle.subtotal)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div>
+              <ul className="pagination">
+                {[...Array(Math.ceil(venta.detalles.length / productsPerPage)).keys()].map((number) => (
+                  <li key={number + 1} className="page-item">
+                    <button onClick={() => paginate(number + 1)} className="page-link">
+                      {number + 1}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
           <button style={buttonStyle} onClick={handleCloseModal}>
             Cerrar
           </button>

@@ -12,7 +12,7 @@ const venta = sequelize.define("ventas", {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    tipo_comprobante:{
+    metodo_pago:{
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -25,9 +25,12 @@ const venta = sequelize.define("ventas", {
         allowNull: false
     },
 }, {
-        timestamps: false, // Desactiva las columnas createdAt y updatedAt
+        timestamps: false,
 });
 
 venta.belongsTo(Cliente, { foreignKey: 'fk_id_cliente' })
+venta.associate = (models) => {
+    venta.hasMany(models.DetalleVenta, { foreignKey: 'fk_venta' });
+};
 
 module.exports = venta;

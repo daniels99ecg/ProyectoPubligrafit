@@ -1,5 +1,6 @@
 const Cliente = require("../../models/Cliente")
 const { Op } = require("sequelize")
+const Venta = require("../../models/Venta")
 
 async function existenteCliente(documento) {
     if (!documento) {
@@ -17,8 +18,21 @@ async function existenteCliente(documento) {
 
 async function listarClientes(req, res) {
     try {
-        const cliente = await Cliente.findAll();
-        res.json(cliente);
+        const clientes = await Cliente.findAll();
+        const clientesConVentas = await Promise.all(clientes.map(async (cliente) => {
+            const ventasAsociadas = await Venta.findOne({
+                where: {
+                    fk_id_cliente: cliente.id_cliente, 
+                },
+            });
+
+            return {
+                ...cliente.toJSON(),
+                tieneVentas: !!ventasAsociadas,
+            };
+        }));
+
+        res.json(clientesConVentas);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener clientes' });
@@ -120,8 +134,6 @@ async function eliminarCliente(req, res) {
         if (!cliente) {
             return res.status(404).json({ error: 'Cliente no encontrado' });
         }
-
-        // Elimina el cliente
         await cliente.destroy();
 
         res.json({ message: 'Cliente eliminado exitosamente' });

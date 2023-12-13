@@ -165,9 +165,7 @@
                             <input 
                             type="file" 
                             name='imagen' 
-                          
-                            
-                            onChange={(event) => setFieldValue('imagen', event.currentTarget.files[0])} 
+                            onChange={(event) => setFieldValue('imagen', event.currentTarget.files)} 
                           
                             
                           />

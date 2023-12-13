@@ -76,12 +76,10 @@ async function crearProducto(req, res){
         console.log("Request File:", req.file);
         //* Validar que se haya cargado el archivo
 
-        // if(!req.file) {
-        //     return res.json({ message: "Error la imagen del producto es requerida" });
-        // }
-        
-
-        
+        if(!req.file) {
+            return res.json({ message: "Error la imagen del producto es requerida" });
+        }
+         
         console.log(dataProducto)
         console.log(req.file)
         const producto = await Producto.create({
@@ -89,7 +87,7 @@ async function crearProducto(req, res){
             fk_categoria:parseInt(dataProducto.fk_categoria),
             nombre_producto:dataProducto.nombre_producto,
             precio:parseInt(dataProducto.precio),
-            imagen:dataProducto.imagen,
+            imagen:req.file.filename,
             cantidad:parseInt(dataProducto.cantidad),
             estado:1
             // id_producto:dataProducto.id_producto,
@@ -100,6 +98,7 @@ async function crearProducto(req, res){
             // cantidad:dataProducto.cantidad,
             // estado:1
         })
+
         res.status(201).send(producto)
         
         

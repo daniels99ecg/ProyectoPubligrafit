@@ -3,7 +3,14 @@ import axios from 'axios'
 
 
 export const  postCreateInsumo=async (taks)=>{
-    return await axios.post('http://localhost:3001/insumo/create',taks)
+    try {
+    const response=await axios.post('http://localhost:3001/insumo/create',taks)
+    return response.data; // Devuelve los datos exitosos
+} catch (error) {
+    if (error.response) {
+      return { error: 'Error del servidor', data: error.response.data };
+    }
+  }
 }
 
 

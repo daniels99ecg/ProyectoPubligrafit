@@ -395,8 +395,24 @@
   async function eliminar(req, res) {
     try {
       const id_usuario = req.params.id_usuario;
+  
+      // Buscar el usuario que se va a eliminar
+      const usuario = await Usuario.findByPk(id_usuario);
+  
+      if (!usuario) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      // Verificar el rol del usuario antes de eliminar
+      const rol = await Rol.findByPk(usuario.fk_rol2);
+  
+      if (rol && rol.nombre_rol === 'Administrador') {
+        return res.status(403).json({ message: 'No puedes eliminar un usuario con el rol de administrador' });
+      }
+  
+      // Si el usuario no tiene el rol de administrador, proceder con la eliminación
       const response = await Usuario.destroy({ where: { id_usuario: id_usuario } });
-
+  
       if (response === 1) {
         // Si se eliminó correctamente, response será 1.
         res.status(200).json({ message: 'Usuario eliminado con éxito' });

@@ -60,7 +60,7 @@ try {
       
       Swal.fire({
         title: 'Confirmar el envio del formulario?',
-        text: "You won't be able to revert this!",
+        text: "¡No podrás revertir esto!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Aceptar!',
@@ -68,39 +68,74 @@ try {
         Buttons: true
       }).then(async(result) => {
         if (result.isConfirmed) {
-
+          try {
+            const response = await crearRol(values);
+            console.log(response);
       
-          await crearRol(values)
-          navigate("/rol")
-          window.location.reload()
+            if (response.data && response.data.error) {
+              // Verificar errores específicos
+              if (response.data.error === 'el nombre del rol ya existe') {
+                console.log('Mostrar alerta de rol existente');
+      
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'El nombre del rol ya existe.',
+                });
+              }
+ else {
+                console.log('Mostrar alerta de otro error');
+      
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response.data.error,
+                });
+              }
+            } else {
+              // Verificar si se creó el usuario correctamente
+              if (response.data && response.data.rol) {
+                // Si no hay errores, redirige a la página de usuario
+                navigate("/rol");
+                window.location.reload()
+                swalWithBootstrapButtons.fire(
+                  'Registro Enviado!',
+                  'Your file has been deleted.',
+                  'success'
+                );
+              } else {
+                navigate("/rol");
+                window.location.reload()
 
-          swalWithBootstrapButtons.fire(
-            'Registro Enviado!',
-            'Your file has been deleted.',
-            'success'
-          )
-        
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
+                swalWithBootstrapButtons.fire(
+                  'Registro Enviado!',
+                  'Your file has been deleted.',
+                  'success'
+                );
+              }
+            }
+          } catch (error) {
+            console.error(error);
+            swalWithBootstrapButtons.fire(
+              'Error',
+              'Ocurrió un error al crear el usuario.',
+              'error'
+            );
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(
             'Se cancelo el envio',
-            'Your imaginary file is safe :)',
+            'Este usuario no se registro',
             'error'
-          )
+          );
         }
-       
-
-      })
-     
-     
-    }
-
-} catch (error) {
-  console.log(error)
+      });
+    }              
+  } catch (error) {
+    console.log(error);
+  }
 }
-}
+   
 
 const filtrarDesactivados = listar.sort((a, b) => {
   if (a.estado === b.estado) {

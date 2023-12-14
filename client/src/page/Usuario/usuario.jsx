@@ -6,6 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useMediaQuery } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 
 function User() {
@@ -18,7 +19,19 @@ function User() {
     cargarUsuario()
 
   },[searchTerm])
-
+  const handleEliminarUsuario = (idUsuario, rol) => {
+    // Validar si el usuario tiene el rol de administrador
+    if (rol === 'Administrador') {
+      // Puedes mostrar un mensaje o ejecutar alguna lógica para indicar que no se puede eliminar un administrador
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No puedes eliminar al usuario con el rol de administrador.',
+      });    } else {
+      // Llamar a la función de eliminación solo si no es un administrador
+      eliminarUsuario(idUsuario);
+    }
+  };
   return (
     <>
 <Nav/>
@@ -127,7 +140,7 @@ function User() {
 
                         <button
                       className="btn btn-danger"
-                      onClick={() => eliminarUsuario(item.id_usuario)}
+                      onClick={() => handleEliminarUsuario(params.row.id_usuario, params.row.rol.nombre_rol)}
                       disabled={!item.estado}
                     >
                       <svg
@@ -239,7 +252,7 @@ function User() {
 
                     <button
                       className="btn btn-danger"
-                      onClick={() => eliminarUsuario(params.row.id_usuario)}
+                      onClick={() => handleEliminarUsuario(params.row.id_usuario, params.row.rol.nombre_rol)}
                       disabled={!params.row.estado}
                     >
                       <svg

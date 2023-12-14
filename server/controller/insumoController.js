@@ -39,6 +39,15 @@ async function listarInsumo(req, res){
 async function crearInsumo(req, res){
     try {
         const dataInsumo=req.body 
+
+        const existingInsumo = await Insumo.findOne({
+            where: { nombre: dataInsumo.nombre }
+          });
+      
+          if (existingInsumo) {
+            // Si el ID de usuario ya existe, muestra una alerta
+            return res.status(400).json({ error: 'el nombre del insumo ya existe' });
+          }
         const insumo = await Insumo.create({
         id_insumo:dataInsumo.id_insumo,
         nombre:dataInsumo.nombre,

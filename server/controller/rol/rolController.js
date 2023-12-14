@@ -82,6 +82,15 @@ async function createRol(req, res) {
   
       try {
 
+        const existingRol = await Rol.findOne({
+          where: { nombre_rol: dataRol.nombre_rol }
+        });
+    
+        if (existingRol) {
+          // Si el ID de usuario ya existe, muestra una alerta
+          return res.status(400).json({ error: 'el nombre del rol ya existe' });
+        }
+    
           const rol = await Rol.create({
             nombre_rol: dataRol.nombre_rol,
             fecha: dataRol.fecha,

@@ -195,31 +195,34 @@ const filtrarDesactivados = listar.sort((a, b) => {
         }
         return a.estado ? -1 : 1;
       });
-const eliminarUsuario=async(id_usuario)=>{
+
+      const eliminarUsuario = async (id_usuario) => {
         try {
+         
+          // Mostrar la confirmación solo si el usuario no es administrador
           Swal.fire({
             title: 'Eliminar Registro?',
-            text: "¡No podrás revertir esto!",
+            text: '¡No podrás revertir esto!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
-          }).then(async(result) => {
+            confirmButtonText: 'Aceptar',
+          }).then(async (result) => {
             if (result.isConfirmed) {
-            
-              const responde = await eliminar(id_usuario)
-              setListar(listar.filter(listar=>listar.id_usuario!==id_usuario))
-
+              // Realizar la eliminación solo si se confirma
+              const response = await eliminar(id_usuario);
+              setListar(listar.filter((listar) => listar.id_usuario !== id_usuario));
             }
-          })
-         
-
+          });
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
-      }
-    
+      };
+      
+      
+  
+      
 
 
 // Funcciones para actualizar      

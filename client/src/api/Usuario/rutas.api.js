@@ -15,7 +15,7 @@ export const enviarUsuario = async (task) => {
       return { error: 'Error del servidor', data: error.response.data };
     }
   }
-};
+}
 
 
 export const cargaractualizarUsuario=async (id_usuario)=>{

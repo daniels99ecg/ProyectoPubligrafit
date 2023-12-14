@@ -33,8 +33,17 @@ export const getListarRoles=async ()=>{
 
 
   export const crearRol=async (task)=>{
-    return await axios.post(`http://localhost:3001/rol/create`, task)
+    try {
+    const response= await axios.post(`http://localhost:3001/rol/create`, task)
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      
+      return { error: 'Error del servidor', data: error.response.data };
+    }
   }
+  }
+
 
 export const listarPermiso=async ()=>{
   return await axios.get(`http://localhost:3001/rol/permiso`)

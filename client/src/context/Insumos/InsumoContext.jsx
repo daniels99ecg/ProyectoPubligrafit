@@ -124,42 +124,78 @@ const validacionInsumo = async (values)=>{
             confirmButtonText: 'Aceptar!',
             cancelButtonText: 'Cancelar!',
             buttons: true
-          }).then((result) => {
+          }).then(async(result) => {
             if (result.isConfirmed) {
-                postCreateInsumo(values)
-                    .then((response) => {
-                        if (response.status === 400 && response.data.error) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Insumo ya registrado',
-                                text: response.data.error
-                            });
-                        } else {
-                            navigate("/insumo");
-                            Swal.fire(
-                                'Registro Exitoso!',
-                                'Tu Archivo Ha Sido Registrado',
-                                'success'
-                            );
-                           
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-              Swal.fire(
-                    'Registro Cancelado',
-                    'Registro No Completado',
-                    'error'
+          try {
+            const response = await postCreateInsumo(values);
+            console.log(response);
+      
+            if (response.data && response.data.error) {
+              // Verificar errores específicos
+              if (response.data.error === 'el nombre del insumo ya existe') {
+                console.log('Mostrar alerta de insumo existente');
+      
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'El nombre del insumo ya existe.',
+                });
+              }
+ else {
+                console.log('Mostrar alerta de otro error');
+      
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response.data.error,
+                });
+              }
+            } else {
+              // Verificar si se creó el usuario correctamente
+              if (response.data && response.data.insumo) {
+                // Si no hay errores, redirige a la página de usuario
+                navigate("/insumo");
+                window.location.reload()
+                swalWithBootstrapButtons.fire(
+                  'Registro Enviado!',
+                  'Your file has been deleted.',
+                  'success'
                 );
+              } else {
+                navigate("/insumo");
+                window.location.reload()
+
+                swalWithBootstrapButtons.fire(
+                  'Registro Enviado!',
+                  'Your file has been deleted.',
+                  'success'
+                );
+              }
             }
-        });
-    }
-} catch (error) {
-    console.error(error);
-      }
-    }
+          } catch (error) {
+            console.error(error);
+            swalWithBootstrapButtons.fire(
+              'Error',
+              'Ocurrió un error al crear el insumo.',
+              'error'
+            );
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire(
+            'Se cancelo el envio',
+            'Este usuario no se registro',
+            'error'
+          );
+        }
+      });
+    }              
+  } catch (error) {
+    console.log(error);
+  }
+}
+   
+
+
     const eliminarInsumos = async (id_insumo) => {
       try {
         Swal.fire({

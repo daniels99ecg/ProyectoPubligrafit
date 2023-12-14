@@ -36,13 +36,13 @@ const ClienteInfo = ({ cliente, handleCloseModal, open }) => {
               <strong>ID Cliente:</strong> {cliente.id_cliente}
             </p>
             <p>
-              <strong>Nombre:</strong> {cliente.nombre} {cliente.apellido}
-            </p>
-            <p>
               <strong>Tipo Documento:</strong> {cliente.tipo_documento}
             </p>
             <p>
               <strong>Documento:</strong> {cliente.documento}
+            </p>
+            <p>
+              <strong>Nombre:</strong> {cliente.nombre} {cliente.apellido}
             </p>
             <p>
               <strong>Teléfono:</strong> {cliente.telefono}

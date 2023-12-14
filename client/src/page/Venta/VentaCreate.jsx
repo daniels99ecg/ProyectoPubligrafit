@@ -280,7 +280,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                             buttonsStyling: false,
                           });
 
-                          swalWithBootstrapButtons
+                          Swal
                             .fire({
                               title: "¿Confirmar el registro?",
                               text: "Tu registro será guardado",
@@ -767,6 +767,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                       type="text"
                                       name="total"
                                       id="total"
+                                      disabled
                                       as={TextField}
                                       label="Total"
                                       value={formatearValores(total)}

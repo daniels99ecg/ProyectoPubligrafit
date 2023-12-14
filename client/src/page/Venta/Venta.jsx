@@ -106,10 +106,13 @@ function listarVentas() {
   };
 
   // Formatear valores sin decimales
-  function formatearPrecios(valor) {
-    const valorFormateado = parseFloat(valor).toFixed(0);
-    const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
-    return formateoInt;
+  function formatearPrecios(amount) {
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
   }
 
   useEffect(() => {

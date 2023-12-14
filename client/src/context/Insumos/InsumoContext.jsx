@@ -116,7 +116,7 @@ const validacionInsumo = async (values)=>{
             buttonsStyling: false
           });
       
-          swalWithBootstrapButtons.fire({
+          Swal.fire({
             title: 'Confirmar el envío del formulario?',
             text: '¿Estás seguro de realizar la acción?',
             icon: 'warning',

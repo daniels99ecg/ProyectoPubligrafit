@@ -117,12 +117,8 @@ function Nav() {
 <br />
 <br />
 <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
+
+
 <div className="nav-item-divider"></div>
 
             <a href="/" className="dashboard-nav-item" onClick={handleLogout}>

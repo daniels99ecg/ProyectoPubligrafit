@@ -9,8 +9,17 @@ import Nav from '../../components/nav';
 import { Modal, Button } from 'react-bootstrap';
 import React, { useState } from 'react';
 
-
-
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+function formatNumber(value) {
+  return new Intl.NumberFormat('es-AR').format(value);
+}
 function listarProductos() {
 
   const { listar, ShowProducto, filtrarDesactivados, eliminarProductos, activarProducto, desactivarProducto, searchTerm, setSearchTerm } = useProducto()
@@ -66,11 +75,16 @@ function listarProductos() {
                             <li className="list-group-item">ID: {item.id_producto}</li>
                             <li className="list-group-item">Categoria: {item.fk_categoria}</li>
                             <li className="list-group-item">Nombre: {item.nombre_producto}</li>
-                            <li className="list-group-item">Precio: {item.precio}</li>
-                            <li className="list-group-item">Imagen: {item.imagen}</li>
-                            <li className="list-group-item">cantidad: {item.cantidad}</li>
-                          </ul>
+                            <li className="list-group-item">Precio: {formatCurrency(item.precio)}</li>
+                            <li className="list-group-item"><img
+  src={`http://localhost:3001/${item.imagen}`}
+  alt="Imagen del producto"
+  style={{ width: '30%' }}
+/></li>
+                            <li className="list-group-item">cantidad: {formatNumber(item.cantidad)}</li>
 
+                          </ul>
+                         
                           <div className="row">
                             <div className="col-md-6"></div>
                             <div className="switch-button">
@@ -166,13 +180,17 @@ function listarProductos() {
                         categoria: item.categoria.categoria
                       }))}
                       columns={[
-                        { field: 'id_producto', headerName: 'Id', flex: 1 },
-                        { field: 'categoria', headerName: 'Categoria', flex: 1 },
-                        { field: 'nombre_producto', headerName: 'Nombre', flex: 1 },
-                        { field: 'precio', headerName: 'Precio', flex: 1 },
-                        { field: 'cantidad', headerName: 'cantidad', flex: 1 },
+                        { field: 'id_producto', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
+                        { field: 'categoria', headerName: 'Categoria', headerClassName: 'encabezado', flex: 1 },
+                        { field: 'nombre_producto', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
+                        { field: 'precio', headerName: 'Precio', headerClassName: 'encabezado', flex: 1,
+                        valueFormatter: (params) => formatCurrency(params.value),
+                      },
+                        { field: 'cantidad', headerName: 'cantidad', headerClassName: 'encabezado', flex: 1,
+                        valueFormatter: (params) =>formatNumber(params.value)
+                      },
                         {
-                          field: 'imagen', headerName: 'Imagen', flex: 1,
+                          field: 'imagen', headerName: 'Imagen', headerClassName: 'encabezado', flex: 1,
                           renderCell: (params) => {
                             const [showModal, setShowModal] = useState(false);
 
@@ -219,6 +237,7 @@ function listarProductos() {
                           field: 'estado',
                           headerName: 'Estado',
                           flex: 1,
+                          headerClassName: 'encabezado',
                           renderCell: (params) => (
                             <div className="switch-button">
                               <input
@@ -246,6 +265,7 @@ function listarProductos() {
                           field: 'acciones',
                           headerName: 'Acciones',
                           flex: 1,
+                          headerClassName: 'encabezado',
                           renderCell: (params) => (
                             <div>
                               <button

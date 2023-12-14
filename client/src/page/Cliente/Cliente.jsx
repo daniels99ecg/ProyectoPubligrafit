@@ -8,6 +8,9 @@ import ClienteCreate from './ClienteCreate'
 import ClienteInfo from './ClienteInfo'
 import ClienteUpdate from './ClienteUpdate'
 import { BsInfoCircleFill, BsArrowClockwise, BsTrash } from "react-icons/bs";
+import { useMediaQuery } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 function ListarClientes() {
   const {showClientes, searchTerm, setSearchTerm, activarCliente, desactivarCliente, filtrarDesactivados, destroyCliente}= useCliente()
@@ -16,6 +19,7 @@ function ListarClientes() {
   const [selectedClienteId, setSelectedClienteId] = useState(null);
   const [selectedCliente, setSelectedCliente] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const isSmallScreen = useMediaQuery('(max-width:1200px)');
 
   useEffect(() => {   
     showClientes();
@@ -90,6 +94,57 @@ const handleCloseUpdateModal = () => {
           </div>
         </div>
         <br />
+        {isSmallScreen ? (
+                  // Render cards when the screen is small
+                  <div>
+                    {/* Map over your data and render cards here */}
+                    {filtrarDesactivados.map((item) => (
+                      
+                      <Card key={item.id_cliente}>
+                      <CardContent>
+                      <ul className="list-group list-group-flush">
+
+                      <li className="list-group-item">Tipo ID: {item.documento}</li>
+                      <li className="list-group-item">Nombre: {item.nombre}</li>
+                      <li className="list-group-item">Apellidos: {item.apellido}</li>
+                      <li className="list-group-item">Telefono: {item.telefono}</li>
+                      <li className="list-group-item">Dirección: {item.direccion}</li>
+                      <li className="list-group-item">Email: {item.email}</li>
+                        </ul>
+                      
+                        <div className="row">
+          <div className="col-md-6"></div>
+                        <div className="switch-button">
+                     <input
+                       type="checkbox"
+                        id={`switch-label-${item.id_cliente}`}
+                        checked={item.estado}
+                        onChange={(e) => {
+                        e.preventDefault(); // Evitar la navegación por defecto
+                    if (item.estado) {
+                      desactivarCliente(item.id_cliente);
+                  } else {
+                      activarCliente(item.id_cliente);
+                }
+          }}
+        className="switch-button__checkbox"
+      />
+      <label
+        htmlFor={`switch-label-${item.id_cliente}`}
+        className="switch-button__label"
+      ></label>
+                  </div>
+                  </div>
+        
+                      </CardContent>
+                    </Card>
+                    ))}
+                  
+                  </div>
+                
+                ) : (
+
+
         <div style={{ flex: 1, height: '100%', width: '100%' }}>
           <DataGrid
             rows={filtrarDesactivados.map((item) => ({
@@ -230,6 +285,7 @@ const handleCloseUpdateModal = () => {
                       }}
                       />
           </div>
+                )}
             {showInfoModal && selectedCliente && ReactDOM.createPortal(
             <ClienteInfo
               cliente={selectedCliente}

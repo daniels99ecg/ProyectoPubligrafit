@@ -60,6 +60,8 @@
           errors.documento = 'Este campo es requerido';
         } else if (!/^[0-9]+$/.test(values.documento)) {
           errors.documento = 'Este campo solo debe contener números';
+        }else if (values.documento.length < 6 || values.documento.length > 12) {
+          errors.documento = "La longitud debe estar entre 6 y 12 caracteres";
         }
       if (!values.email) {
         errors.email = 'Este campo es requerido';
@@ -88,7 +90,7 @@
     }}
     
     >
-    {({handleChange, handleSubmit, values, errors})=>(
+    {({handleChange, handleSubmit, values, errors, isValid})=>(
       
         <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
           
@@ -123,7 +125,12 @@
           value={values.documento}
           sx={{ width: '100%' }}
           className={` ${
-            values.documento && /^[0-9]+$/.test(values.documento) ? 'is-valid' : 'is-invalid'
+            values.documento &&
+            /^[0-9]+$/.test(values.documento) &&
+            values.documento.length >= 6 &&
+            values.documento.length <= 12
+              ? 'is-valid'
+              : 'is-invalid'
           }`}
           InputProps={{
             endAdornment: (
@@ -256,7 +263,7 @@ renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' 
   <br />
 
   <div className="col-auto">
-        <button className="btn btn-primary" type='submit'>
+        <button className="btn btn-primary" type='submit' disabled={!isValid}>
           {params.id_usuario ? "Actualizar":"Registrar"}
         </button>
   </div>

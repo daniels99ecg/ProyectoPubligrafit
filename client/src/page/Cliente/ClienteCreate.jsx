@@ -115,7 +115,7 @@ function CreateCliente({ handleCloseModal }) {
                         buttonsStyling: false,
                       });
 
-                      swalWithBootstrapButtons
+                      Swal
                         .fire({
                           title: "Confirmar el registro?",
                           text: "Tu registro será guardado",
@@ -134,7 +134,7 @@ function CreateCliente({ handleCloseModal }) {
                                   response.data.error
                                 ) {
                                 } else {
-                                  swalWithBootstrapButtons
+                                  Swal
                                     .fire(
                                       "Registro exitoso!",
                                       "Tu archivo ha sido registrado",

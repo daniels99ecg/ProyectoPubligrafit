@@ -241,7 +241,7 @@ export const ClienteContextProvider = ({ children }) => {
           buttonsStyling: false,
         });
 
-        swalWithBootstrapButtons
+        Swal
           .fire({
             title: "Confirmar el registro?",
             text: "Tu registro será guardado",
@@ -262,7 +262,7 @@ export const ClienteContextProvider = ({ children }) => {
                       text: response.data.error,
                     });
                   } else {
-                    swalWithBootstrapButtons
+                    Swal
                       .fire(
                         "Registro exitoso!",
                         "Tu archivo ha sido registrado",

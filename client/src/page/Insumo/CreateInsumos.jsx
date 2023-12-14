@@ -36,9 +36,10 @@ function CreateInsumo() {
 
                       if (!values.nombre) {
                         errors.nombre = 'Este campo es requerido';
-                  
-                      }else if (!/^[a-zA-Z]+$/.test(values.nombre)) {
+                      } else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre)) {
                         errors.nombre = 'Este campo solo debe contener letras';
+                      } else if (values.nombre.length < 5 || values.nombre.length > 40) {
+                        errors.nombre = 'La longitud debe estar entre 5 y 40 caracteres';
                       }
                       return errors;
                     }}
@@ -49,7 +50,7 @@ function CreateInsumo() {
                         validacionInsumo(values)
                     }}
                   >
-                    {({ handleChange, values , errors}) => (
+                    {({ handleChange, values , errors, isValid}) => (
                       <Form className='row g-3'>
                         <div className="col-md-12 mx-auto">
                           <label htmlFor="nombre"></label>
@@ -58,13 +59,18 @@ function CreateInsumo() {
                           name='nombre' 
                           as={TextField} 
                           label ='Nombre' 
-                          className={` ${
-                            values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? 'is-valid' : 'is-invalid'
+                          className={`${
+                            values.nombre &&
+                            /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre) &&
+                            values.nombre.length > 5 &&
+                            values.nombre.length < 40
+                              ? 'is-valid'
+                              : 'is-invalid'
                           }`}
                           InputProps={{
                             endAdornment: (
                               <React.Fragment>
-                                {values.nombre && /^[a-zA-Z]+$/.test(values.nombre) ? (
+                                {values.nombre && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre) ? (
                                   <CheckIcon style={{ color: 'green' }} />
                                 ) : (
                                   <ErrorIcon style={{ color: 'red' }} />
@@ -88,7 +94,7 @@ function CreateInsumo() {
                         </div> */}
 
                         <div className='col-auto'>
-                          <button className='btn btn-primary' type='submit'>Registrar</button>
+                          <button className='btn btn-primary' type='submit' disabled={!isValid}>Registrar</button>
                         </div>
 
                         <div className='col-auto'>

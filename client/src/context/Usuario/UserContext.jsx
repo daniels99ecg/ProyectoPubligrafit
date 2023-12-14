@@ -275,9 +275,9 @@ const actualizarValidar= async(id_usuario, values)=>{
             buttonsStyling: false
           })
           
-          swalWithBootstrapButtons.fire({
+          Swal.fire({
             title: 'Confirmar el envio del formulario?',
-            text: "You won't be able to revert this!",
+            text: "¡No podrás revertir esto!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Aceptar!',

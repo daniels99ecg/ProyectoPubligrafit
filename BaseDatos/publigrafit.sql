@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-12-2023 a las 18:10:12
+-- Tiempo de generación: 11-01-2024 a las 17:03:36
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -263,9 +263,8 @@ CREATE TABLE `rols` (
 --
 
 INSERT INTO `rols` (`id_rol`, `nombre_rol`, `fecha`, `estado`) VALUES
-(121, 'Administrador', '2023-11-17', 1),
-(123, 'Empleado3', '2023-11-17', 1),
-(125, 'vendedor', '2023-12-07', 1);
+(130, 'Vendedor', '2024-01-02', 1),
+(131, 'Administrador', '2024-01-02', 1);
 
 -- --------------------------------------------------------
 
@@ -276,25 +275,26 @@ INSERT INTO `rols` (`id_rol`, `nombre_rol`, `fecha`, `estado`) VALUES
 CREATE TABLE `rol_x_permisos` (
   `id_rol_x_permiso` int(10) NOT NULL,
   `fk_rol` int(4) NOT NULL,
-  `fk_permiso` varchar(10) NOT NULL
+  `fk_permiso` varchar(10) NOT NULL,
+  `fk_usuario` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `rol_x_permisos`
 --
 
-INSERT INTO `rol_x_permisos` (`id_rol_x_permiso`, `fk_rol`, `fk_permiso`) VALUES
-(229, 121, '0001Rol'),
-(230, 121, '0003Compra'),
-(231, 121, '0004Insumo'),
-(232, 121, '0006Venta'),
-(234, 121, '005Ficha'),
-(235, 121, '007produc'),
-(236, 121, '008Cliente'),
-(239, 123, '0001Rol'),
-(240, 123, '0004Insumo'),
-(246, 125, '0004Insumo'),
-(247, 125, '0006Venta');
+INSERT INTO `rol_x_permisos` (`id_rol_x_permiso`, `fk_rol`, `fk_permiso`, `fk_usuario`) VALUES
+(292, 131, '0001Rol', 27),
+(293, 131, '0003Compra', 27),
+(294, 131, '0004Insumo', 27),
+(295, 131, '0006Venta', 27),
+(296, 131, '002Usuario', 27),
+(297, 131, '005Ficha', 27),
+(298, 131, '007produc', 27),
+(299, 131, '008Cliente', 27),
+(300, 130, '0003Compra', 28),
+(301, 130, '0004Insumo', 28),
+(302, 130, '0006Venta', 28);
 
 -- --------------------------------------------------------
 
@@ -306,7 +306,6 @@ CREATE TABLE `usuarios` (
   `id_usuario` int(4) NOT NULL,
   `tipo_documento` varchar(255) NOT NULL,
   `documento` int(255) NOT NULL,
-  `fk_rol2` int(4) NOT NULL,
   `nombres` varchar(50) NOT NULL,
   `apellidos` varchar(50) NOT NULL,
   `email` varchar(40) NOT NULL,
@@ -318,8 +317,9 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `tipo_documento`, `documento`, `fk_rol2`, `nombres`, `apellidos`, `email`, `contrasena`, `estado`) VALUES
-(1, 'Cc', 1036134760, 121, 'DANIEL', 'CRUZ', 'danielsenju1999@gmail.com', '$2b$10$YP5hi/KnJBW4AOig06XDce7AwWmDQ3JaOqYtVMyTJH8r3vFZh0ni6', 1);
+INSERT INTO `usuarios` (`id_usuario`, `tipo_documento`, `documento`, `nombres`, `apellidos`, `email`, `contrasena`, `estado`) VALUES
+(27, 'CC', 1036134760, 'DANIEL EMILIO', 'CRUZ GARCIA', 'danielsenju1999@gmail.com', '$2b$10$RhrHO97o78I4zhPnv2CW3eFwwqGbe71gZSrY8ReOYJeWlz70I83Di', 1),
+(28, 'CC', 21939559, 'MARIA GILMA', 'GOEZ', 'algo00@hotmail.com', '$2b$10$xz8NVSIHrPB2XuqXaFM/neK/rvtH/QVi/cUUs02EK1zUEzfGeS9du', 1);
 
 -- --------------------------------------------------------
 
@@ -421,14 +421,14 @@ ALTER TABLE `rols`
 ALTER TABLE `rol_x_permisos`
   ADD PRIMARY KEY (`id_rol_x_permiso`),
   ADD KEY `fk_rol` (`fk_rol`),
-  ADD KEY `fk_permiso` (`fk_permiso`);
+  ADD KEY `fk_permiso` (`fk_permiso`),
+  ADD KEY `fk_usuario` (`fk_usuario`);
 
 --
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD KEY `fk_rol2` (`fk_rol2`);
+  ADD PRIMARY KEY (`id_usuario`);
 
 --
 -- Indices de la tabla `ventas`
@@ -493,19 +493,19 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `rols`
 --
 ALTER TABLE `rols`
-  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
+  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
 
 --
 -- AUTO_INCREMENT de la tabla `rol_x_permisos`
 --
 ALTER TABLE `rol_x_permisos`
-  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=248;
+  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=303;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_usuario` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
@@ -548,13 +548,8 @@ ALTER TABLE `productos`
 --
 ALTER TABLE `rol_x_permisos`
   ADD CONSTRAINT `fk_permiso` FOREIGN KEY (`fk_permiso`) REFERENCES `permisos` (`id_permiso`),
-  ADD CONSTRAINT `fk_rol` FOREIGN KEY (`fk_rol`) REFERENCES `rols` (`id_rol`);
-
---
--- Filtros para la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD CONSTRAINT `fk_rol2` FOREIGN KEY (`fk_rol2`) REFERENCES `rols` (`id_rol`);
+  ADD CONSTRAINT `fk_rol` FOREIGN KEY (`fk_rol`) REFERENCES `rols` (`id_rol`),
+  ADD CONSTRAINT `rol_x_permisos_ibfk_1` FOREIGN KEY (`fk_usuario`) REFERENCES `usuarios` (`id_usuario`);
 
 --
 -- Filtros para la tabla `ventas`

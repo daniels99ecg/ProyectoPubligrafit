@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
-import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol, listarPermiso, eliminar,cargaractualizarRol,actualizarRol } from "../../api/Rol/rutas.api"
+import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol,crearRolNuevo, listarPermiso, eliminar,cargaractualizarRol,actualizarRol,getListarRolesxPermiso } from "../../api/Rol/rutas.api"
 
 export const RolContext = createContext()
 
@@ -17,6 +17,8 @@ export const useRol=()=>{
 
     const navigate=useNavigate()
     const [listar, setListar]=useState([])//Lista todos los roles
+    const [listar2, setListar2]=useState([])//Lista todos los roles
+
     const [searchTerm, setSearchTerm] = useState("");
 async function cargarRol(){
        
@@ -36,11 +38,16 @@ async function cargarpermiso(){
   setListar(response.data)
 }
 
+async function cargarRolxPermiso(){
+  const response =await getListarRolesxPermiso()
+  setListar2(response.data)
+  
+}
 
 
 const crearRoles=async(values)=>{
 try {
-  if( values.nombre_rol=="" || values.fecha==""||values.permisos==""){
+  if( values.fk_rol=="" || values.fk_usuario==""||values.permisos==""){
            
     Swal.fire({
         icon: 'error',
@@ -136,6 +143,104 @@ try {
   }
 }
    
+
+const crearRolesNuevos=async(values)=>{
+  try {
+    if( values.nombre_rol=="" || values.fecha==""){
+             
+      Swal.fire({
+          icon: 'error',
+          title: 'Campos Vacios',
+          text: 'Por favor ingresar datos!',
+          
+        })
+      }else{
+             
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success me-3',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+        
+        Swal.fire({
+          title: 'Confirmar el envio del formulario?',
+          text: "¡No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Aceptar!',
+          cancelButtonText: 'Cancelar!',
+          Buttons: true
+        }).then(async(result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await crearRolNuevo(values);
+              console.log(response);
+        
+              if (response.data && response.data.error) {
+                // Verificar errores específicos
+                if (response.data.error === 'el nombre del rol ya existe') {
+                  console.log('Mostrar alerta de rol existente');
+        
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'El nombre del rol ya existe.',
+                  });
+                }
+   else {
+                  console.log('Mostrar alerta de otro error');
+        
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.data.error,
+                  });
+                }
+              } else {
+                // Verificar si se creó el usuario correctamente
+                if (response.data && response.data.rol) {
+                  // Si no hay errores, redirige a la página de usuario
+                  navigate("/rol");
+                  window.location.reload()
+                  swalWithBootstrapButtons.fire(
+                    'Registro Enviado!',
+                    'Your file has been deleted.',
+                    'success'
+                  );
+                } else {
+                  navigate("/rol");
+                  window.location.reload()
+  
+                  swalWithBootstrapButtons.fire(
+                    'Registro Enviado!',
+                    'Your file has been deleted.',
+                    'success'
+                  );
+                }
+              }
+            } catch (error) {
+              console.error(error);
+              swalWithBootstrapButtons.fire(
+                'Error',
+                'Ocurrió un error al crear el usuario.',
+                'error'
+              );
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire(
+              'Se cancelo el envio',
+              'Este usuario no se registro',
+              'error'
+            );
+          }
+        });
+      }              
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 const filtrarDesactivados = listar.sort((a, b) => {
   if (a.estado === b.estado) {
@@ -297,7 +402,7 @@ const actualizarValidar= async(id_rol, values)=>{
 
 
     return( 
-        <RolContext.Provider value={{listar, ListarActualizar,cargarRol, desactivarCliente, activarCliente, crearRoles,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados, eliminarRol,cargarRolActualizar,actualizarValidar}}>
+        <RolContext.Provider value={{listar, listar2,ListarActualizar,cargarRol, cargarRolxPermiso,desactivarCliente, activarCliente, crearRoles, crearRolesNuevos,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados, eliminarRol,cargarRolActualizar,actualizarValidar}}>
             {children}
         </RolContext.Provider>
       )

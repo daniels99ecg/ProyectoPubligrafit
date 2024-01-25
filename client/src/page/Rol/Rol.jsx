@@ -7,17 +7,63 @@ import { useNavigate } from "react-router-dom"
 import { useMediaQuery } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import ReactDOM from 'react-dom';
+import RolCreate from './RolCreate'
+import RolCreatePermisos from './RolCreatePermisos'
+
+import RolUpdate from './UpdateRol'
 
 function Rol(){
 const {listar,cargarRol, desactivarCliente, activarCliente,searchTerm,setSearchTerm,filtrarDesactivados, eliminarRol}=useRol()
 const navigate=useNavigate()
 const isSmallScreen = useMediaQuery('(max-width:1200px)');
-
+const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedClienteId, setSelectedClienteId] = useState(null);
+  const [openPermisoModal, setOpenPermisoModal] = useState(false);
 //Para hacer la busqueda por filtro 
 
     useEffect(()=>{
     cargarRol()
     },[searchTerm])
+
+    const handleOpenVentaModal = () => {
+      setOpenCreateModal(true);
+  };
+  
+  const handleSubmitForm = async () => {
+  };
+  
+  const handleCloseVentaModal = () => {
+    setOpenCreateModal(false);
+    cargarRol()
+  
+  };
+  
+  // Modal de Actualizar
+  const handleOpenUpdateModal = (id_rol) => {
+    setSelectedClienteId(id_rol);
+    setOpenUpdateModal(true);
+  };
+  
+  const handleCloseUpdateModal = () => {
+    setOpenUpdateModal(false);
+    cargarRol()
+  };
+
+//Permisos
+  const handleOpenPermisoModal = () => {
+    setOpenPermisoModal(true);
+};
+
+const handleSubmitFormPermiso = async () => {
+};
+
+const handleClosePermisoModal = () => {
+  setOpenPermisoModal(false);
+  cargarRol()
+
+};
     return(
       <>
       <Nav/>
@@ -34,8 +80,25 @@ const isSmallScreen = useMediaQuery('(max-width:1200px)');
    
     <div className='row'>
     <div className="col-md-2 col-12 mb-2">  
-    <a className="btn btn-primary " href="/rol/create" role="button">Nuevo Registro</a>
+    <button
+        className="btn btn-primary"
+        onClick={handleOpenVentaModal}
+        role="button"
+      >
+        Nuevo Registro
+      </button>
+
     </div>
+    <div className="col-md-2">  
+
+      <button
+        className="btn btn-primary"
+        onClick={handleOpenPermisoModal}
+        role="button"
+      >
+        Nuevo Permiso
+      </button>
+      </div>
     <div className="col-md-3 col-12" style={{ marginLeft: 'auto' }}>
     <input
                   type="text"
@@ -47,9 +110,8 @@ const isSmallScreen = useMediaQuery('(max-width:1200px)');
                 </div>
     <br />
     {isSmallScreen ? (
-                  // Render cards when the screen is small
                   <div>
-                    {/* Map over your data and render cards here */}
+                   
                     {filtrarDesactivados.map((item) => (
                       
                       <Card key={item.id_rol}>
@@ -153,9 +215,8 @@ const isSmallScreen = useMediaQuery('(max-width:1200px)');
         <div className="card" style={{marginLeft:15}}>
         <DataGrid
             rows={filtrarDesactivados.map((item) => ({
-              ...item,
               id: item.id_rol,
-             
+              ...item,
             }))}
             columns={[
               { field: 'id_rol', headerName: 'ID', headerClassName: 'encabezado', flex: 1 },
@@ -200,8 +261,8 @@ const isSmallScreen = useMediaQuery('(max-width:1200px)');
     <div className="d-flex">
       <button
         className="btn btn-outline-secondary me-1"
-        onClick={() =>{ navigate(`/editr/${params.row.id_rol}`) 
-         window.location.reload();
+        onClick={() =>{     handleOpenUpdateModal(params.row.id_rol);
+
       }}
         disabled={!params.row.estado}
         style={{
@@ -291,13 +352,123 @@ const isSmallScreen = useMediaQuery('(max-width:1200px)');
                   pageSize: 100,
                 },
               },
-            }}
+            }} getRowId={(row) => row.id_rol || row.id_permiso} 
           />
   
 
 
 </div>
                 )}
+                {openPermisoModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleClosePermisoModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1100px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '100%', height: '100%' }}>
+              <RolCreatePermisos handleSubmitFormPermiso={handleSubmitFormPermiso} handleClosePermisoModal={handleClosePermisoModal} />
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+                 {openCreateModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleCloseVentaModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1200px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '100%', height: '100%' }}>
+              <RolCreate handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+      
+      {openUpdateModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleCloseUpdateModal}
+          />
+          <div
+            className="modal-update"
+            style={{
+              maxHeight: '0vh',
+              position: 'fixed',
+              top: '30%',
+              left: '42%',
+              transform: 'translateX(-50%)',
+              zIndex: 1050,
+              maxHeight: '25vh',
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '150%', height: '180%' }}>
+              <RolUpdate handleCloseUpdateModal={handleCloseUpdateModal} RolId={selectedClienteId}/>
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+
                     </div>
                 </div>
             </div>

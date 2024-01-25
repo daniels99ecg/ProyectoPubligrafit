@@ -9,14 +9,14 @@ import ErrorIcon from '@mui/icons-material/Error';
 import React from 'react';
 import { useParams, useNavigate} from 'react-router-dom'
 
-function RolCreate() {
+function RolCreate({RolId}) {
     const params=useParams()
 
   const { ListarActualizar,cargarRolActualizar,actualizarValidar } = useRol();
 
   useEffect(() => {
-    cargarRolActualizar(params.id_rol)
-  }, [params.id_rol]);
+    cargarRolActualizar(RolId)
+  }, [RolId]);
   const obtenerFechaActual = () => {
     const hoy = new Date();
     const anio = hoy.getFullYear();
@@ -31,7 +31,7 @@ function RolCreate() {
   };
   return (
     <>
-      <Nav />
+     
       <div className='dashboard-app'>
         <div className='dashboard-content'>
           <div className='container'>
@@ -61,8 +61,8 @@ function RolCreate() {
                     onSubmit={async (values) => {
                       console.log(values)
 
-                      if(params.id_rol){
-                        actualizarValidar(params.id_rol, values)
+                      if(RolId){
+                        actualizarValidar(RolId, values)
                       }
                     }}
                   >

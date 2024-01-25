@@ -18,6 +18,8 @@ export const UserContextProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [listar, setListar]=useState([])
+    const [listar3, setListar3]=useState([])
+
     const [Listar, setListar2]=useState([])
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -30,14 +32,20 @@ async function cargarUsuario(){
           item.nombres.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.email.toString().includes(searchTerm)||
-          item.rol.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase())
+          item.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase())
 
         );
     
         setListar(filterList);
       
         }
-       
+
+async function cargarUsuariolista(){
+          const response =  await getListarUsuarios()
+      
+          setListar3(response.data);
+        
+          }     
   
 async function creacionValidacion(values) {
           try {
@@ -70,8 +78,10 @@ async function creacionValidacion(values) {
                 if (result.isConfirmed) {
                   try {
                     const response = await enviarUsuario(values);
+                  
+
                     console.log(response);
-              
+
                     if (response.data && response.data.error) {
                       // Verificar errores específicos
                       if (response.data.error === 'el id de usuario ya existe') {
@@ -104,21 +114,20 @@ async function creacionValidacion(values) {
                       // Verificar si se creó el usuario correctamente
                       if (response.data && response.data.usuario) {
                         // Si no hay errores, redirige a la página de usuario
-                        navigate("/usuario");
-              
+                                    
                         swalWithBootstrapButtons.fire(
                           'Registro Enviado!',
                           'Your file has been deleted.',
                           'success'
                         );
                       } else {
-                        navigate("/usuario");
               
                         swalWithBootstrapButtons.fire(
                           'Registro Enviado!',
                           'Your file has been deleted.',
                           'success'
                         );
+                              window.location.reload()
                       }
                     }
                   } catch (error) {
@@ -235,7 +244,7 @@ const[ListarActualizar, setListarActualizar]=useState({
     apellidos:"",
     email:"",
     contrasena:"",
-    fk_rol2:"",
+   
  })
     
  async function cargarUsuariosActualizar(id_usuario) {
@@ -251,7 +260,7 @@ const[ListarActualizar, setListarActualizar]=useState({
       apellidos: usuarioData.apellidos,
       email: usuarioData.email,
       contrasena: usuarioData.contrasena,
-      fk_rol2: usuarioData.fk_rol2,
+      
     });
   } catch (error) {
     console.log(error);
@@ -325,7 +334,7 @@ const actualizarValidar= async(id_usuario, values)=>{
                 if (response.data && response.data.usuario) {
                   // Si no hay errores, redirige a la página de usuario
                   navigate("/usuario");
-        
+                  window.location.reload()
                   swalWithBootstrapButtons.fire(
                     'Registro Enviado!',
                     'Your file has been deleted.',
@@ -333,7 +342,8 @@ const actualizarValidar= async(id_usuario, values)=>{
                   );
                 } else {
                   navigate("/usuario");
-        
+                  window.location.reload()
+
                   swalWithBootstrapButtons.fire(
                     'Registro Enviado!',
                     'Your file has been deleted.',
@@ -364,7 +374,7 @@ const actualizarValidar= async(id_usuario, values)=>{
   }
 
     return( 
-      <UserContext.Provider value={{listar, Listar,cargarUsuario,searchTerm,setSearchTerm, creacionValidacion,  cargarRol, desactivarCliente, activarCliente, eliminarUsuario, filtrarDesactivados, ListarActualizar,setListarActualizar,actualizarValidar,cargarUsuariosActualizar}}>
+      <UserContext.Provider value={{listar, Listar,cargarUsuario,cargarUsuariolista,listar3,searchTerm,setSearchTerm, creacionValidacion,  cargarRol, desactivarCliente, activarCliente, eliminarUsuario, filtrarDesactivados, ListarActualizar,setListarActualizar,actualizarValidar,cargarUsuariosActualizar}}>
           {children}
       </UserContext.Provider>
     )

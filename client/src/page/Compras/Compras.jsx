@@ -3,14 +3,54 @@ import '../../css/style.css'
 import Nav from '../../components/nav'
 import {DataGrid} from '@mui/x-data-grid'
 import { useCompra } from "../../context/Compras/ComprasContext";
+import ComprasCreatePruebas from "../Compras/ComprasCreatePruebas"
+import ReactDOM from 'react-dom';
+import { getListaCompra } from "../../api/Compras/rutas.api";
+import Tooltip from "@mui/material/Tooltip";
+import { BsInfoCircleFill } from "react-icons/bs";
+import CompraInfo from "../Compras/CompraInfo"
+
+
 function Compras (){ //Inicializar
 const {cargarCompras,setSearchTerm,filtrarDesactivados} = useCompra()
+const [openCreateModal, setOpenCreateModal] = useState(false);
+const [showInfoVenta, setShowInfoVenta] = useState(false);
+const [selectVentaDetalles, setSelectVentaDetalles] = useState(null);
+const [selectVenta, setSelectVenta] = useState(null);
 useEffect(()=>{
     
     cargarCompras()
 
 },[])
 
+
+const handleOpenVentaModal = () => {
+    setOpenCreateModal(true);
+};
+
+const handleSubmitForm = async () => {
+};
+
+const handleCloseVentaModal = () => {
+  setOpenCreateModal(false);
+
+};
+
+const handleOpenInfoCompra = async (compraInfo) => {
+  try {
+    const response = await getListaCompra(compraInfo.id_compra);
+    setSelectVentaDetalles(response.data);
+    setShowInfoVenta(true);
+  } catch (error) {
+    console.error("Error al obtener detalles de la compra", error);
+  }
+};
+
+// Cerrar modal info
+const handleCloseInfoVenta = () => {
+  setShowInfoVenta(false);
+  setSelectVentaDetalles(null);
+};
 
     return (
       <>
@@ -31,9 +71,17 @@ useEffect(()=>{
                       </div>
                 <br />
         <div className='row'>
-    <div className="col-md-2">  
-    <a className="btn btn-primary " href="/compras/create" role="button">Nuevo Registro</a>
-    </div>
+    
+    <div className="col-md-3">
+                  <button
+        className="btn btn-primary"
+        onClick={handleOpenVentaModal}
+        role="button"
+      >
+        Nuevo Registro
+      </button>
+                  </div>
+                   
     <div className="col-md-3" style={{marginLeft: 'auto'}}>
     <input
                   type="text"
@@ -57,10 +105,86 @@ useEffect(()=>{
           {field:'cantidad',headerName:'Cantidad', headerClassName: 'encabezado',flex:1},
           {field:'fecha',headerName:'Fecha', headerClassName: 'encabezado',flex:1},
           {field:'total',headerName:'Total', headerClassName: 'encabezado',flex:1},
+          {
+            field: 'info',
+            headerName: 'Info',
+            headerClassName: 'encabezado',
+            flex: 0,
+            renderCell: (params) => (
+              <Tooltip title="Información" arrow>
+                <span>
+                  <button
+                    className="btn btn-light info-button"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '5px',
+                      borderRadius: '50%',
+                      backgroundColor: 'white',
+                    }}
+                    onClick={() => handleOpenInfoCompra(params.row)}
+                  >
+                    <BsInfoCircleFill
+                      size={30}
+                      color="grey"
+                    />
+                  </button>
+                </span>
+              </Tooltip>
+            ),
+          },
             
         ]}
         />
 </div>
+
+{openCreateModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleCloseVentaModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1200px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '100%', height: '100%' }}>
+              <ComprasCreatePruebas handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+      {showInfoVenta && selectVentaDetalles &&
+        ReactDOM.createPortal(
+          <CompraInfo
+          compra={selectVentaDetalles}
+            handleCloseModal={handleCloseInfoVenta}
+            open={showInfoVenta}
+          />,
+          document.body
+        )}
+
+
 
                     </div>
                 </div>

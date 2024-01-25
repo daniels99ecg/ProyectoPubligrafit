@@ -10,7 +10,9 @@ import { UserContextProvider } from './context/Usuario/UserContext'
 import { RolContextProvider } from './context/Rol/RolContext'
 import ProtectedRoute from './ProtectedRoute';
 import Rol from './page/Rol/Rol'
+import RolCreatePermisos from './page/Rol/RolCreatePermisos'
 import RolCreate from './page/Rol/RolCreate'
+
 import Login from './page/Login/login'
 import Recuperar from './page/Login/recuperaContraseña'
 import Enviaremail from './page/Login/enviaremail'
@@ -36,6 +38,8 @@ import { FichaTecnicaContextProvider } from './context/FichasTecnicas/FichaTecni
 import Compras from './page/Compras/Compras'
 import ComprasCreate from './page/Compras/ComprasCreate'
 import { CompraContextProvider } from './context/Compras/ComprasContext'
+import ComprasCreatePruebas from './page/Compras/ComprasCreatePruebas'
+
 
 import ShowCliente from './page/Cliente/Cliente'
 import { ClienteContextProvider } from './context/Clientes/ClienteContext'
@@ -78,7 +82,9 @@ function App() {
 
       {/* Rol */}
       <Route path='/rol' element={<ProtectedRoute element={<Rol/>}/> } />
+      <Route path='/rol/create/permiso' element={<ProtectedRoute element={<RolCreatePermisos/>}/> } />
       <Route path='/rol/create' element={<ProtectedRoute element={<RolCreate/>}/> } />
+
       <Route path='/editr/:id_rol' element={<ProtectedRoute element={<UpdateRol/>}/> } />
 
       {/*Perfil*/}
@@ -101,7 +107,8 @@ function App() {
 
       <Route path='/compras' element={<ProtectedRoute element={<Compras />}/>} />
       <Route path='/compras/create' element={<ProtectedRoute element={<ComprasCreate />}/>} />
-    
+      <Route path='/compras/create/pruebas' element={<ProtectedRoute element={<ComprasCreatePruebas />}/>} />
+
       <Route path='*' element={<NotFound />} />
 
      </Routes>

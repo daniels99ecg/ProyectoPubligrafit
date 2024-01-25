@@ -1,4 +1,4 @@
-import { useEffect} from "react"
+import { useEffect,useState} from "react"
 import Nav from '../../components/nav'
 import { useNavigate } from "react-router-dom"
 import { useUser } from "../../context/Usuario/UserContext";
@@ -7,18 +7,49 @@ import { useMediaQuery } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Swal from 'sweetalert2'; // Import SweetAlert2
-
+import ReactDOM from 'react-dom';
+import UserCreate from './usuarioCreate'
+import UserUpdate from './usuarioUpdate'
 
 function User() {
   const {cargarUsuario,searchTerm, setSearchTerm,desactivarCliente, activarCliente, eliminarUsuario,filtrarDesactivados}=useUser()
   const navigate=useNavigate()
   const isSmallScreen = useMediaQuery('(max-width:1200px)');
-
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedClienteId, setSelectedClienteId] = useState(null);
   useEffect(()=>{
     
     cargarUsuario()
 
   },[searchTerm])
+
+
+  const handleOpenVentaModal = () => {
+    setOpenCreateModal(true);
+};
+
+const handleSubmitForm = async () => {
+};
+
+const handleCloseVentaModal = () => {
+  setOpenCreateModal(false);
+  cargarUsuario()
+
+};
+
+// Modal de Actualizar
+const handleOpenUpdateModal = (id_usuario) => {
+  setSelectedClienteId(id_usuario);
+  setOpenUpdateModal(true);
+};
+
+const handleCloseUpdateModal = () => {
+  setOpenUpdateModal(false);
+  cargarUsuario()
+};
+ 
+
   const handleEliminarUsuario = (idUsuario, rol) => {
     // Validar si el usuario tiene el rol de administrador
     if (rol === 'Administrador') {
@@ -50,8 +81,13 @@ function User() {
                     <br />
 <div className='row'>
 <div className="col-md-2 col-12 mb-2">  
-<a className="btn btn-primary" href="/usuario/create" role="button">Nuevo Registro</a>
-
+<button
+        className="btn btn-primary"
+        onClick={handleOpenVentaModal}
+        role="button"
+      >
+        Nuevo Registro
+      </button>
 </div>
 <div className="col-md-3 col-12" style={{ marginLeft: 'auto' }}>
 <input
@@ -78,7 +114,7 @@ function User() {
                       <li className="list-group-item">Nombre: {item.nombres}</li>
                       <li className="list-group-item">Apellido: {item.apellidos}</li>
                       <li className="list-group-item">Correo: {item.email}</li>
-                      <li className="list-group-item">Rol: {item.rol.nombre_rol}</li>
+                      {/* <li className="list-group-item">Rol: {item.rol.nombre_rol}</li> */}
                         </ul>
                       
                         <div className="row">
@@ -140,7 +176,7 @@ function User() {
 
                         <button
                       className="btn btn-danger"
-                      onClick={() => handleEliminarUsuario(params.row.id_usuario, params.row.rol.nombre_rol)}
+                      onClick={() => handleEliminarUsuario(params.row.id_usuario)}
                       disabled={!item.estado}
                     >
                       <svg
@@ -171,8 +207,8 @@ function User() {
 <DataGrid 
             rows={filtrarDesactivados.map((item) => ({
               ...item,
-              id: item.id_usuario,
-              nombreRol:item.rol.nombre_rol
+              id: item.documento,
+              // nombreRol:item.rol.nombre_rol
             }))}
             columns={[
               { field: 'tipo_documento', headerName: 'Tipo ID', headerClassName: 'encabezado', flex: 0 },
@@ -182,7 +218,7 @@ function User() {
               { field: 'apellidos', headerName: 'Apellido', headerClassName: 'encabezado', flex: 1 },
               { field: 'email', headerName: 'Email', headerClassName: 'encabezado', flex: 1 },
               // { field: 'contrasena', headerName: 'Contraseña', flex: 1 },
-              { field: 'nombreRol', headerName: 'Rol', headerClassName: 'encabezado', flex: 1 },
+              { field: 'nombre_rol', headerName: 'Rol', headerClassName: 'encabezado', flex: 1 },
           
               {
                 field: 'estado',
@@ -221,8 +257,7 @@ function User() {
                   <div className="d-flex">
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() =>{ navigate(`/editu/${params.row.id_usuario}`) 
-                       window.location.reload();
+                      onClick={() =>{  handleOpenUpdateModal(params.row.id_usuario);
                     }}
                       disabled={!params.row.estado}
                       style={{
@@ -252,7 +287,7 @@ function User() {
 
                     <button
                       className="btn btn-danger"
-                      onClick={() => handleEliminarUsuario(params.row.id_usuario, params.row.rol.nombre_rol)}
+                      onClick={() => handleEliminarUsuario(params.row.id_usuario)}
                       disabled={!params.row.estado}
                     >
                       <svg
@@ -295,7 +330,78 @@ function User() {
         </div>
                 )}
         </div>
-              
+        {openCreateModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleCloseVentaModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1200px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '100%', height: '100%' }}>
+              <UserCreate handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+       {openUpdateModal && ReactDOM.createPortal(
+  <>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1049,
+      }}
+      onClick={handleCloseUpdateModal}
+    />
+    <div
+      className="modal-update"
+      style={{
+        maxHeight: '0vh',
+        position: 'fixed',
+        top: '30%',
+        left: '42%',
+        transform: 'translateX(-50%)',
+        zIndex: 1050,
+        maxHeight: '25vh',
+        overflowY: 'visible',
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ width: '150%', height: '180%' }}>
+        <UserUpdate handleCloseUpdateModal={handleCloseUpdateModal} usuarioId={selectedClienteId}/>
+      </div>
+    </div>
+  </>,
+  document.body
+)}
 
                     </div>
                 </div>

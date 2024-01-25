@@ -3,6 +3,8 @@
   const bcrypt = require('bcrypt');
   const jwt = require('jsonwebtoken');
   const nodemailer = require('nodemailer');
+  const RolXPermiso=require('../../models/rol/RolxPermiso')
+  const sequelize=require("../../database/db")
 
   // async function listarUsuario(req, res){
 
@@ -18,34 +20,23 @@
 
   async function listarUsuario(req, res) {
     try {
-      const usuariosConRoles = await Usuario.findAll({
-        include: [
-          {
-            model: Rol,
-            attributes: ['nombre_rol'], // Selecciona el campo 'nombre_rol' de la tabla Rol
-          },
-        ],
-        attributes: [
-          'id_usuario',
-          "tipo_documento",
-          'documento',
-          'nombres',
-          'apellidos',
-          'email',
-          'contrasena',
-          'fk_rol2',
-          'estado'
-        // Asumiendo que quieres mostrar también el ID del rol
-        ],
-      });
-
+      const usuariosConRoles = await sequelize.query(
+        'SELECT usuarios.id_usuario, usuarios.tipo_documento, usuarios.documento, usuarios.nombres, ' +
+      'usuarios.apellidos, usuarios.email, usuarios.contrasena, usuarios.estado, ' +
+      'MAX(rols.nombre_rol) AS nombre_rol ' +
+      'FROM usuarios ' +
+      'LEFT JOIN rol_x_permisos ON usuarios.id_usuario = rol_x_permisos.fk_usuario ' +
+      'LEFT JOIN rols ON rol_x_permisos.fk_rol = rols.id_rol ' +
+      'GROUP BY usuarios.id_usuario',
+        { type: sequelize.QueryTypes.SELECT }
+      );
+  
       res.json(usuariosConRoles);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Hubo un error al obtener los usuarios con roles' });
     }
   }
-
   async function listarporid(req, res){
     try {
       const userId = req.params.id;
@@ -91,7 +82,7 @@
       const usuario = await Usuario.create({
         tipo_documento:dataUsuario.tipo_documento,
         documento: dataUsuario.documento,
-        fk_rol2: dataUsuario.fk_rol2,
+        // fk_rol2: dataUsuario.fk_rol2,
         nombres: dataUsuario.nombres,
         apellidos: dataUsuario.apellidos,
         email: dataUsuario.email,
@@ -149,7 +140,7 @@
         id_usuario,
         documento,
         tipo_documento,
-        fk_rol2,
+        // fk_rol2,
         nombres,
         apellidos,
         email,
@@ -184,7 +175,7 @@
         usuario.id_usuario = id_usuario;
         usuario.documento = documento;
         usuario.tipo_documento=tipo_documento;
-        usuario.fk_rol2 = fk_rol2;
+        // usuario.fk_rol2 = fk_rol2;
         usuario.nombres = nombres;
         usuario.apellidos = apellidos;
         usuario.email = email;
@@ -202,41 +193,81 @@
       }
   }
   
-
   async function login(req, res) {
-
-    const {email, contrasena} = req.body;
-
-    const usuario = await Usuario.findOne({ where: { email } });
-
-    if (!usuario) {
-      return res.status(401).json({ error: 'Authentication failed user' });
+    const { email, contrasena } = req.body;
+  
+    try {
+      // Buscar usuario en la tabla rol_x_permisos
+      const usuarioConRolYPermisos = await sequelize.query(
+        'SELECT usuarios.id_usuario, usuarios.nombres, usuarios.apellidos, usuarios.email, usuarios.contrasena, usuarios.estado, ' +
+        'MAX(rols.nombre_rol) AS nombre_rol, GROUP_CONCAT(permisos.nombre_permiso) AS permisos ' +
+        'FROM usuarios ' +
+        'LEFT JOIN rol_x_permisos ON usuarios.id_usuario = rol_x_permisos.fk_usuario ' +
+        'LEFT JOIN rols ON rol_x_permisos.fk_rol = rols.id_rol ' +
+        'LEFT JOIN permisos ON rol_x_permisos.fk_permiso = permisos.id_permiso ' +
+        'WHERE usuarios.email = :email ' +
+        'GROUP BY usuarios.id_usuario',
+        {
+          type: sequelize.QueryTypes.SELECT,
+          replacements: { email },
+        }
+      );
+  
+      // Verificar si el usuario existe
+      if (!usuarioConRolYPermisos || usuarioConRolYPermisos.length === 0) {
+        return res.status(401).json({ error: 'Authentication failed' });
+      }
+  
+      const usuario = usuarioConRolYPermisos[0];
+  
+      // Verificar la contraseña
+      const passwordMatch = await bcrypt.compare(contrasena, usuario.contrasena);
+  
+      if (!passwordMatch) {
+        return res.status(401).json({ error: 'Authentication failed' });
+      }
+  
+      // Verificar el estado del usuario
+      if (!usuario.estado) {
+        return res.status(401).json({ error: 'User is not authorized to login' });
+      }
+  
+      // Crear el token con la información del usuario
+      const token = jwt.sign(
+        {
+          userId: usuario.id_usuario,
+          nombre: usuario.nombres,
+          apellido: usuario.apellidos,
+          email: usuario.email,
+          nombre_rol: usuario.nombre_rol,
+          permisos: usuario.permisos.split(','), // Convertir la cadena de permisos en un array
+        },
+        secretKey,
+        { expiresIn: '1h' }
+      );
+  
+      // Establecer el token en las cookies de la respuesta
+      res.cookie('token', token, { httpOnly: true });
+  
+      // Responder con el token y la información del usuario
+      res.status(200).json({
+        token,
+        user: {
+          id: usuario.id_usuario,
+          nombre: usuario.nombres,
+          apellido: usuario.apellidos,
+          email: usuario.email,
+          nombre_rol: usuario.nombre_rol,
+          permisos: usuario.permisos.split(','), // Convertir la cadena de permisos en un array
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Hubo un error al iniciar sesión' });
     }
-
-    const passwordMatch = await bcrypt.compare(contrasena, usuario.contrasena)
-
-    if (!passwordMatch) {
-      return res.status(401).json({ error: 'Authentication failed' });
-    }
-    if (!usuario.estado) {
-      return res.status(401).json({ error: 'User is not authorized to login' });
-    }
-    const rol = await Rol.findByPk(usuario.fk_rol2);
-
-    const token = jwt.sign({ userId: usuario.id_usuario, email: usuario.email, nombre: usuario.nombres, rol: rol ? rol.nombre : 'Sin rol',  }, secretKey, { expiresIn: '1h' });
-    res.cookie('token', token, { httpOnly: true });
-
-    res.status(200).json({ 
-      token,
-      user: {
-        id: usuario.id_usuario,
-        email: usuario.email,
-        nombre: usuario.nombres,
-        apellido:usuario.apellidos,
-        rol: rol ? rol.nombre_rol : 'Sin rol',
-      },
-     });
   }
+  
+  
 
   async function cambiarContrasena(req, res) {
     try {
@@ -403,12 +434,12 @@
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
   
-      // Verificar el rol del usuario antes de eliminar
-      const rol = await Rol.findByPk(usuario.fk_rol2);
+      // // Verificar el rol del usuario antes de eliminar
+      // const rol = await Rol.findByPk(usuario.fk_rol2);
   
-      if (rol && rol.nombre_rol === 'Administrador') {
-        return res.status(403).json({ message: 'No puedes eliminar un usuario con el rol de administrador' });
-      }
+      // if (rol && rol.nombre_rol === 'Administrador') {
+      //   return res.status(403).json({ message: 'No puedes eliminar un usuario con el rol de administrador' });
+      // }
   
       // Si el usuario no tiene el rol de administrador, proceder con la eliminación
       const response = await Usuario.destroy({ where: { id_usuario: id_usuario } });

@@ -10,7 +10,7 @@
   import React from 'react';
 
 
-  function UserCreate() {
+  function UserUpdate({usuarioId }) {
     const navigate = useNavigate();
 
     const params=useParams()
@@ -20,14 +20,14 @@
       
       cargarRol()
  
-      cargarUsuariosActualizar(params.id_usuario);
+      cargarUsuariosActualizar(usuarioId);
   
-    },[params.id_usuario])
+    },[usuarioId])
 
       return (
         <>
 
-  <Nav/>
+
 
   <div className='dashboard-app'>
       <div className='dashboard-content'>
@@ -83,8 +83,8 @@
     enableReinitialize={true}
     onSubmit={async (values)=>{
       console.log(values)
-      if(params.id_usuario){
-        actualizarValidar(params.id_usuario, values)
+      if(usuarioId){
+        actualizarValidar(usuarioId, values)
       }
 
     }}
@@ -239,7 +239,7 @@
           as={TextField}
         disabled={params.id_usuario ? true : false}/>
   </div>
-  <div className="col-md-12">
+  {/* <div className="col-md-12">
         
 
         <Autocomplete 
@@ -259,7 +259,7 @@ renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' 
 />
 
 
-  </div>
+  </div> */}
   <br />
 
   <div className="col-auto">
@@ -287,5 +287,5 @@ renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' 
       )
     }
     
-    export default UserCreate
+    export default UserUpdate
     

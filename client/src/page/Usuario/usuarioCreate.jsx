@@ -1,5 +1,4 @@
 import { Form ,Formik, Field} from 'formik'
-import Nav from '../../components/nav'
 import {  useEffect } from 'react'
 import { useUser } from "../../context/Usuario/UserContext";
 import Autocomplete from '@mui/material/Autocomplete';
@@ -11,17 +10,16 @@ function UserCreate() {
 
   const {Listar, creacionValidacion, cargarRol}=useUser()
 
-  useEffect(()=>{
+
+  // useEffect(()=>{
     
-    cargarRol()
+  //   cargarRol()
     
-   },[])
+  //  },[])
 
    
     return (
       <>
-
-    <Nav/>
 
     <div className='dashboard-app'>
         <div className='dashboard-content'>
@@ -40,7 +38,7 @@ function UserCreate() {
     {
     documento:"",
     tipo_documento:"",
-    fk_rol2:"",
+    // fk_rol2:"",
     nombres:"",
     apellidos:"",
     email:"",
@@ -88,8 +86,8 @@ function UserCreate() {
     console.log(values)
     
  
-   creacionValidacion(values)
-
+    creacionValidacion(values)
+ 
    }}
    
    >
@@ -252,7 +250,7 @@ function UserCreate() {
         )}    
         </div>
 
-<div className="col-md-12">
+{/* <div className="col-md-12">
 <Autocomplete 
   disablePortal
   id="fixed-tags-demo"
@@ -265,7 +263,7 @@ function UserCreate() {
   sx={{ width: '100%' }}
   renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' }}/>}
 />
-</div>
+</div> */}
 
 
 <div className="col-auto">

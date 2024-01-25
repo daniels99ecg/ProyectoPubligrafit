@@ -8,11 +8,9 @@ import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 import React from 'react';
 function RolCreate() {
-  const { listar, crearRoles, cargarpermiso } = useRol();
+  const { listar, crearRolesNuevos } = useRol();
 
-  useEffect(() => {
-    cargarpermiso();
-  }, []);
+
   const obtenerFechaActual = () => {
     const hoy = new Date();
     const anio = hoy.getFullYear();
@@ -27,7 +25,7 @@ function RolCreate() {
   };
   return (
     <>
-      <Nav />
+   
       <div className='dashboard-app'>
         <div className='dashboard-content'>
           <div className='container'>
@@ -60,7 +58,7 @@ function RolCreate() {
                     enableReinitialize={true}
                     onSubmit={async (values) => {
                       // Aquí puedes usar values directamente, ya que permisos ahora es un array de objetos
-                      const response = await crearRoles(values);
+                      const response = await crearRolesNuevos(values);
                       // Maneja la respuesta de la base de datos según tus necesidades
                     }}
                   >
@@ -105,26 +103,6 @@ function RolCreate() {
                             fullWidth
                           />
                         </div>
-
-                        <div className='col-md-12'>
-                        <Autocomplete
-  multiple
-  id='permisos'
-  name="permisos"
-  options={listar || []}
-  getOptionLabel={(option) => option.nombre_permiso}
-  value={values.permisos}
-  onChange={(_, newValue) => {
-    setFieldValue('permisos', newValue);
-  }}
-  isOptionEqualToValue={(option, value) => option.id_permiso === value.id_permiso}
-  renderInput={(params) => (
-    <TextField {...params} label='Permisos' variant='outlined' />
-  )}
-/>
-
-                        </div>
-
                         <div className='col-auto'>
                           <button className='btn btn-primary' type='submit' disabled={!isValid}>
                             Registrar

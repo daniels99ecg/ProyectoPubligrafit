@@ -1,5 +1,6 @@
 const FichaTecnica=require("../models/FichaTecnica")
 const Insumo=require("../models/Insumo")
+const sequelize=require("../database/db")
 
 
 async function listarFichasTecnicas(req, res){
@@ -44,26 +45,72 @@ async function listarFichaTecnica(req, res){
     }
 }
 
-async function crearFichaTecnica(req, res){
-    try {
-        const dataFichaTecnica=req.body 
-        const fichaTecnica = await FichaTecnica.create({
-            id_ft: dataFichaTecnica.id_ft,
-            fk_insumo: dataFichaTecnica.fk_insumo,
-            cantidad_insumo: dataFichaTecnica.cantidad_insumo,
-            costo_insumo: dataFichaTecnica.costo_insumo,
-            imagen_producto_final: dataFichaTecnica.imagen_producto_final,
-            costo_final_producto: dataFichaTecnica.costo_final_producto,
-            detalle: dataFichaTecnica.detalle
-        })
-        res.status(201).send(fichaTecnica)
+// async function crearFichaTecnica(req, res){
+//     try {
+//         const dataFichaTecnica=req.body 
+//         const fichaTecnica = await FichaTecnica.create({
+//             id_ft: dataFichaTecnica.id_ft,
+//             fk_insumo: dataFichaTecnica.fk_insumo,
+//             cantidad_insumo: dataFichaTecnica.cantidad_insumo,
+//             costo_insumo: dataFichaTecnica.costo_insumo,
+//             imagen_producto_final: dataFichaTecnica.imagen_producto_final,
+//             costo_final_producto: dataFichaTecnica.costo_final_producto,
+//             detalle: dataFichaTecnica.detalle
+//         })
+//         res.status(201).send(fichaTecnica)
         
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({error:'Error al crear fichaTecnica'});
+        
+//     }
+// }
+
+async function crearFichaTecnica(req, res) {
+    const t = await sequelize.transaction(); // Start a transaction
+
+    try {
+        const dataFichaTecnica = req.body;
+        const insumos = dataFichaTecnica.insumos;
+
+        const fichaTecnicas = await Promise.all(
+            insumos.map(async (insumo) => {
+                const fichaTecnica = await FichaTecnica.create({
+                    id_ft: insumo.id_ft,
+                    fk_insumo: insumo.fk_insumo,
+                    cantidad_insumo: insumo.cantidad_insumo,
+                    costo_insumo: insumo.costo_insumo,
+                    imagen_producto_final: insumo.imagen_producto_final,
+                    costo_final_producto: insumo.costo_final_producto,
+                    detalle: insumo.detalle,
+                    estado: 1
+                });
+
+                // Update the Insumo table within the loop
+                await Insumo.update(
+                    {
+                        cantidad: sequelize.literal(
+                            `cantidad - ${insumo.cantidad_insumo}`
+                        ),
+                    },
+                    { where: { id_insumo: insumo.fk_insumo }, transaction: t }
+                );
+
+                return fichaTecnica;
+            })
+        );
+
+        await t.commit(); // Commit the transaction
+
+        res.status(201).send(fichaTecnicas);
     } catch (error) {
         console.error(error);
-        res.status(500).json({error:'Error al crear fichaTecnica'});
-        
+        await t.rollback(); // Rollback the transaction in case of an error
+        res.status(500).json({ error: 'Error al crear fichaTecnica' });
     }
 }
+
+
 
 async function actualizarFichaTecnica(req, res) {
     try {

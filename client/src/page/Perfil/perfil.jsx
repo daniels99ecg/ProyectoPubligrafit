@@ -59,7 +59,7 @@ function Profile() {
                     type="text"
                     name="rol"
                     className="form-control"
-                    value={user ? user.rol : 'No disponible'}
+                    value={user ? user.nombre_rol : 'No disponible'}
                     readOnly
                   />
                   <br />

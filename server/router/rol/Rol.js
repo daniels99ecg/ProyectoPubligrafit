@@ -7,6 +7,7 @@ Router.get("/", RolController.listarRol);
 Router.get("/rolxpermiso", RolController.listarRolxPermiso);
 
 Router.post("/create", RolController.createRol)
+Router.post("/create/nuevo", RolController.createRolNuevo)
 Router.put("/disable/:id", RolController.desactivarCliente)
 Router.put("/activate/:id", RolController.activarCliente)
 Router.get("/permiso", PermisoController.listarPermiso)

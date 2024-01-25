@@ -3,14 +3,17 @@ const sequelize=require("../../database/db");
 const RolXPermiso = require("../../models/rol/RolxPermiso");
 const Usuario =require('../../models/usuario/Usuario')
 const Permiso=require('../../models/rol/Permiso')
+const jwt = require('jsonwebtoken');
+const secretKey = 'your-secret-key';
+
 async function listarRol(req, res){
 
     try {
         const rol = await Rol.findAll();
         const clientesConVentas = await Promise.all(rol.map(async (rol) => {
-          const ventasAsociadas = await Usuario.findOne({
+          const ventasAsociadas = await RolXPermiso.findOne({
               where: {
-                  fk_rol2: rol.id_rol, 
+                  fk_rol: rol.id_rol, 
               },
           });
 
@@ -42,39 +45,77 @@ async function listarRol(req, res){
       }
     }
   
-    async function listarRolxPermiso(req, res){
+    async function listarRolxPermiso(req, res) {
       try {
+        
+       
+    
+        // Consulta de los roles y permisos filtrados por el usuario actual
+        const rolxp = await RolXPermiso.findAll({
+          include: [
+            {
+              model: Rol,
+              attributes: ['nombre_rol'],
+            },
+            {
+              model: Permiso,
+              attributes: ['nombre_permiso'],
+            },
+            {
+              model: Usuario,
+              attributes: ['nombres'],
+              
+            },
+          ],
+          attributes: [
+            'id_rol_x_permiso',
+            'fk_rol',
+            'fk_permiso',
+            'fk_usuario'
+          ],
+        });
+    
+        res.json(rolxp);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los rolesxPermiso' });
+      }
+    }
+    
 
-          const rolxp = await RolXPermiso.findAll({
-            include: [
-              {
-                model: Rol,
-                attributes: ['nombre_rol'], // Selecciona el campo 'nombre_rol' de la tabla Rol
-              },
-              {
-                model: Permiso,
-                attributes: ['nombre_permiso'], // Agrega el campo 'nombre_permiso' de la tabla Permiso
-              },
-            
-            ],
-            attributes: [
-              'id_rol_x_permiso',
-              "fk_rol",
-              'fk_permiso',
-            // Asumiendo que quieres mostrar también el ID del rol
-            ],
-           
-            
-          });
-          
-          res.json(rolxp);
+      async function createRol(req, res) {
+        const dataRol = req.body;
+      
+        try {
+          const t = await sequelize.transaction();
+      
+          try {
+            // Verifica si se proporciona un array de permisos en dataRol
+            if (dataRol.permisos && Array.isArray(dataRol.permisos)) {
+              for (const permiso of dataRol.permisos) {
+                await RolXPermiso.create({
+                  fk_rol: dataRol.fk_rol,
+                  fk_permiso: permiso.id_permiso,
+                  fk_usuario: dataRol.fk_usuario
+                }, { transaction: t });
+              }
+            }
+      
+            await t.commit();
+            res.status(201).json({ message: 'Permisos creados exitosamente' });
+          } catch (error) {
+            await t.rollback();
+            throw error;
+          }
         } catch (error) {
           console.error(error);
-          res.status(500).json({ error: 'Error al obtener los rolesxPermiso' });
+          res.status(500).json({ error: 'Error al obtener rol' });
         }
       }
+      
 
-async function createRol(req, res) {
+
+    async function createRolNuevo(req, res) {
       const dataRol = req.body;
     try {
       const t = await sequelize.transaction();
@@ -96,20 +137,7 @@ async function createRol(req, res) {
             fecha: dataRol.fecha,
             estado: 1,
           }, { transaction: t });
-    
-          // Verifica si se proporciona un array de permisos en dataRol
-          if (dataRol.permisos && Array.isArray(dataRol.permisos)) {
-            for (const permiso of dataRol.permisos) {
-          
-
-              await RolXPermiso.create({
-                fk_rol: rol.id_rol,
-                fk_permiso: permiso.id_permiso,
-              }, { transaction: t });
-            
-          }
-          }
-    
+  
           await t.commit();
           res.status(201).json(rol);
         
@@ -124,6 +152,8 @@ async function createRol(req, res) {
 
       }
     }
+
+
     const { Op } = require('sequelize');
     
     async function actualizarRol(req, res) {
@@ -227,6 +257,7 @@ async function eliminar(req, res) {
         listarporid,
         listarRolxPermiso,
         createRol,
+        createRolNuevo,
         actualizarRol,
         activarCliente,
         desactivarCliente,

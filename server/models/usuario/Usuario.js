@@ -10,7 +10,7 @@ const Rol = require("../rol/Rol");
                 },
               tipo_documento:DataTypes.STRING,
               documento:DataTypes.STRING,  
-              fk_rol2:DataTypes.INTEGER,
+              // fk_rol2:DataTypes.INTEGER,
               nombres:DataTypes.STRING,
               apellidos:DataTypes.STRING,
               email:DataTypes.STRING,
@@ -20,5 +20,5 @@ const Rol = require("../rol/Rol");
               timestamps: false // Desactiva las columnas createdAt y updatedAt
             }
        )
-       Usuario.belongsTo(Rol, { foreignKey: 'fk_rol2' });
+       // Usuario.belongsTo(Rol, { foreignKey: 'fk_rol2' });
 module.exports=Usuario;

@@ -77,15 +77,11 @@ function App() {
       {/* Usuarios */}
       
       <Route path='/usuario' element={<ProtectedRoute element={<User/>}/> } />
-      <Route path='/usuario/create' element={<ProtectedRoute element={<UserCreate/>}/> } />
-      <Route path='/editu/:id_usuario' element={<ProtectedRoute element={<UserUpdate/>}/> } />
+     
 
       {/* Rol */}
       <Route path='/rol' element={<ProtectedRoute element={<Rol/>}/> } />
-      <Route path='/rol/create/permiso' element={<ProtectedRoute element={<RolCreatePermisos/>}/> } />
-      <Route path='/rol/create' element={<ProtectedRoute element={<RolCreate/>}/> } />
-
-      <Route path='/editr/:id_rol' element={<ProtectedRoute element={<UpdateRol/>}/> } />
+ 
 
       {/*Perfil*/}
       <Route path='profile' element={<ProtectedRoute element={<Profile />}/>}/>
@@ -98,7 +94,6 @@ function App() {
       <Route path='/producto' element={<ProtectedRoute element={<ShowProducto />}/>} />
       <Route path='/fichaTecnica' element={<ProtectedRoute element={<ShowFichasTecnicas />}/>} />
       <Route path='/insumo' element={<ProtectedRoute element={<ShowInsumos />}/>} />
-      <Route path='/insumo/create' element={<ProtectedRoute element={<CreateInsumos />}/>} />
       <Route path='/producto/create' element={<ProtectedRoute element={<CreateProductos />}/>} />
       <Route path='/fichaTecnica/create' element={<ProtectedRoute element={<CreateFichasTecnicas />}/>} />
       <Route path='/editF/:id_ft' element={<ProtectedRoute element={<UpdateFichaTecnica />}/>} />
@@ -106,9 +101,7 @@ function App() {
       <Route path='/editP/:id_producto' element={<ProtectedRoute element={<UpdateProducto />}/>} />
 
       <Route path='/compras' element={<ProtectedRoute element={<Compras />}/>} />
-      <Route path='/compras/create' element={<ProtectedRoute element={<ComprasCreate />}/>} />
-      <Route path='/compras/create/pruebas' element={<ProtectedRoute element={<ComprasCreatePruebas />}/>} />
-
+  
       <Route path='*' element={<NotFound />} />
 
      </Routes>

@@ -1,11 +1,17 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from "react-router-dom";
 import { useInsumo } from '../../context/Insumos/InsumoContext';
-import { useEffect} from "react";
 import Nav from '../../components/nav';
 import { useMediaQuery } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import CreateInsumos from './CreateInsumos'
+import { useEffect,useState} from "react"
+import ReactDOM from 'react-dom';
+import UpdateInsumo from './UpdateInsumo'
+
+
+
 function formatCurrency(amount) {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -17,10 +23,42 @@ function formatCurrency(amount) {
 function formatNumber(value) {
   return new Intl.NumberFormat('es-AR').format(value);
 }
+
+
+
 function ListarInsumos() {
   const{listar,ShowInsumos,filtrarDesactivados, eliminarInsumos,activarInsumo,desactivarInsumo,searchTerm,setSearchTerm}=useInsumo()
   const navigate=useNavigate()
   const isSmallScreen = useMediaQuery('(max-width:1200px)');
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedClienteId, setSelectedClienteId] = useState(null);
+
+
+
+const handleOpenVentaModal = () => {
+    setOpenCreateModal(true);
+};
+
+const handleSubmitForm = async () => {
+};
+
+const handleCloseVentaModal = () => {
+  setOpenCreateModal(false);
+  ShowInsumos();
+
+};
+
+// Modal de Actualizar
+const handleOpenUpdateModal = (id_usuario) => {
+  setSelectedClienteId(id_usuario);
+  setOpenUpdateModal(true);
+};
+
+const handleCloseUpdateModal = () => {
+  setOpenUpdateModal(false);
+  ShowInsumos();
+};
 
 
   useEffect(() => {
@@ -46,8 +84,14 @@ function ListarInsumos() {
                 <br />
         <div className="row">
           <div className="col-md-3">
-            <a className="btn btn-primary ms-4" href="/insumo/create" role="button">Nuevo Registro</a>
-          </div>
+          <button
+        className="btn btn-primary"
+        onClick={handleOpenVentaModal}
+        role="button"
+      >
+        Nuevo Registro
+      </button>  
+              </div>
           {/* Botón de búsqueda */}
           <div className="col-md-3" style={{ marginLeft: 'auto' }}>
             <input
@@ -216,7 +260,8 @@ function ListarInsumos() {
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() => navigate(`/editI/${params.row.id_insumo}`)}
+                      onClick={() =>{  handleOpenUpdateModal(params.row.id_insumo);
+                      }}
                       disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',
@@ -310,6 +355,79 @@ function ListarInsumos() {
         </div>
                 )}
         </div>
+
+        {openCreateModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleCloseVentaModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1200px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '100%', height: '100%' }}>
+              <CreateInsumos handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+{openUpdateModal && ReactDOM.createPortal(
+  <>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1049,
+      }}
+      onClick={handleCloseUpdateModal}
+    />
+    <div
+      className="modal-update"
+      style={{
+        maxHeight: '0vh',
+        position: 'fixed',
+        top: '30%',
+        left: '42%',
+        transform: 'translateX(-50%)',
+        zIndex: 1050,
+        maxHeight: '25vh',
+        overflowY: 'visible',
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ width: '150%', height: '180%' }}>
+        <UpdateInsumo handleCloseUpdateModal={handleCloseUpdateModal} clienteId={selectedClienteId}/>
+      </div>
+    </div>
+  </>,
+  document.body
+)}
 
                     </div>
                 </div>

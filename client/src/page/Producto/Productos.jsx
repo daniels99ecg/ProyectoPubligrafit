@@ -8,6 +8,8 @@ import CardContent from '@mui/material/CardContent'
 import Nav from '../../components/nav';
 import { Modal, Button } from 'react-bootstrap';
 import React, { useState } from 'react';
+import CreateProductos from './CreateProductos'
+import ReactDOM from 'react-dom';
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat('es-AR', {
@@ -25,6 +27,23 @@ function listarProductos() {
   const { listar, ShowProducto, filtrarDesactivados, eliminarProductos, activarProducto, desactivarProducto, searchTerm, setSearchTerm } = useProducto()
   const navigate = useNavigate()
   const isSmallScreen = useMediaQuery('(max-width:1200px)');
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+
+
+const handleOpenVentaModal = () => {
+    setOpenCreateModal(true);
+};
+
+const handleSubmitForm = async () => {
+};
+
+const handleCloseVentaModal = () => {
+  setOpenCreateModal(false);
+  ShowProducto()
+
+};
+
   useEffect(() => {
     ShowProducto()
   }, [searchTerm]);
@@ -49,8 +68,14 @@ function listarProductos() {
                 <br />
                 <div className="row">
                   <div className="col-md-3">
-                    <a className="btn btn-primary ms-4" href="/producto/create" role="button">Nuevo Registro</a>
-                  </div>
+                  <button
+        className="btn btn-primary"
+        onClick={handleOpenVentaModal}
+        role="button"
+      >
+        Nuevo Registro
+      </button>
+                </div>
                   {/* Botón de búsqueda */}
                   <div className="col-md-3" style={{ marginLeft: 'auto' }}>
                     <input
@@ -365,6 +390,45 @@ function listarProductos() {
                   </div>
                 )}
               </div>
+              {openCreateModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleCloseVentaModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1200px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '100%', height: '100%' }}>
+              <CreateProductos handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+
+
+
 
             </div>
           </div>

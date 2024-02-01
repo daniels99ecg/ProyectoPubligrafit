@@ -237,7 +237,7 @@
         className="form-control" 
         label='Contraseña'
           as={TextField}
-        disabled={params.id_usuario ? true : false}/>
+        disabled/>
   </div>
   {/* <div className="col-md-12">
         

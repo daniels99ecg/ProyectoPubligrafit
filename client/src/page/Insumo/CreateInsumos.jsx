@@ -14,7 +14,7 @@ function CreateInsumo() {
 
   return (
     <>
-      <Nav />
+      
       <div className='dashboard-app'>
         <div className='dashboard-content'>
           <div className='container'>

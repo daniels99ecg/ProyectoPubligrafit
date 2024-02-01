@@ -31,7 +31,7 @@ function primeraMayuscula(input) {
     return false; // No encuentra más de dos veces la misma letra válida
 }
 
-function UpdateInsumo(){
+function UpdateInsumo({clienteId}){
 
     const params = useParams()
     const navigate = useNavigate()
@@ -39,14 +39,14 @@ function UpdateInsumo(){
 
 
         useEffect (() => {
-    insumoActualizar(params.id_insumo)
+    insumoActualizar(clienteId)
 
-        }, [params.id_insumo])
+        }, [clienteId])
 
     return(
 
         <>
-    <Nav/>
+ 
 
 
 <div className='dashboard-app'>
@@ -79,7 +79,7 @@ function UpdateInsumo(){
             onSubmit={async (values) => {
                 console.log(values)
 
-                validarInsumoActualizar(params.id_insumo, values)
+                validarInsumoActualizar(clienteId, values)
                 } 
 
             }

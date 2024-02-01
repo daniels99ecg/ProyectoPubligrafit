@@ -9,19 +9,39 @@ import { getListaCompra } from "../../api/Compras/rutas.api";
 import Tooltip from "@mui/material/Tooltip";
 import { BsInfoCircleFill } from "react-icons/bs";
 import CompraInfo from "../Compras/CompraInfo"
-
+import { FaFileInvoiceDollar } from "react-icons/fa6";
+import ComprobanteCliente from "./VentaComprobante";
 
 function Compras (){ //Inicializar
-const {cargarCompras,setSearchTerm,filtrarDesactivados} = useCompra()
+const {cargarCompras,setSearchTerm,searchTerm,filtrarDesactivados} = useCompra()
 const [openCreateModal, setOpenCreateModal] = useState(false);
 const [showInfoVenta, setShowInfoVenta] = useState(false);
 const [selectVentaDetalles, setSelectVentaDetalles] = useState(null);
 const [selectVenta, setSelectVenta] = useState(null);
+const [comprobanteModal, setComprobanteModal] = useState(false);
+
+
+
+ // Formatear valores sin decimales
+ function formatearPrecios(amount) {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 useEffect(()=>{
     
     cargarCompras()
 
-},[])
+},[searchTerm])
+
+const handleOpenComprobanteModal = (venta) => {
+  setSelectVenta(venta);
+  setComprobanteModal(true);
+};
 
 
 const handleOpenVentaModal = () => {
@@ -82,8 +102,8 @@ const handleCloseInfoVenta = () => {
       </button>
                   </div>
                    
-    <div className="col-md-3" style={{marginLeft: 'auto'}}>
-    <input
+                  <div className="col-md-3" style={{marginLeft: 'auto'}}>
+                <input
                   type="text"
                   placeholder="Buscar..."
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -104,7 +124,15 @@ const handleCloseInfoVenta = () => {
           {field:'proveedor',headerName:'Proveedor', headerClassName: 'encabezado',flex:1},
           {field:'cantidad',headerName:'Cantidad', headerClassName: 'encabezado',flex:1},
           {field:'fecha',headerName:'Fecha', headerClassName: 'encabezado',flex:1},
-          {field:'total',headerName:'Total', headerClassName: 'encabezado',flex:1},
+          {
+            field: "total",
+            headerName: "Total",
+            headerClassName: "encabezado",
+            flex: 1,
+            renderCell: (params) => (
+              <span>{formatearPrecios(params.row.total)}</span>
+            ),
+          },
           {
             field: 'info',
             headerName: 'Info',
@@ -132,7 +160,25 @@ const handleCloseInfoVenta = () => {
                 </span>
               </Tooltip>
             ),
-          },
+          },,
+          {
+            field: 'factura',
+            headerName: 'Acciones',
+            headerClassName: 'encabezado',
+            flex: 0,
+            renderCell: (params) => (
+              <Tooltip title="Factura" arrow>
+                <span>
+                <button
+                  onClick={() => handleOpenComprobanteModal(params.row)}
+                  className="btn btn-link"
+                >
+                   <FaFileInvoiceDollar style={{ fontSize: '24px', color: '#1A5276' }} /> 
+                </button>
+                </span>
+                </Tooltip>
+            )
+          }
             
         ]}
         />
@@ -182,6 +228,12 @@ const handleCloseInfoVenta = () => {
             open={showInfoVenta}
           />,
           document.body
+        )}{comprobanteModal && (
+          <ComprobanteCliente
+          compra={selectVenta}
+            handleCloseModal={() => setComprobanteModal(false)}
+            open={comprobanteModal}
+          />
         )}
 
 

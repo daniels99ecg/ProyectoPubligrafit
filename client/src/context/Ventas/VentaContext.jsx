@@ -1,5 +1,5 @@
 import {createContext, useContext, useState} from 'react'
-import { getListarVentas, postCreateVentas } from "../../api/Rutas.Venta.api";
+import { getListarVentas, postCreateVentas,getListarVentasDia } from "../../api/Rutas.Venta.api";
 export const VentaContext=createContext()
 
 export const useVenta = () => {
@@ -12,6 +12,7 @@ export const useVenta = () => {
 
 export const VentaContextProvider=({children})=>{
     const [listar, setListar] = useState([])
+    const [listar2, setListar2] = useState([])
     const [searchTerm, setSearchTerm] = useState("")
 
 async function showVentas(){
@@ -41,8 +42,19 @@ const validarVenta = async(values)=>{
         console.log(error)
     }
 }
+const VentaDia = async(values)=>{
+    try {
+        
+    const response =  await getListarVentasDia(values)
+      setListar2(response.data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 return(
-    <VentaContext.Provider value={{listar, setListar, showVentas, searchTerm, setSearchTerm, validarVenta}}> 
+    <VentaContext.Provider value={{listar, setListar, listar2,showVentas, searchTerm, setSearchTerm, validarVenta,VentaDia}}> 
         {children}
     </VentaContext.Provider>
 )

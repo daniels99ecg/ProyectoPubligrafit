@@ -176,8 +176,50 @@ async function createVentaConDetalle(req, res) {
   }
 }
 
+const { Op } = require("sequelize");
+
+
+async function listarVentasPorFechas(req, res) {
+  try {
+    const totalVentas = await Venta.sum('total');
+    res.json(totalVentas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener el total de ventas" });
+  }
+}
+async function listarVentasPorFechasDia(req, res) {
+  try {
+    // Obtén la fecha actual
+    const fechaActual = new Date();
+
+    // Ajusta la fecha para obtener el rango hasta el día actual
+    const finDia = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate(), 23, 59, 59);
+
+    // Consulta las ventas hasta el día actual sin tener en cuenta la hora
+    const totalVentas = await Venta.sum('total', {
+      where: {
+        fecha: {
+          [Op.lte]: finDia,
+        },
+      },
+    });
+
+    res.json(totalVentas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener el total de ventas" });
+  }
+}
+
+
+  
+
+
 module.exports = {
   listarVentas,
   listarVenta,
   createVentaConDetalle,
+  listarVentasPorFechas,
+  listarVentasPorFechasDia
 };

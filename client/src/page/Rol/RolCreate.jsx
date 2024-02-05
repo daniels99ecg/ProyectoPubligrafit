@@ -8,7 +8,13 @@ import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 import React from 'react';
 function RolCreate() {
-  const { listar, crearRolesNuevos } = useRol();
+  const { listar, crearRolesNuevos,listar4, crearRoles, cargarpermiso, showNewRoles } = useRol();
+  // useEffect(() => {
+    
+
+  //   showNewRoles()
+   
+  // }, []);
 
 
   const obtenerFechaActual = () => {
@@ -103,6 +109,23 @@ function RolCreate() {
                             fullWidth
                           />
                         </div>
+
+                        {/* <div className="col-md-6">
+<Autocomplete 
+  disablePortal
+  id="fixed-tags-demo"
+  options={listar4.filter((rol) => rol.estado)}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.nombre_rol}
+  onChange={(event, newValue) => {
+    handleChange({ target: { name: 'fk_rol', value: newValue ? newValue.id_rol : '' } });
+  }}
+  value={listar4.find((rol) => rol.id_rol === values.fk_rol) || null}
+  sx={{ width: '100%' }}
+  renderInput={(params) => <TextField {...params} label="Rol" sx={{ width: '100%' }}/>}
+/>
+</div>  */}
+
+
                         <div className='col-auto'>
                           <button className='btn btn-primary' type='submit' disabled={!isValid}>
                             Registrar

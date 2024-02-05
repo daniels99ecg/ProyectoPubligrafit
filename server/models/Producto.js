@@ -1,6 +1,7 @@
 const {DataTypes}=require("sequelize")
 const sequelize= require("../database/db")
 const Categoria= require("./Categoria")
+const FichaTecnica = require("./Ficha_Tecnica/FichaTecnica")
 
 const Producto=sequelize.define("productos",{
     id_producto:{
@@ -24,6 +25,9 @@ const Producto=sequelize.define("productos",{
         type:DataTypes.INTEGER,
         
     },
+    fk_ft:{
+        type:DataTypes.INTEGER,
+    },
     estado:{
         type:DataTypes.BOOLEAN,
     },
@@ -33,5 +37,5 @@ const Producto=sequelize.define("productos",{
 }
 )
 Producto.belongsTo(Categoria, { foreignKey: 'fk_categoria' });
-
+Producto.belongsTo(FichaTecnica, { foreignKey: 'fk_ft' });
 module.exports=Producto;

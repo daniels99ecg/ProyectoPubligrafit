@@ -1,22 +1,15 @@
 const Insumo=require("../models/Insumo")
-const Ficha=require("../models/FichaTecnica")
+const Ficha=require("../models/Ficha_Tecnica/FichaTecnica")
 
 async function listarInsumos(req, res){
     try {
         const insumo = await Insumo.findAll();
-        const clientesConVentas = await Promise.all(insumo.map(async (insumo) => {
-            const ventasAsociadas = await Ficha.findOne({
-                where: {
-                    fk_insumo: insumo.id_insumo, 
-                },
-            });
+      
+            
   
-            return {
-                ...insumo.toJSON(),
-                tieneVentas: !!ventasAsociadas,
-            };
-        }));
-        res.json(clientesConVentas);
+          
+    
+        res.json(insumo);
         
     } catch (error) {
         console.error(error);

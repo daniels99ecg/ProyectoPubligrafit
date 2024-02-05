@@ -13,10 +13,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import { TiDeleteOutline } from "react-icons/ti";
 import { TiShoppingCart } from "react-icons/ti";
+import { useProveedor } from '../../context/Proveedor/ProveedorContext';
+
+
 
 function ComprasCreatePruebas({ handleCloseVentaModal }) {
   const { listar, ShowInsumos } = useInsumo();
   const { Listar, showClientes } = useCliente();
+  const {listarP,showProveedor}=useProveedor()
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
   const [total, setTotal] = useState(0);
@@ -209,6 +213,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
   useEffect(() => {
     ShowInsumos();
     showClientes();
+    showProveedor();
   }, []);
 
   useEffect(() => {
@@ -248,7 +253,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
 
                 <Formik
                   initialValues={{
-                    proveedor: "",
+                    id_proveedores:{fk_proveedor: ""},
                     fecha: fechaActual(),
                     total: total,
                     insumo: tableData.map((item) => ({
@@ -686,13 +691,25 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
       />
     )}
   /> */}
-  <input
+  {/* <input
                             type='text'
                             name='proveedor'
                             className='form-control'
                             onChange={handleChange}
-                            value={values.proveedor}
-                          />
+                            value={values.fk_proveedor}
+                          /> */}
+                          <Autocomplete 
+  disablePortal
+  id="fixed-tags-demo"
+  options={listarP.filter((proveedor) => proveedor.estado)}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.nombre}
+  onChange={(event, newValue) => {
+    handleChange({ target: { name: 'id_proveedores.fk_proveedor', value: newValue ? newValue.id_proveedores : '' } });
+  }}
+  value={listarP.find((proveedor) => proveedor.id_proveedores === values.fk_proveedor) || null}
+  sx={{ width: '100%' }}
+  renderInput={(params) => <TextField {...params} label="Proveedor" sx={{ width: '100%' }}/>}
+/>
   {/* <ErrorMessage
     name="id_cliente.fk_id_cliente"
     component="div"

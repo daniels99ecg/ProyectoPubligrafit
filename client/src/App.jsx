@@ -1,30 +1,21 @@
 
-
-
 import { Route, Routes } from 'react-router-dom'
 import User from './page/Usuario/usuario'
-import UserCreate from './page/Usuario/usuarioCreate'
-import UserUpdate from './page/Usuario/usuarioUpdate'
 
 import { UserContextProvider } from './context/Usuario/UserContext'
 import { RolContextProvider } from './context/Rol/RolContext'
 import ProtectedRoute from './ProtectedRoute';
 import Rol from './page/Rol/Rol'
-import RolCreatePermisos from './page/Rol/RolCreatePermisos'
-import RolCreate from './page/Rol/RolCreate'
 
 import Login from './page/Login/login'
 import Recuperar from './page/Login/recuperaContraseña'
 import Enviaremail from './page/Login/enviaremail'
 import Dashboard from './page/Dashboard/dashboard'
 import Profile from './page/Perfil/perfil';
-import UpdateRol from './page/Rol/UpdateRol'
-
 
 import ShowProducto from './page/Producto/Productos'
 import ShowFichasTecnicas from './page/FichaTecnica/FichasTecnicas'
 import ShowInsumos from './page/Insumo/Insumos'
-import CreateInsumos from './page/Insumo/CreateInsumos'
 import CreateProductos from './page/Producto/CreateProductos'
 import CreateFichasTecnicas from './page/FichaTecnica/CreateFichasTecnicas'
 import UpdateInsumo from './page/Insumo/UpdateInsumo'
@@ -34,18 +25,14 @@ import {InsumoContextProvider} from './context/Insumos/InsumoContext'
 import { ProductoContextProvider } from './context/Productos/ProductoContext'
 import { FichaTecnicaContextProvider } from './context/FichasTecnicas/FichaTecnicaContext'
 
-
 import Compras from './page/Compras/Compras'
-import ComprasCreate from './page/Compras/ComprasCreate'
 import { CompraContextProvider } from './context/Compras/ComprasContext'
-import ComprasCreatePruebas from './page/Compras/ComprasCreatePruebas'
-
 
 import ShowCliente from './page/Cliente/Cliente'
 import { ClienteContextProvider } from './context/Clientes/ClienteContext'
 import { VentaContextProvider } from './context/Ventas/VentaContext'
+import { ProveedorContextProvider } from './context/Proveedor/ProveedorContext'
 import ShowVenta from './page/Venta/Venta'
-
 
 function NotFound() {
   return <div className='text-center'>404 Pagina No Disponible</div>;
@@ -55,7 +42,7 @@ function App() {
 
   return (
     <>
-  
+     <ProveedorContextProvider>
     <VentaContextProvider>
 
         <CompraContextProvider>
@@ -114,7 +101,7 @@ function App() {
     </InsumoContextProvider>
     </CompraContextProvider>
     </VentaContextProvider>
-
+    </ProveedorContextProvider>
     
     </>
   )

@@ -2,7 +2,7 @@ const Producto=require("../models/Producto")
 const Categoria = require("../models/Categoria");
 const { request } = require("express");
 const DetalleVenta = require("../models/DetalleVenta");
-
+const fs = require('fs')
 async function listarProductos(req, res){
     
     

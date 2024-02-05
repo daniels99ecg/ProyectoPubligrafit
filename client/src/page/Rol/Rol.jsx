@@ -10,6 +10,10 @@ import CardContent from '@mui/material/CardContent';
 import ReactDOM from 'react-dom';
 import RolCreate from './RolCreate'
 import RolCreatePermisos from './RolCreatePermisos'
+import RolInfo from './RolInfo'
+
+import Tooltip from '@mui/material/Tooltip';
+import { BsInfoCircleFill, BsArrowClockwise, BsTrash } from "react-icons/bs";
 
 import RolUpdate from './UpdateRol'
 
@@ -21,6 +25,8 @@ const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedClienteId, setSelectedClienteId] = useState(null);
   const [openPermisoModal, setOpenPermisoModal] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [selectedRol, setSelectedRol] = useState(null);
 //Para hacer la busqueda por filtro 
 
     useEffect(()=>{
@@ -64,6 +70,19 @@ const handleClosePermisoModal = () => {
   cargarRol()
 
 };
+
+// Modal de información
+const handleOpenInfoModal = (clienteInfo) => {
+  setSelectedRol(clienteInfo);
+  setShowInfoModal(true);
+};
+
+const handleCloseInfoModal = () => {
+  setSelectedRol(null);
+  setShowInfoModal(false);
+};
+
+
     return(
       <>
       <Nav/>
@@ -74,7 +93,7 @@ const handleClosePermisoModal = () => {
                      
                           <div className='card-body'>
                           <div className="card-header">
-                        <h1>Gestionar Rol</h1>
+                        <h1>Gestionar Roles y Permisos</h1>
                       </div>
                           <br />
    
@@ -114,12 +133,11 @@ const handleClosePermisoModal = () => {
                    
                     {filtrarDesactivados.map((item) => (
                       
-                      <Card key={item.id_rol}>
+                      <Card key={item.id_rol_x_permiso}>
                       <CardContent>
                       <ul className="list-group list-group-flush">
-
-                      <li className="list-group-item">Tipo ID: {item.id_rol}</li>
-                      <li className="list-group-item">Nombre: {item.nombre_rol}</li>
+                      <li className="list-group-item">Tipo ID: {item.rol?.id_rol}</li>
+                      <li className="list-group-item">Nombre: {item.rol?.nombre_rol}</li>
                       <li className="list-group-item">Fecha: {item.fecha}</li>
                   
                         </ul>
@@ -129,20 +147,20 @@ const handleClosePermisoModal = () => {
                         <div className="switch-button">
                      <input
                        type="checkbox"
-                        id={`switch-label-${item.id_rol}`}
-                        checked={item.estado}
+                        id={`switch-label-${item.rol?.id_rol}`}
+                        checked={item.rol?.estado}
                         onChange={(e) => {
                         e.preventDefault(); // Evitar la navegación por defecto
-                    if (item.estado) {
-                      desactivarCliente(item.id_rol);
+                    if (item.rol?.estado) {
+                      desactivarCliente(item.rol?.id_rol);
                   } else {
-                      activarCliente(item.id_rol);
+                      activarCliente(item.rol?.id_rol);
                 }
           }}
         className="switch-button__checkbox"
       />
       <label
-        htmlFor={`switch-label-${item.id_rol}`}
+        htmlFor={`switch-label-${item.rol?.id_rol}`}
         className="switch-button__label"
       ></label>
                   </div>
@@ -151,16 +169,16 @@ const handleClosePermisoModal = () => {
 
                         <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() =>{ navigate(`/editr/${item.id_rol}`) 
-                       window.location.reload();
-                    }}
-                      disabled={!item.estado}
+                      onClick={() =>{     handleOpenUpdateModal(item.rol?.id_rol);
+
+                      }}
+                      disabled={!item.rol?.estado}
                       style={{
                         backgroundColor: '#0d6efd',
                         borderColor: '#0d6efd',
                         color: 'black',
                       }}
-                      data-id={`edit-button-${item.id_rol}`}
+                      data-id={`edit-button-${item.rol?.id_rol}`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -183,8 +201,8 @@ const handleClosePermisoModal = () => {
 
                         <button
                       className="btn btn-danger"
-                      onClick={() => eliminarRol(item.id_rol)}
-                      disabled={!item.estado}
+                      onClick={() => eliminarRol(item.rol?.id_rol)}
+                      disabled={!item.rol?.estado}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -215,14 +233,16 @@ const handleClosePermisoModal = () => {
         <div className="card" style={{marginLeft:15}}>
         <DataGrid
             rows={filtrarDesactivados.map((item) => ({
-              id: item.id_rol,
+              id: item.id_rol_x_permiso,
+              id_rol:item.rol?.id_rol,
+              nombre_rol:item.rol?.nombre_rol,
+              nombre_usuario:item.usuario?.nombres,
+              estado:item.rol?.estado,
               ...item,
             }))}
             columns={[
               { field: 'id_rol', headerName: 'ID', headerClassName: 'encabezado', flex: 1 },
-              { field: 'nombre_rol', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
-              { field: 'fecha', headerName: 'Fecha', headerClassName: 'encabezado', flex: 1 },
-         
+              { field: 'nombre_rol', headerName: 'Rol', headerClassName: 'encabezado', flex: 1 },
               {
                 field: 'estado',
                 headerName: 'Estado',
@@ -230,29 +250,56 @@ const handleClosePermisoModal = () => {
                 flex: 1,
                 renderCell: (params) => (
                   <div className="switch-button">
-                     <input
-                       type="checkbox"
-                        id={`switch-label-${params.row.id_rol}`}
-                        checked={params.row.estado}
-                        onChange={(e) => {
-                        e.preventDefault(); // Evitar la navegación por defecto
-                    if (params.row.estado) {
-                      desactivarCliente(params.row.id_rol);
-                  } else {
-                      activarCliente(params.row.id_rol);
-                }
-          }}
-        className="switch-button__checkbox"
-      />
-      <label
-        htmlFor={`switch-label-${params.row.id_rol}`}
-        className="switch-button__label"
-      ></label>
+                    <input
+                      type="checkbox"
+                      id={`switch-label-${params.row.id_rol}`}
+                      checked={params.row.rol?.estado}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        if (params.row.rol?.estado) {
+                          desactivarCliente(params.row.rol?.id_rol);
+                        } else {
+                          activarCliente(params.row.rol?.id_rol);
+                        }
+                      }}
+                      className="switch-button__checkbox"
+                    />
+                    <label
+                      htmlFor={`switch-label-${params.row.rol?.id_rol}`}
+                      className="switch-button__label"
+                    ></label>
                   </div>
-
-),
-},
+                ),
+              },
 {
+  field: 'info',
+  headerName: 'Info',
+  headerClassName: 'encabezado',
+  flex: 1,
+  renderCell: (params) => (
+    <Tooltip title="Información" arrow>
+      <span>
+        <button
+          className="btn btn-light info-button"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px',
+            borderRadius: '50%',
+            backgroundColor: 'white',
+          }}
+          onClick={() => handleOpenInfoModal(params.row)}
+          disabled={!params.row.rol?.estado}
+        >
+          <BsInfoCircleFill
+            size={30}
+            color="grey"
+          />
+        </button>
+      </span>
+    </Tooltip>
+  ),
+},{
   field: 'acciones',
   headerName: 'Acciones',
   headerClassName: 'encabezado',
@@ -341,7 +388,7 @@ const handleClosePermisoModal = () => {
 ]}
             autoHeight
             getRowClassName={(params) => {
-              if (!params.row.estado) {
+              if (!params.row.rol?.estado) {
                 return 'cliente-desactivado';
               }
               return
@@ -359,6 +406,16 @@ const handleClosePermisoModal = () => {
 
 </div>
                 )}
+  {showInfoModal && selectedRol && ReactDOM.createPortal(
+            <RolInfo
+              rol={selectedRol}
+              handleCloseModal={handleCloseInfoModal}
+              open={showInfoModal}
+            />,
+            document.body
+          )} 
+
+
                 {openPermisoModal && ReactDOM.createPortal(
         <>
           <div

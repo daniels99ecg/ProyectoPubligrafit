@@ -6,4 +6,8 @@ Router.get("/compraOne/:id_compra", ComprasController.listarcompra)
 
 Router.post("/create", ComprasController.crearCompras)
 
+Router.get("/compradia", ComprasController.listarComprasPorFechas)
+
+Router.get("/compradeldia", ComprasController.listarComprasPorFechasDia)
+
 module.exports=Router

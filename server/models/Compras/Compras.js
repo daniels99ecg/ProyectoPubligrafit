@@ -1,5 +1,6 @@
 const {DataTypes, Model}=require("sequelize")
 const sequelize=require("../../database/db")
+const Proveedores = require("../Proovedor/Proovedor")
 
 const Compras=sequelize.define('compra', { //Crear el modelo de la base de datos que se va a consumir
 
@@ -9,7 +10,7 @@ id_compra:{
     autoIncrement:true
 },
 
-proveedor:DataTypes.STRING,
+fk_proveedor:DataTypes.INTEGER,
 
 cantidad:DataTypes.INTEGER,
 
@@ -21,4 +22,5 @@ total:DataTypes.INTEGER
     timestamps:false // Para no crear campos de tiempo
 
 })
+Compras.belongsTo(Proveedores, { foreignKey: 'fk_proveedor' })
 module.exports=Compras

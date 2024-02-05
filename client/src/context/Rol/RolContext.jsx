@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
-import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol,crearRolNuevo, listarPermiso, eliminar,cargaractualizarRol,actualizarRol,getListarRolesxPermiso } from "../../api/Rol/rutas.api"
+import { getListarRoles, putActivarCliente,putDesactivarCliente, crearRol,crearRolNuevo, listarPermiso, eliminar,cargaractualizarRol,actualizarRol,getListarRolesxPermiso,getNewRol } from "../../api/Rol/rutas.api"
 
 export const RolContext = createContext()
 
@@ -18,19 +18,25 @@ export const useRol=()=>{
     const navigate=useNavigate()
     const [listar, setListar]=useState([])//Lista todos los roles
     const [listar2, setListar2]=useState([])//Lista todos los roles
-
+    const [listar4, setListar4]=useState([])
     const [searchTerm, setSearchTerm] = useState("");
 async function cargarRol(){
        
         const response= await getListarRoles()//LLamar la ruta del server
 
         const filterList = response.data.filter((item) => 
-        item.id_rol.toString().includes(searchTerm) ||
-        item.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase())
+        item.id_rol_x_permiso.toString().includes(searchTerm) ||
+        item.rol.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase()) 
+     
        
        
       );
         setListar(filterList) //Se le pasa los datos al setListar 
+ }
+
+ async function showNewRoles(){
+  const response =await getNewRol()
+  setListar4(response.data)
  }
 
 async function cargarpermiso(){
@@ -402,7 +408,7 @@ const actualizarValidar= async(id_rol, values)=>{
 
 
     return( 
-        <RolContext.Provider value={{listar, listar2,ListarActualizar,cargarRol, cargarRolxPermiso,desactivarCliente, activarCliente, crearRoles, crearRolesNuevos,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados, eliminarRol,cargarRolActualizar,actualizarValidar}}>
+        <RolContext.Provider value={{listar, listar2, listar4,ListarActualizar,cargarRol, showNewRoles,cargarRolxPermiso,desactivarCliente, activarCliente, crearRoles, crearRolesNuevos,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados, eliminarRol,cargarRolActualizar,actualizarValidar}}>
             {children}
         </RolContext.Provider>
       )

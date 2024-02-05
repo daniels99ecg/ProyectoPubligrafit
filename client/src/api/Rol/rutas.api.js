@@ -4,6 +4,11 @@ import axios from 'axios'
 export const getListarRoles=async ()=>{
     return await axios.get('http://localhost:3001/rol')
   }
+
+export const getNewRol=async()=>{
+  return await axios.get('http://localhost:3001/rol/rolesnuevo')
+}
+
   export const getListarRolesxPermiso=async ()=>{
     try {
     const response=await axios.get('http://localhost:3001/rol/rolxpermiso')

@@ -7,15 +7,19 @@
   import React from 'react';
   import Autocomplete from '@mui/material/Autocomplete';
   import {  useEffect } from 'react'
+  import { useFichaTecnica } from '../../context/FichasTecnicas/FichaTecnicaContext';
 
    
    function CreateProducto() {
 
      const {validacionProducto, cargarCategoria, Listar}=useProducto()
+     const{listar,ShowFichasTecnicas}=useFichaTecnica()
+
      useEffect(()=>{
     
       cargarCategoria()
-      
+      ShowFichasTecnicas();
+
      },[])
 
      return (
@@ -39,7 +43,8 @@
                          nombre_producto: '',
                          precio: '',
                          imagen: '',
-                         cantidad: ''
+                         cantidad: '',
+                         fk_ft: ''
                        }
                       }
                        validate={async(values)=>{
@@ -116,7 +121,7 @@
 
                             </div>
                             <div className="col-md-6 ">
-                            <Field 
+                            {/* <Field 
                             type="text" 
                             name='nombre_producto' 
                             as={TextField} 
@@ -138,7 +143,22 @@
                             }}
                             sx={{ width: '100%' }}
                           />
-                          {errors.nombre_producto && <div className='invalid-feedback'>{errors.nombre_producto}</div>}
+                          {errors.nombre_producto && <div className='invalid-feedback'>{errors.nombre_producto}</div>} */}
+<Autocomplete 
+  disablePortal
+  id="fixed-tags-demo"
+  options={listar.filter((fichatecnica) => fichatecnica.estado)}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.nombre_ficha}
+  onChange={(event, newValue) => {
+    handleChange({ target: { name: 'fk_ft', value: newValue ? newValue.id_ft : '' } });
+  }}
+  value={listar.find((fichatecnica) => fichatecnica.id_ft === values.fk_ft) || null}
+  sx={{ width: '100%' }}
+  renderInput={(params) => <TextField {...params} label="Nombre" sx={{ width: '100%' }}/>}
+/>
+
+
+                          
                             </div>
                             <div className="col-md-6 ">
                             <Field 

@@ -5,7 +5,7 @@ const PermisoController=require("../../controller/permiso/permisoController")
 
 Router.get("/", RolController.listarRol);
 Router.get("/rolxpermiso", RolController.listarRolxPermiso);
-
+Router.get("/rolesnuevo", RolController.listaRoles);
 Router.post("/create", RolController.createRol)
 Router.post("/create/nuevo", RolController.createRolNuevo)
 Router.put("/disable/:id", RolController.desactivarCliente)

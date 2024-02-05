@@ -51,13 +51,11 @@ function ListarFichasTecnicas() {
             rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.id_ft,
-              nombre_insumo: item.insumo.nombre
             }))}
             columns={[
               { field: 'id_ft', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
-              { field: 'nombre_insumo', headerName: 'Insumo', headerClassName: 'encabezado', flex: 1 },
-              { field: 'cantidad_insumo', headerName: 'Cantidad', headerClassName: 'encabezado', flex: 1 },
-              { field: 'costo_insumo', headerName: 'Costo', headerClassName: 'encabezado', flex: 1 },
+              { field: 'nombre_ficha', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
+
               { field: 'imagen_producto_final', headerName: 'Imagen', headerClassName: 'encabezado', flex: 1 },
               { field: 'costo_final_producto', headerName: 'Costo Final', headerClassName: 'encabezado', flex: 1 },
               { field: 'detalle', headerName: 'Detalles',  headerClassName: 'encabezado',flex: 1 },

@@ -17,9 +17,9 @@ export const  getListarProducto=async (id_producto)=>{
 }
 
 export const  putActualizarProductos=async (id_producto, taks)=>{
-    return await axios.put(`http://localhost:3001/producto/update/${id_producto}`,taks)
+    console.log(taks)
+    return await axios.put(`http://localhost:3001/producto/update/${id_producto}`,taks,{headers:{'Content-Type':'multipart/form-data',}})
 }
-
 export const eliminarProducto= async (id_producto) => {
     return await axios.delete(`http://localhost:3001/producto/delete/${id_producto}`);
 }

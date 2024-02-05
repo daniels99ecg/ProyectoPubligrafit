@@ -11,7 +11,7 @@ Router.get("/categorias", ProductoController.listarCategoria)
 
 Router.get("/:id", ProductoController.listarProducto);
 Router.post("/create", subirArchivoProducto, ProductoController.crearProducto);
-Router.put("/update/:id", ProductoController.actualizarProducto);
+Router.put("/update/:id", subirArchivoProducto,ProductoController.actualizarProducto);
 Router.delete("/delete/:id", ProductoController.eliminarProducto)
 Router.put("/disable/:id", ProductoController.desactivarProducto)
 Router.put("/activate/:id", ProductoController.activarProducto)

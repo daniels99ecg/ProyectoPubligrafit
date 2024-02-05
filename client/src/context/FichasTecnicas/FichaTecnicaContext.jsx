@@ -24,11 +24,8 @@ export const FichaTecnicaContextProvider = ({children})=>{
     const filterList = response.data.filter((item) => 
 
         item.id_ft.toString().includes(searchTerm) ||
-        item.fk_insumo.toString().includes(searchTerm) ||
-        item.cantidad_insumo.toString().includes(searchTerm) ||
-      
+        item.cantidad.toString().includes(searchTerm) ||
         item.costo_insumo.toString().includes(searchTerm) ||
-        item.costo_final_producto.toString().includes(searchTerm) ||
         item.detalle.toLowerCase().includes(searchTerm.toLowerCase()) 
        
       );

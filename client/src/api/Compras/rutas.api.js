@@ -11,3 +11,12 @@ export const postCrearCompras=async(task)=>{
 export const getListaCompra = async (id_compra) => {
     return await axios.get(`http://localhost:3001/compras/compraOne/${id_compra}`) 
 }
+
+export const getListarCompraDia = async () => {
+    return await axios.get('http://localhost:3001/compras/compradia') 
+    
+  };
+  export const getListarCompradelDia = async () => {
+    return await axios.get('http://localhost:3001/compras/compradeldia') 
+    
+  };

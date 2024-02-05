@@ -118,11 +118,11 @@ const handleCloseInfoVenta = () => {
         rows={filtrarDesactivados.map((item)=>({
           ...item,
           id:item.id_compra,
+          proveedor:item.proveedore?.nombre
         }))}
         columns={[
           {field:'id_compra',headerName:'ID', headerClassName: 'encabezado',flex:1},
           {field:'proveedor',headerName:'Proveedor', headerClassName: 'encabezado',flex:1},
-          {field:'cantidad',headerName:'Cantidad', headerClassName: 'encabezado',flex:1},
           {field:'fecha',headerName:'Fecha', headerClassName: 'encabezado',flex:1},
           {
             field: "total",

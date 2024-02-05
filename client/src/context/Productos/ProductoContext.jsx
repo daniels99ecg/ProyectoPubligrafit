@@ -211,7 +211,7 @@ const validacionProducto = async (values)=>{
                 fk_categoria: response.fk_categoria,
                 nombre_producto: response.nombre_producto,
                 precio: response.precio,
-                imgane: response.imagen,
+                imagen: response.imagen,
                 cantidad: response.cantidad
             })
         } catch (error) {

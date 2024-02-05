@@ -11,15 +11,14 @@ import { useUser } from "../../context/Usuario/UserContext";
 function RolCreatePermisos() {
   const { listar, crearRoles, cargarpermiso } = useRol();
   const {Listar, listar3, cargarUsuariolista, cargarRol}=useUser()
-
   useEffect(() => {
+   
+    cargarRol();
     cargarpermiso();
-
-    cargarRol()
-    cargarUsuariolista()
+    cargarUsuariolista();
+   
   }, []);
- 
-
+  
   return (
     <>
    

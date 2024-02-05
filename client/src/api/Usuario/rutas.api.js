@@ -90,7 +90,7 @@ export const verifyToken = async()=>{
 
 
 export const getListarRoles=async ()=>{
-  return await axios.get('http://localhost:3001/rol')
+  return await axios.get('http://localhost:3001/rol/rolesnuevo')
 }
 
 

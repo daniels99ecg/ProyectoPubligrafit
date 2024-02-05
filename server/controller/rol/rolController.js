@@ -6,29 +6,89 @@ const Permiso=require('../../models/rol/Permiso')
 const jwt = require('jsonwebtoken');
 const secretKey = 'your-secret-key';
 
-async function listarRol(req, res){
+async function listaRoles(req, res){
+  try {
+    const rol = await Rol.findAll();
+    const clientesConVentas = await Promise.all(rol.map(async (rol) => {
+      const ventasAsociadas = await RolXPermiso.findOne({
+          where: {
+              fk_rol: rol.id_rol, 
+          },
+      });
 
-    try {
-        const rol = await Rol.findAll();
-        const clientesConVentas = await Promise.all(rol.map(async (rol) => {
-          const ventasAsociadas = await RolXPermiso.findOne({
-              where: {
-                  fk_rol: rol.id_rol, 
-              },
-          });
+      return {
+          ...rol.toJSON(),
+          tieneVentas: !!ventasAsociadas,
+      };
+  }));
 
-          return {
-              ...rol.toJSON(),
-              tieneVentas: !!ventasAsociadas,
-          };
-      }));
+    res.json(clientesConVentas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+}
 
-        res.json(clientesConVentas);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener usuarios' });
+
+async function listarRol(req, res) {
+  try {
+    
+    const rolxp = await RolXPermiso.findAll({
+      include: [
+        {
+          model: Rol,
+          attributes: ['id_rol','nombre_rol', 'estado'],
+        },
+        {
+          model: Permiso,
+          attributes: ['nombre_permiso'],
+        },
+        {
+          model: Usuario,
+          attributes: ['nombres'],
+        },
+      ],
+      attributes: [
+        'id_rol_x_permiso',
+        'fk_rol',
+        'fk_permiso',
+        'fk_usuario'
+      ],
+    });
+
+    // Estructura de datos para almacenar resultados finales
+    const resultadoFinal = [];
+
+    // Itera sobre los resultados de la consulta
+    rolxp.forEach(entry => {
+      const { id_rol_x_permiso, rol, usuario, permiso, estado } = entry;
+
+      // Busca si ya existe una entrada para este usuario y rol
+      const existente = resultadoFinal.find(item => item.usuario.nombres === usuario.nombres && item.rol.nombre_rol === rol.nombre_rol);
+
+      // Si ya existe, agrega el permiso a la lista existente
+      if (existente) {
+        existente.permisos.push(permiso.nombre_permiso);
+      } else {
+        // Si no existe, crea una nueva entrada con el id, usuario, rol y lista de permisos
+        resultadoFinal.push({
+          id_rol_x_permiso,
+          usuario,
+          rol,
+          permisos: [permiso.nombre_permiso],
+          estado
+        });
       }
-    }
+    });
+
+    res.json(resultadoFinal);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+}
+
+
 
     async function listarporid(req, res){
       try {
@@ -48,8 +108,6 @@ async function listarRol(req, res){
     async function listarRolxPermiso(req, res) {
       try {
         
-       
-    
         // Consulta de los roles y permisos filtrados por el usuario actual
         const rolxp = await RolXPermiso.findAll({
           include: [
@@ -256,6 +314,7 @@ async function eliminar(req, res) {
         listarRol,
         listarporid,
         listarRolxPermiso,
+        listaRoles,
         createRol,
         createRolNuevo,
         actualizarRol,

@@ -34,6 +34,7 @@ function Dashboard() {
       try {
         const response = await getListarCompraDia();
         setTotalCompras(response.data);
+       
       } catch (error) {
         console.error('Error al obtener datos de ventas:', error);
       }
@@ -53,7 +54,7 @@ function Dashboard() {
     fetchVentasPorFechasDia()
     fetchComprasPorFechasDia()
   }, []);
-
+  
   return (
     <>
       <Nav />

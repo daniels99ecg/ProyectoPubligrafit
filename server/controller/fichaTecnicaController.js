@@ -67,7 +67,7 @@ async function crearFichaTecnica(req, res) {
                 fk_insumo: insumo.fk_insumo,
                 fk_ficha_tecnica: createdFicha.id_ft,
                 cantidad: insumo.cantidad,
-                costo_insumo: insumo.costo_insumo,
+                precio: insumo.precio,
                
               },
               { transaction: t }

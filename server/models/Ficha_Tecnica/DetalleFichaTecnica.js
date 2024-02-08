@@ -21,7 +21,7 @@ const DetalleFichaTecnica=sequelize.define("detalle_fichas_tecnicas",{
         type:DataTypes.INTEGER,
        
     },
-    costo_insumo:{
+    precio:{
         type:DataTypes.FLOAT,
         
     },

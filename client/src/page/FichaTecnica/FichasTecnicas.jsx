@@ -1,21 +1,35 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from "react-router-dom";
 import { useFichaTecnica } from '../../context/FichasTecnicas/FichaTecnicaContext';
-import { useEffect} from "react";
+import { useEffect, useState} from "react";
 import Nav from '../../components/nav';
+import FichaCreatePruebas from "../FichaTecnica/FichaCreatePruebas"
+import ReactDOM from 'react-dom';
 
 
 function ListarFichasTecnicas() {
   const{listar,ShowFichasTecnicas,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm}=useFichaTecnica()
   const navigate=useNavigate()
-   
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+
 
   useEffect(() => {
    
     ShowFichasTecnicas();
   }, [searchTerm]);
 
+  const handleOpenVentaModal = () => {
+    setOpenCreateModal(true);
+};
 
+const handleSubmitForm = async () => {
+};
+
+const handleCloseVentaModal = () => {
+  setOpenCreateModal(false);
+  ShowFichasTecnicas()
+
+};
   return (
     <>
     <Nav/>
@@ -33,8 +47,14 @@ function ListarFichasTecnicas() {
                 <br />
         <div className="row">
           <div className="col-md-3">
-            <a className="btn btn-primary ms-4" href="/fichaTecnica/create" role="button">Nuevo Registro</a>
-          </div>
+          <button
+        className="btn btn-primary"
+        onClick={handleOpenVentaModal}
+        role="button"
+      >
+        Nuevo Registro
+      </button>
+                </div>
           {/* Botón de búsqueda */}
           <div className="col-md-3 " style={{ marginLeft: 'auto' }}>
             <input
@@ -166,7 +186,42 @@ function ListarFichasTecnicas() {
           />
         </div>
         </div>
-
+        {openCreateModal && ReactDOM.createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleCloseVentaModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1200px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '100%', height: '100%' }}>
+              <FichaCreatePruebas handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
                     </div>
                 </div>
             </div>

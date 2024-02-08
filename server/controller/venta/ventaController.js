@@ -188,31 +188,39 @@ async function listarVentasPorFechas(req, res) {
     res.status(500).json({ error: "Error al obtener el total de ventas" });
   }
 }
+
+
 async function listarVentasPorFechasDia(req, res) {
   try {
-    // Obtén la fecha actual
-    const fechaActual = new Date();
+    // Obtén la fecha actual en la zona horaria GMT-5 (Colombia)
+    const fechaActualColombia = new Date().toLocaleString('en-US', { timeZone: 'America/Bogota' });
+    const fechaActual = new Date(fechaActualColombia);
 
-    // Ajusta la fecha para obtener el rango hasta el día actual
-    const finDia = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate(), 23, 59, 59);
+    // Ajusta la fecha para obtener el primer día de la semana (domingo) y establece la hora al comienzo del día
+    const inicioSemana = new Date(fechaActual);
+    inicioSemana.setDate(fechaActual.getDate() - fechaActual.getDay());
+    inicioSemana.setHours(0, 0, 0, 0);
 
-    // Consulta las ventas hasta el día actual sin tener en cuenta la hora
-    const totalVentas = await Venta.sum('total', {
+    // Ajusta la fecha para obtener el último día de la semana (sábado) y establece la hora al final del día
+    const finSemana = new Date(inicioSemana);
+    finSemana.setDate(inicioSemana.getDate() + 6);
+    finSemana.setHours(23, 59, 59, 999);
+
+    // Consulta las ventas dentro del rango de la semana
+    const totalVentasSemana = await Venta.sum('total', {
       where: {
         fecha: {
-          [Op.lte]: finDia,
+          [Op.between]: [inicioSemana, finSemana],
         },
       },
     });
 
-    res.json(totalVentas);
+    res.json(totalVentasSemana);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error al obtener el total de ventas" });
-  }
+    res.status(500).json({ error: "Error al obtener el total de ventas de la semana" });
+  } 
 }
-
-
   
 
 

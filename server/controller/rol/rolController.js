@@ -141,37 +141,73 @@ async function listarRol(req, res) {
     }
     
 
+      // async function createRol(req, res) {
+      //   const dataRol = req.body;
+      
+      //   try {
+      //     const t = await sequelize.transaction();
+      
+      //     try {
+      //       // Verifica si se proporciona un array de permisos en dataRol
+      //       if (dataRol.permisos && Array.isArray(dataRol.permisos)) {
+      //         for (const permiso of dataRol.permisos) {
+      //           await RolXPermiso.create({
+      //             fk_rol: dataRol.fk_rol,
+      //             fk_permiso: permiso.id_permiso,
+      //             fk_usuario: dataRol.fk_usuario
+      //           }, { transaction: t });
+      //         }
+      //       }
+      
+      //       await t.commit();
+      //       res.status(201).json({ message: 'Permisos creados exitosamente' });
+      //     } catch (error) {
+      //       await t.rollback();
+      //       throw error;
+      //     }
+      //   } catch (error) {
+      //     console.error(error);
+      //     res.status(500).json({ error: 'Error al obtener rol' });
+      //   }
+      // }
+      
       async function createRol(req, res) {
         const dataRol = req.body;
-      
         try {
           const t = await sequelize.transaction();
-      
           try {
+            // Insertar el rol
+            const rol = await Rol.create({
+              nombre_rol: dataRol.nombre_rol,
+              fecha: dataRol.fecha,
+            estado: 1,
+              // Otras propiedades del rol
+            }, { transaction: t });
+      
             // Verifica si se proporciona un array de permisos en dataRol
             if (dataRol.permisos && Array.isArray(dataRol.permisos)) {
-              for (const permiso of dataRol.permisos) {
+              // Insertar los permisos asociados al rol en la tabla RolXPermiso
+              for (const permisoId of dataRol.permisos) {
                 await RolXPermiso.create({
-                  fk_rol: dataRol.fk_rol,
-                  fk_permiso: permiso.id_permiso,
+                  fk_rol: rol.id_rol,
+                  fk_permiso: permisoId,
                   fk_usuario: dataRol.fk_usuario
-                }, { transaction: t });
+                 }, { transaction: t });
               }
             }
       
             await t.commit();
-            res.status(201).json({ message: 'Permisos creados exitosamente' });
+            res.status(201).json({ message: 'Rol y permisos creados exitosamente' });
           } catch (error) {
             await t.rollback();
             throw error;
           }
         } catch (error) {
           console.error(error);
-          res.status(500).json({ error: 'Error al obtener rol' });
+          res.status(500).json({ error: 'Error al crear rol y permisos' });
         }
       }
       
-
 
     async function createRolNuevo(req, res) {
       const dataRol = req.body;

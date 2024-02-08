@@ -108,7 +108,7 @@ const handleCloseInfoModal = () => {
       </button>
 
     </div>
-    <div className="col-md-2">  
+    {/* <div className="col-md-2">  
 
       <button
         className="btn btn-primary"
@@ -117,7 +117,7 @@ const handleCloseInfoModal = () => {
       >
         Nuevo Permiso
       </button>
-      </div>
+      </div> */}
     <div className="col-md-3 col-12" style={{ marginLeft: 'auto' }}>
     <input
                   type="text"
@@ -414,44 +414,6 @@ const handleCloseInfoModal = () => {
             />,
             document.body
           )} 
-
-
-                {openPermisoModal && ReactDOM.createPortal(
-        <>
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 1049,
-            }}
-            onClick={handleClosePermisoModal}
-          />
-          <div
-            className="modal-create"
-            style={{
-              position: 'fixed',
-              top: '43%',  
-              left: '42%',
-              transform: 'translate(-50%, -50%)', 
-              zIndex: 1050,
-              width: '400%', 
-              maxWidth: '1100px', 
-              overflowY: 'visible',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <div style={{ width: '100%', height: '100%' }}>
-              <RolCreatePermisos handleSubmitFormPermiso={handleSubmitFormPermiso} handleClosePermisoModal={handleClosePermisoModal} />
-            </div>
-          </div>
-        </>,
-        document.body
-      )}
                  {openCreateModal && ReactDOM.createPortal(
         <>
           <div
@@ -482,7 +444,7 @@ const handleCloseInfoModal = () => {
             }}
           >
             <div style={{ width: '100%', height: '100%' }}>
-              <RolCreate handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
+              <RolCreatePermisos handleSubmitForm={handleSubmitForm} handleCloseVentaModal={handleCloseVentaModal} />
             </div>
           </div>
         </>,

@@ -35,9 +35,14 @@ const RolInfo = ({ rol, handleCloseModal, open }) => {
             <p>
               <strong>Nombre:</strong> {rol.nombre_usuario}
             </p>
-            <p>
-              <strong>Permisos:</strong> {rol.permisos + ''}
-            </p>
+            <div>
+              <strong>Permisos:</strong>
+              <ul>
+                {rol.permisos.map((permiso, index) => (
+                  <li key={index}>{permiso}</li>
+                ))}
+              </ul>
+            </div>
           </div>
           <button style={buttonStyle} onClick={handleCloseModal}>
             Cerrar

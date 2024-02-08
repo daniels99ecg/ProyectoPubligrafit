@@ -53,7 +53,7 @@ async function cargarRolxPermiso(){
 
 const crearRoles=async(values)=>{
 try {
-  if( values.fk_rol=="" || values.fk_usuario==""||values.permisos==""){
+  if(values.fk_usuario==""||values.permisos==""){
            
     Swal.fire({
         icon: 'error',

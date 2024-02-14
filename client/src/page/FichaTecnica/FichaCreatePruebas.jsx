@@ -24,11 +24,12 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
   const [productoSelect, setProductoSelect] = useState(null);
   const [cantidadAlterar, setCantidadAlterar] = useState("");
   const [manoObra, setManoObra] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
 
   // const [metodoPagoTouched, setMetodoPagoTouched] = useState(false);
   const [totalTouched, setTotalTouched] = useState(false);
-
+  const [nombreFicha, setNombreFicha] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Número de elementos por página
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -253,8 +254,8 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
 
                 <Formik
                   initialValues={{
-                    nombre_ficha: "",
-                    imagen_producto_final: "",
+                    nombre_ficha: nombreFicha,
+                    imagen_producto_final:selectedImage,
                     costo_final_producto: subtotalTotal,
                     detalle:"",
                     insumo: tableData.map((item) => ({
@@ -266,6 +267,8 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                   }}
                   enableReinitialize={true}
                   onSubmit={async (values, { setErrors, resetForm }) => {
+                   
+                   
                     try {
                       ventaSchema
                         .validate(values, { abortEarly: false })
@@ -290,6 +293,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                             })
                             .then((result) => {
                               if (result.isConfirmed) {
+
                                 postCreateFichaTecnica(values)
                                   .then(() => {
                                     Swal.fire({
@@ -298,6 +302,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                       text: "Tu archivo ha sido registrado",
                                     }).then(() => {
                                       handleCloseVentaModal();
+                                      setNombreFicha(values.nombre_ficha);
                                       resetForm();
                                     });
                                   })
@@ -626,63 +631,32 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                             <div className="col-md-4 col-sm-12 d-flex">
                               <div className="card shadow flex-fill">
                                 <div className="card-body p-3">
-                                  <div className="nav-item-divider venta-division"></div>
-                                  <div>
-                                    <h4 className="text-center fs-md-4 fs-sm-3"
-                                      style={{
-                                        fontFamily: "Candara",
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                        marginTop: '-25px'
-                                      }}
-                                    >
-                                      Rocco Gráficas
-                                    </h4>
-                                    <div>
-                                      <h5
-                                        style={{
-                                          fontSize: "80%",
-                                          color: "#999999",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        Nit: 15.318.366-1
-                                      </h5>
-                                    </div>
-                                    <div>
-                                      <h5
-                                        style={{
-                                          fontSize: "80%",
-                                          color: "#999999",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        Calle 42 No. 68-38 Medellín - Ant
-                                      </h5>
-                                    </div>
-                                  </div>
-                                  <hr />
+                                  
+                              
                                   <div className="form-group mb-2">
- 
-   <Field
-                            type='text'
-                            name='nombre_ficha'
-                            className='form-control'
-                            as={TextField}
-                            value={values.nombre_ficha}
-                            label="Nombre Ficha"
-                            onChange={handleChange}
-
-                          /> 
+                                  <Field
+            type='text'
+            name='nombre_ficha'
+            className='form-control'
+            as={TextField}
+            value={values.nombre_ficha}
+            label="Nombre Ficha"
+            onChange={(e) => {
+              handleChange(e);
+              setNombreFicha(e.target.value); // Actualizar el estado local
+            }}
+          />
 <br />
 <br />
- <input
-                            type='file'
-                            name='imagen_producto_final'
-                            className='form-control'
-                            onChange={handleChange}
-                            value={values.imagen_producto_final}
-                          />   
+<input
+                type='file'
+                name='imagen_producto_final'
+                className='form-control'
+                onChange={(event) => {
+                    setSelectedImage(event.target.files[0]);
+                    setFieldValue('imagen_producto_final', event.target.files[0]);
+                }}
+            />
 
              <br />  
 <Field

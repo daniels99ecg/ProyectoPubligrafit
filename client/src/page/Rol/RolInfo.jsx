@@ -33,7 +33,7 @@ const RolInfo = ({ rol, handleCloseModal, open }) => {
             <h3 style={{ color: 'black'  }}>Información rol</h3>
             <hr />
             <p>
-              <strong>Nombre:</strong> {rol.nombre_usuario}
+              <strong>Nombre:</strong> {rol.usuario.nombres}
             </p>
             <div>
               <strong>Permisos:</strong>

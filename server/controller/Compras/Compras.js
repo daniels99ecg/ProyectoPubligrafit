@@ -4,15 +4,7 @@ const Compras_detalle=require('../../models/Detalle_Compra/Detalle_Compra')
 const Insumo = require("../../models/Insumo");
 const Proveedor = require("../../models/Proovedor/Proovedor");
 
-// async function listarCompras(req, res){
-//     try {
-//         const compras=await Compras.findAll()
-//         res.json(compras)
-//     } catch (error) {
-//         console.error(error)
-//         res.status(500).json({error:"Error al obtener las compras"})
-//     }
-// }
+
 
 async function listarCompras(req, res) {
   try {

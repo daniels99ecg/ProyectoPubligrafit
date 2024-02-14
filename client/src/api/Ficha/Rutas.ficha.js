@@ -2,15 +2,17 @@ import axios from 'axios'
 
 
 export const  postCreateFichaTecnica=async (taks)=>{
-    return await axios.post('http://localhost:3001/fichaTecnica/create',taks)
+    return await axios.post('http://localhost:3001/fichaTecnica/create',taks,{
+    headers:{'Content-Type':'multipart/form-data',
+    },
+})
 }
-
 export const  getListarFichasTecnicas=async ()=>{
     return await axios.get('http://localhost:3001/fichaTecnica')
 }
 
 export const  getListarFichaTecnica=async (id_ft)=>{
-    return await axios.get(`http://localhost:3001/fichaTecnica/${id_ft}`)
+    return await axios.get(`http://localhost:3001/fichaTecnica/fichaOne/${id_ft}`)
 }
 
 export const  putActualizarFichasTecnicas=async (id_ft, taks)=>{

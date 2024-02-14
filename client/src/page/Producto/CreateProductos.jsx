@@ -39,63 +39,48 @@
                        initialValues={
                         {
                         
-                         fk_categoria: '',
-                         nombre_producto: '',
-                         precio: '',
-                         imagen: '',
-                         cantidad: '',
-                         fk_ft: ''
+                         fk_categoria: "",
+                         precio: "",
+                         cantidad: "",
+                         fk_ft: ""
                        }
                       }
                        validate={async(values)=>{
                         const errors={}
   
-                        if (!values.fk_categoria) {
-                          errors.fk_categoria = 'Este campo es requerido';
+                        // if (!values.fk_categoria) {
+                        //   errors.fk_categoria = 'Este campo es requerido';
                     
-                        }else if (!/^[0-9]+$/.test(values.fk_categoria)) {
-                          errors.fk_categoria = 'Este campo solo debe contener letras';
-                        }
-                        if(!values.nombre_producto){
-                          errors.nombre_producto = 'Este campo es requerido';
+                        // }else if (!/^[0-9]+$/.test(values.fk_categoria)) {
+                        //   errors.fk_categoria = 'Este campo solo debe contener letras';
+                        // }
+                        // if(!values.nombre_producto){
+                        //   errors.nombre_producto = 'Este campo es requerido';
   
-                        }else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto)){
-                          errors.nombre_producto = 'Este campo solo debe contener letras';
-                        }
-                        if(!values.precio){
-                          errors.precio = 'Este campo es requerido';
+                        // }else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto)){
+                        //   errors.nombre_producto = 'Este campo solo debe contener letras';
+                        // }
+                      //   if(!values.precio){
+                      //     errors.precio = 'Este campo es requerido';
   
-                        }else if (!/^[0-9]+$/.test(values.precio)){
-                          errors.precio = 'Este campo solo debe contener numeros';
-                        } if (!values.imagen) {
-                  errors.imagen = 'Este campo es requerido';
-                } else if (/^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen)) {
-                  errors.imagen = 'Este campo solo debe contener archivos';
-                }
-                        if(!values.cantidad){
-                          errors.cantidad = 'Este campo es requerido';
+                      //   }else if (!/^[0-9]+$/.test(values.precio)){
+                      //     errors.precio = 'Este campo solo debe contener numeros';
+                      //    } 
+                      //   if(!values.cantidad){
+                      //     errors.cantidad = 'Este campo es requerido';
   
-                        }else if (!/^[0-9]+$/.test(values.cantidad)){
-                          errors.cantidad = 'Este campo solo debe contener numeros';
-                        }
-                        return errors
+                      //   }else if (!/^[0-9]+$/.test(values.cantidad)){
+                      //     errors.cantidad = 'Este campo solo debe contener numeros';
+                      //   }
+                      //   return errors
                       }
                     }
                     enableReinitialize={true}
-
                        onSubmit={async (values) => {
                         console.log(values)
-                        const formData = new FormData();
-                        formData.append('fk_categoria', values.fk_categoria);
-                        formData.append('nombre_producto', values.nombre_producto);
-                        formData.append('precio', values.precio);
-                        formData.append('imagen', values.imagen[0]); // Assuming 'imagen' is the key for the image
-                        formData.append('cantidad', values.cantidad);
-
-                        console.log("FormData:", formData);
-
+                     
                         try {
-                          await validacionProducto(formData);
+                          await validacionProducto(values);
                           
                         } catch (error) {
                           console.error("Error en la solicitud:", error);
@@ -121,29 +106,6 @@
 
                             </div>
                             <div className="col-md-6 ">
-                            {/* <Field 
-                            type="text" 
-                            name='nombre_producto' 
-                            as={TextField} 
-                            label ='Nombre' 
-                            onChange={handleChange} 
-                            className={` ${
-                              values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
-                            }`}
-                            InputProps={{
-                              endAdornment: (
-                                <React.Fragment>
-                                  {values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? (
-                                    <CheckIcon style={{ color: 'green' }} />
-                                  ) : (
-                                    <ErrorIcon style={{ color: 'red' }} />
-                                  )}
-                                </React.Fragment>
-                              ),
-                            }}
-                            sx={{ width: '100%' }}
-                          />
-                          {errors.nombre_producto && <div className='invalid-feedback'>{errors.nombre_producto}</div>} */}
 <Autocomplete 
   disablePortal
   id="fixed-tags-demo"
@@ -185,31 +147,8 @@
                           />
                           {errors.precio && <div className='invalid-feedback'>{errors.precio}</div>}
                             </div>
-                            <div className="col-md-6">
-                            <input 
-                            type="file" 
-                            name='imagen' 
-                            onChange={(event) => setFieldValue('imagen', event.currentTarget.files)} 
-                            label ='Imagen' 
-                            sx={{ width: '100%' }}
-                            className={` ${
-                              values.imagen && !/^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen) ? 'is-valid' : 'is-invalid'
-                            } form-control form-control-lg`}
-                            InputProps={{
-                              endAdornment: (
-                                <React.Fragment>
-                                  {values.imagen && /^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen) ? (
-                                    <CheckIcon style={{ color: 'green' }} />
-                                  ) : (
-                                    <ErrorIcon style={{ color: 'red' }} />
-                                  )}
-                                </React.Fragment>
-                              ),
-                            }}
-                          />
-                          {errors.imagen && <div className='invalid-feedback'>{errors.imagen}</div>}
-                          </div>
-                            <div className="col-md-12 mx-auto ">
+                           
+                            <div className="col-md-6 mx-auto ">
                             <Field 
                             type="text" 
                             name='cantidad' 

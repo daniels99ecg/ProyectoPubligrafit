@@ -359,7 +359,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                         id="fixed-tags-demo"
                                         options={listar.filter((option) => option.estado)}
                                         getOptionLabel={(option) =>
-                                          `${option.nombre_producto}`
+                                          `${option.fichas_tecnica.nombre_ficha}`
                                         }
                                         onChange={(event, newValue) => {
                                           if (newValue) {

@@ -31,12 +31,29 @@
         { type: sequelize.QueryTypes.SELECT }
       );
   
-      res.json(usuariosConRoles);
+
+      const clientesConVentas = await Promise.all(usuariosConRoles.map(async (usuarios) => {
+        const ventasAsociadas = await RolXPermiso.findOne({
+            where: {
+                fk_usuario: usuarios.id_usuario, 
+            },
+        });
+
+        return {
+            ...usuarios,
+            tieneVentas: !!ventasAsociadas,
+        };
+    }));
+    res.json(clientesConVentas);
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Hubo un error al obtener los usuarios con roles' });
     }
   }
+
+
+
   async function listarporid(req, res){
     try {
       const userId = req.params.id;

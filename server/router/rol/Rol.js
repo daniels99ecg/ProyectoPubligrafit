@@ -12,7 +12,7 @@ Router.put("/disable/:id", RolController.desactivarCliente)
 Router.put("/activate/:id", RolController.activarCliente)
 Router.get("/permiso", PermisoController.listarPermiso)
 Router.delete("/delete/:id_rol", RolController.eliminar)
-Router.get("/:id", RolController.listarporid);
+Router.get("/:id_rol_x_permiso", RolController.listarporid);
 Router.put("/update/:id", RolController.actualizarRol)
 
 module.exports=Router;

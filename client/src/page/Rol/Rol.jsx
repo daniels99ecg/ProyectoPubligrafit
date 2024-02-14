@@ -47,8 +47,8 @@ const [openCreateModal, setOpenCreateModal] = useState(false);
   };
   
   // Modal de Actualizar
-  const handleOpenUpdateModal = (id_rol) => {
-    setSelectedClienteId(id_rol);
+  const handleOpenUpdateModal = (id) => {
+    setSelectedClienteId(id);
     setOpenUpdateModal(true);
   };
   
@@ -138,8 +138,7 @@ const handleCloseInfoModal = () => {
                       <ul className="list-group list-group-flush">
                       <li className="list-group-item">Tipo ID: {item.rol?.id_rol}</li>
                       <li className="list-group-item">Nombre: {item.rol?.nombre_rol}</li>
-                      <li className="list-group-item">Fecha: {item.fecha}</li>
-                  
+                    
                         </ul>
                       
                         <div className="row">
@@ -164,12 +163,26 @@ const handleCloseInfoModal = () => {
         className="switch-button__label"
       ></label>
                   </div>
+
+                  
                   </div>
                   <div className="col-md-6">
 
+                  <div className="info-button-container">
+                    
+      <Tooltip title="Información" arrow>
+        <button
+          className="btn btn-light info-button"
+          onClick={() => handleOpenInfoModal(item)}
+          disabled={!item.rol?.estado}
+        >
+          <BsInfoCircleFill size={30} color="grey" />
+        </button>
+      </Tooltip>
+    </div>
                         <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() =>{     handleOpenUpdateModal(item.rol?.id_rol);
+                      onClick={() =>{handleOpenUpdateModal(item.rol?.id_rol);
 
                       }}
                       disabled={!item.rol?.estado}
@@ -236,12 +249,11 @@ const handleCloseInfoModal = () => {
               id: item.id_rol_x_permiso,
               id_rol:item.rol?.id_rol,
               nombre_rol:item.rol?.nombre_rol,
-              nombre_usuario:item.usuario?.nombres,
               estado:item.rol?.estado,
               ...item,
             }))}
             columns={[
-              { field: 'id_rol', headerName: 'ID', headerClassName: 'encabezado', flex: 1 },
+              { field: 'id', headerName: 'ID', headerClassName: 'encabezado', flex: 1 },
               { field: 'nombre_rol', headerName: 'Rol', headerClassName: 'encabezado', flex: 1 },
               {
                 field: 'estado',
@@ -308,7 +320,7 @@ const handleCloseInfoModal = () => {
     <div className="d-flex">
       <button
         className="btn btn-outline-secondary me-1"
-        onClick={() =>{     handleOpenUpdateModal(params.row.id_rol);
+        onClick={() =>{     handleOpenUpdateModal(params.row.id);
 
       }}
         disabled={!params.row.estado}
@@ -317,7 +329,7 @@ const handleCloseInfoModal = () => {
           borderColor: '#0d6efd',
           color: 'black',
         }}
-        data-id={`edit-button-${params.row.id_rol}`}
+        data-id={`edit-button-${params.row.id}`}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

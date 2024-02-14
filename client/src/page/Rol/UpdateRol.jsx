@@ -12,10 +12,11 @@ import { useParams, useNavigate} from 'react-router-dom'
 function RolCreate({RolId}) {
     const params=useParams()
 
-  const { ListarActualizar,cargarRolActualizar,actualizarValidar } = useRol();
+  const { listarActualizar,cargarRolActualizar,actualizarValidar } = useRol();
 
   useEffect(() => {
     cargarRolActualizar(RolId)
+    console.log(listarActualizar)
   }, [RolId]);
   const obtenerFechaActual = () => {
     const hoy = new Date();
@@ -42,7 +43,8 @@ function RolCreate({RolId}) {
                 </div>
                 <div className='w-75 p-3 mx-auto'>
                   <Formik
-                    initialValues={ListarActualizar}
+                    initialValues={listarActualizar}
+                    
                     validate={async(values)=>{
                       const errors={}
                   
@@ -68,14 +70,14 @@ function RolCreate({RolId}) {
                   >
                     {({ handleChange, handleSubmit, setFieldValue, values, errors, isValid }) => (
                       <Form onSubmit={handleSubmit} className='row g-3' id='pruebas'>
-                 <input  type='hidden' name='id_rol' onChange={handleChange} value={values.id_rol} className="form-control" disabled/>
+                 <input  type='hidden' name='rol' onChange={handleChange} value={values.id_rol_x_permiso}  className="form-control" disabled/>
 
                         <div className='col-md-6'>
                           <Field
                             type='text'
                             name='nombre_rol'
                             label='Nombre Rol'
-                            value={values.nombre_rol}
+                            value={values.rol.nombre_rol}
                             as={TextField}
                             onChange={handleChange}
                             className={` ${
@@ -98,15 +100,14 @@ function RolCreate({RolId}) {
                         </div>
                         <div className='col-md-6'>
                           <Field
-                            type='date'
+                            type='text'
                             name='fecha'
                             as={TextField}
                             className='form-control'
                             placeholder='Fecha'
                             onChange={handleChange}
-                            value={values.fecha}
-                            variant='outlined'
-                            disabled  
+                            value={values.permiso.nombre_permiso}
+                           
                             fullWidth
                           />
                         </div>

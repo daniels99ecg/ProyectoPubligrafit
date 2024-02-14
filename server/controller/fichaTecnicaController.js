@@ -4,7 +4,8 @@ const FichaTecnica=require("../models/Ficha_Tecnica/FichaTecnica")
 const Insumo=require("../models/Insumo")
 const DetalleFichaTecnica=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
 
-
+const fs = require('fs')
+const { request } = require("express");
 
 async function listarFichasTecnicas(req, res){
     try {
@@ -18,21 +19,55 @@ async function listarFichasTecnicas(req, res){
     }
 }
 
-async function listarFichaTecnica(req, res){
-    try {
-        const id=req.params.id;
-        const fichaTecnica = await FichaTecnica.findByPk(id);
-        res.json(fichaTecnica);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error:'Error al obtener produto'});
+async function listarFichaTecnica(req, res) {
+  const  {id_ft}  = req.params;
+
+  try {
+    const ficha = await FichaTecnica.findOne({
+      where: {id_ft: id_ft},
+    });
+
+    if (!ficha) {
+      return res.status(404).json({ error: "ficha no encontrada" });
     }
+
+    const detalleFicha = await DetalleFichaTecnica.findAll({
+      where: { fk_ficha_tecnica: ficha.id_ft },
+      attributes: [
+        "id_detalle_ft",
+        "fk_insumo",
+        "cantidad",
+        "precio",
+       
+      ],
+      include: [
+        {
+          model: Insumo,
+          attributes: ["nombre"],
+        },
+      ],
+    });
+
+    const fichaConDetalles = {
+      ...ficha.toJSON(),
+      detalles: detalleFicha,
+    };
+
+    res.json(fichaConDetalles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener la ficha" });
+  }
 }
+
 
 async function crearFichaTecnica(req, res) {
     try {
       const dataFicha = req.body;
-  
+
+      if(!req.file) {
+        return res.json({ message: "Error la imagen del producto es requerida" });
+    }
       await sequelize.transaction(async (t) => {
         const insumos = dataFicha.insumo || [];
   
@@ -51,10 +86,16 @@ async function crearFichaTecnica(req, res) {
           const createdFicha = await FichaTecnica.create(
             {
               nombre_ficha:dataFicha.nombre_ficha,
-              imagen_producto_final: dataFicha.imagen_producto_final,
-              costo_final_producto: dataFicha.costo_final_producto,
+              imagen_producto_final:req.file.filename,
+              costo_final_producto:dataFicha.costo_final_producto,
               detalle: dataFicha.detalle,
               estado: 1,
+              
+              // nombre_ficha:dataFicha.nombre_ficha,
+              // imagen_producto_final:dataFicha.imagen_producto_final,
+              // costo_final_producto: dataFicha.costo_final_producto,
+              // detalle: dataFicha.detalle,
+              // estado: 1,
             },
             { transaction: t }
           );
@@ -146,8 +187,8 @@ async function eliminarFichaTecnica(req, res) {
 
 async function desactivarFichaTecnica(req, res) {
     try {
-      const id = req.params.id;
-      const cliente = await FichaTecnica.findByPk(id);
+      const id_ft = req.params.id_ft;
+      const cliente = await FichaTecnica.findByPk(id_ft);
         
         if (!cliente) {
             return res.status(404).json({ error: 'Cliente no encontrado' });
@@ -165,8 +206,8 @@ async function desactivarFichaTecnica(req, res) {
   
   async function activarFichaTecnica(req, res) {
     try {
-        const id = req.params.id;
-        const cliente = await FichaTecnica.findByPk(id);
+        const id_ft = req.params.id_ft;
+        const cliente = await FichaTecnica.findByPk(id_ft);
         
         if (!cliente) {
             return res.status(404).json({ error: 'Cliente no encontrado' });

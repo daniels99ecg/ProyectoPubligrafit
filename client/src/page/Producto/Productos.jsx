@@ -202,11 +202,14 @@ const handleCloseVentaModal = () => {
                       rows={filtrarDesactivados.map((item) => ({
                         ...item,
                         id: item.id_producto,
-                        categoria: item.categoria.categoria
+                        categoria: item.categoria.categoria,
+                        imagen_ft:item.fichas_tecnica.imagen_producto_final,
+                        nombre_producto:item.fichas_tecnica.nombre_ficha
                       }))}
                       columns={[
                         { field: 'id_producto', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
                         { field: 'categoria', headerName: 'Categoria', headerClassName: 'encabezado', flex: 1 },
+
                         { field: 'nombre_producto', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
                         { field: 'precio', headerName: 'Precio', headerClassName: 'encabezado', flex: 1,
                         valueFormatter: (params) => formatCurrency(params.value),
@@ -239,7 +242,7 @@ const handleCloseVentaModal = () => {
                                   </Modal.Header>
                                   <Modal.Body>
                                     <img
-                                      src={`http://localhost:3001/${params.row.imagen}`}
+                                      src={`http://localhost:3001/${params.row.imagen_ft}`}
                                       alt="Imagen del producto"
                                       style={{ width: '100%' }}
                                     />

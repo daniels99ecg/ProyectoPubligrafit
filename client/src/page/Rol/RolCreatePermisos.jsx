@@ -1,4 +1,4 @@
-import { Form, Formik } from 'formik';
+import { Form, Formik,Field } from 'formik';
 import { useEffect, useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -8,13 +8,13 @@ import { useUser } from "../../context/Usuario/UserContext";
 function RolCreatePermisos() {
   const { listar, crearRoles, cargarpermiso } = useRol();
   const { Listar, listar3, cargarUsuariolista, cargarRol } = useUser();
-  const [newRol, setNewRol] = useState(null); 
-  const [selectedRol, setSelectedRol] = useState(null);
+  const [nombreRol, setNombreRol]=useState("")
 
   useEffect(() => {
     cargarRol();
     cargarpermiso();
     cargarUsuariolista();
+   
   }, []);
 
   const obtenerFechaActual = () => {
@@ -48,44 +48,33 @@ function RolCreatePermisos() {
                     fk_usuario: '', 
                   }}
                   onSubmit={async (values) => {
-                    // Extraer los IDs de los permisos seleccionados
                     const permisosIds = values.permisos.map(permiso => permiso.id_permiso);
-                    // Si se seleccionó un nuevo rol manualmente, enviarlo en lugar del rol seleccionado
-                    const rolToSend = selectedRol ? selectedRol : values.nombre_rol;
-                
-                    // Enviar el formulario con el nuevo rol y los permisos como un array de IDs
-                    await crearRoles({ ...values, nombre_rol: rolToSend, permisos: permisosIds });
+                    
+                    await crearRoles({ ...values, nombre_rol: nombreRol, permisos: permisosIds });
+                  
                   }}
+                  
+                  
                 >
                   {({ handleChange, handleSubmit, setFieldValue, values }) => (
                     <Form onSubmit={handleSubmit} className='row g-3' id='pruebas'>
                       <div className="col-md-6">
                       <Autocomplete 
-          disablePortal
-          id="rol"
-          options={[...Listar.filter((rol) => rol.estado), { nombre_rol: newRol, inputValue: newRol }]}
-          getOptionLabel={(option) => option.nombre_rol}
-          onChange={(event, newValue) => {
-            if (newValue && newValue.id_rol) {
-              // Actualiza el estado con el nombre del rol seleccionado
-              setSelectedRol(newValue.nombre_rol);
-              handleChange({ target: { name: 'nombre_rol', value: newValue.nombre_rol } });
-            } else if (newValue && newValue.inputValue) {
-              // Actualiza el estado con el valor ingresado manualmente
-              setNewRol(newValue.inputValue);
-              setSelectedRol(newValue.inputValue);
-              handleChange({ target: { name: 'nombre_rol', value: newValue.inputValue } });
-            }
-          }}
-          value={selectedRol}
-          selectOnFocus
-          clearOnBlur={false}
-          handleHomeEndKeys
-          freeSolo
-          renderInput={(params) => (
-            <TextField {...params} label="Rol" sx={{ width: '100%' }}/>
-          )}
-        />
+  disablePortal
+  id="rol"
+  options={Listar.filter((rol) => rol.estado).map(rol => rol.nombre_rol)}
+  getOptionLabel={(option) => option}
+  value={values.nombre_rol}
+  onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
+    setNombreRol(newInputValue);
+  }}
+  freeSolo
+  renderInput={(params) => (
+    <TextField {...params} label="Rol" sx={{ width: '100%' }}/>
+  )}
+/>
+
+
                       </div> 
                       <div className="col-md-6">
                         <Autocomplete 

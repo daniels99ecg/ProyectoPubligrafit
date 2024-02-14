@@ -5,12 +5,18 @@ import { useEffect, useState} from "react";
 import Nav from '../../components/nav';
 import FichaCreatePruebas from "../FichaTecnica/FichaCreatePruebas"
 import ReactDOM from 'react-dom';
-
+import { Modal, Button } from 'react-bootstrap';
+import Tooltip from "@mui/material/Tooltip";
+import { BsInfoCircleFill } from "react-icons/bs";
+import FichaInfo from "../FichaTecnica/FichaInfo"
+import { getListarFichaTecnica } from "../../api/Ficha/Rutas.ficha";
 
 function ListarFichasTecnicas() {
   const{listar,ShowFichasTecnicas,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm}=useFichaTecnica()
   const navigate=useNavigate()
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [showInfoVenta, setShowInfoVenta] = useState(false);
+  const [selectVentaDetalles, setSelectVentaDetalles] = useState(null);
 
 
   useEffect(() => {
@@ -29,6 +35,22 @@ const handleCloseVentaModal = () => {
   setOpenCreateModal(false);
   ShowFichasTecnicas()
 
+};
+
+const handleOpenInfoCompra = async (compraInfo) => {
+  try {
+    const response = await getListarFichaTecnica(compraInfo.id_ft);
+    setSelectVentaDetalles(response.data);
+    setShowInfoVenta(true);
+  } catch (error) {
+    console.error("Error al obtener detalles de la compra", error);
+  }
+};
+
+// Cerrar modal info
+const handleCloseInfoVenta = () => {
+  setShowInfoVenta(false);
+  setSelectVentaDetalles(null);
 };
   return (
     <>
@@ -75,11 +97,78 @@ const handleCloseVentaModal = () => {
             columns={[
               { field: 'id_ft', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
               { field: 'nombre_ficha', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
+              { field: 'costo_final_producto', headerName: 'Costo Final', headerClassName: 'encabezado', flex: 1 },              
 
-              { field: 'imagen_producto_final', headerName: 'Imagen', headerClassName: 'encabezado', flex: 1 },
-              { field: 'costo_final_producto', headerName: 'Costo Final', headerClassName: 'encabezado', flex: 1 },
-              { field: 'detalle', headerName: 'Detalles',  headerClassName: 'encabezado',flex: 1 },
-             
+              {
+                field: 'imagen_producto_final', headerName: 'Imagen', headerClassName: 'encabezado', flex: 0,
+                renderCell: (params) => {
+                  const [showModal, setShowModal] = useState(false);
+
+                  const handleOpenModal = () => setShowModal(true);
+                  const handleCloseModal = () => setShowModal(false);
+
+                  return (
+                    <div>
+
+                      {/* <Button variant="secondary" onClick={handleOpenModal} style={{ marginLeft: '15px', padding: '20px' }}>
+            <i class="bi bi-search"></i> {/* Bootstrap icon for search */}
+                     <button type="button" className="btn btn-secondary" onClick={handleOpenModal}>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-earmark-image-fill" viewBox="0 0 16 16">
+  <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707v5.586l-2.73-2.73a1 1 0 0 0-1.52.127l-1.889 2.644-1.769-1.062a1 1 0 0 0-1.222.15L2 12.292V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2zm-1.498 4a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+  <path d="M10.564 8.27 14 11.708V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-.293l3.578-3.577 2.56 1.536 2.426-3.395z"/>
+</svg>
+</button>
+
+
+                      <Modal show={showModal} onHide={handleCloseModal}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>Detalle de la Imagen</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <img
+                            src={`http://localhost:3001/${params.row.imagen_producto_final}`}
+                            alt="Imagen del producto"
+                            style={{ width: '100%' }}
+                          />
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="secondary" onClick={handleCloseModal}>
+                            Cerrar
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+                    </div>
+                  )
+                }
+              },
+              {
+                field: 'info',
+                headerName: 'Info',
+                headerClassName: 'encabezado',
+                flex: 0,
+                renderCell: (params) => (
+                  <Tooltip title="Información" arrow>
+                    <span>
+                      <button
+                        className="btn btn-light info-button"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: '5px',
+                          borderRadius: '50%',
+                          backgroundColor: 'white',
+                        }}
+                        onClick={() => handleOpenInfoCompra(params.row)}
+                      >
+                        <BsInfoCircleFill
+                          size={30}
+                          color="grey"
+                        />
+                      </button>
+                    </span>
+                  </Tooltip>
+                ),
+              },
               {
                 field: 'estado',
                 headerName: 'Estado',
@@ -173,10 +262,11 @@ const handleCloseVentaModal = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 8,
+                  pageSize: 5,
                 },
               },
             }}
+            pageSizeOptions={[5]} 
             getRowClassName={(params) => {
               if (!params.row.estado) {
                 return 'cliente-desactivado';
@@ -221,7 +311,15 @@ const handleCloseVentaModal = () => {
           </div>
         </>,
         document.body
-      )}
+      )}{showInfoVenta && selectVentaDetalles &&
+        ReactDOM.createPortal(
+          <FichaInfo
+          ficha={selectVentaDetalles}
+            handleCloseModal={handleCloseInfoVenta}
+            open={showInfoVenta}
+          />,
+          document.body
+        )}
                     </div>
                 </div>
             </div>

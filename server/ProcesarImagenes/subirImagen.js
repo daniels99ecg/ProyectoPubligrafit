@@ -5,10 +5,10 @@ const configurarMulter = require('../database/multerConfig');
 
 
 //* Función para subir un archivo a la carpeta 'disenos'
-const subirArchivoProducto = (req, res, next) => {
+const subirArchivoFicha = (req, res, next) => {
 
     //- Pasar la configuración y el nombre del campo como se llama en la tabla
-    const upload = multer(configurarMulter('imagenProductos')).single('imagen');
+    const upload = multer(configurarMulter('imagenFicha')).single('imagen_producto_final');
 
     upload(req, res, function (error) {
         if (error) {
@@ -18,4 +18,4 @@ const subirArchivoProducto = (req, res, next) => {
     });
 };
 
-module.exports = {subirArchivoProducto}
+module.exports = {subirArchivoFicha}

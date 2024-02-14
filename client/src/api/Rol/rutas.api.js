@@ -19,8 +19,8 @@ export const getNewRol=async()=>{
   }
   }
 
-  export const cargaractualizarRol=async (id_rol)=>{
-    return await axios.get(`http://localhost:3001/rol/${id_rol}`)
+  export const cargaractualizarRol=async (fk_rol)=>{
+    return await axios.get(`http://localhost:3001/rol/${fk_rol}`)
   }
 
   export const actualizarRol=async (id_rol, task)=>{

@@ -2,10 +2,8 @@ import axios from 'axios'
 
 
 export const  postCreateProducto=async (taks)=>{
-    return await axios.post('http://localhost:3001/producto/create',taks, {
-        headers:{'Content-Type':'multipart/form-data',
-    },
-})
+    return await axios.post('http://localhost:3001/producto/create',taks
+)
 }
 
 export const  getListarProductos=async ()=>{

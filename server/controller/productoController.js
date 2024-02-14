@@ -2,7 +2,10 @@ const Producto=require("../models/Producto")
 const Categoria = require("../models/Categoria");
 const { request } = require("express");
 const DetalleVenta = require("../models/DetalleVenta");
-const fs = require('fs')
+
+
+const FichaTenica = require("../models/Ficha_Tecnica/FichaTecnica");
+
 async function listarProductos(req, res){
     
     
@@ -13,8 +16,12 @@ async function listarProductos(req, res){
                     model:Categoria,
                     atributes: ['categoria']
                 },
+                
+                {
+                    model:FichaTenica,
+                    atributes: ['nombre_ficha', 'imagen_producto_final']
+                },
             ],
-
             atributes:[
                 'id_producto',
                 'fk_categoria',
@@ -47,6 +54,7 @@ async function listarProductos(req, res){
         
     }
 }
+
 async function listarCategoria(req, res){
     try {
         const categoria = await Categoria.findAll();
@@ -56,6 +64,7 @@ async function listarCategoria(req, res){
         res.status(500).json({error:'Error al obtener produto'});
     }
 }
+
 async function listarProducto(req, res){
     try {
         const id=req.params.id;
@@ -71,32 +80,16 @@ async function crearProducto(req, res){
     try {
         const dataProducto=req.body 
 
-
-        console.log("Request Body:", req.body);
-        console.log("Request File:", req.file);
         //* Validar que se haya cargado el archivo
 
-        if(!req.file) {
-            return res.json({ message: "Error la imagen del producto es requerida" });
-        }
-         
-        console.log(dataProducto)
-        console.log(req.file)
         const producto = await Producto.create({
             id_producto:dataProducto.id_producto,
-            fk_categoria:parseInt(dataProducto.fk_categoria),
-            nombre_producto:dataProducto.nombre_producto,
-            precio:parseInt(dataProducto.precio),
-            imagen:req.file.filename,
-            cantidad:parseInt(dataProducto.cantidad),
-            estado:1
-            // id_producto:dataProducto.id_producto,
-            // fk_categoria:dataProducto.fk_categoria,
-            // nombre_producto:dataProducto.nombre_producto,
-            // precio:dataProducto.precio,
-            // imagen:req.file.filename,
-            // cantidad:dataProducto.cantidad,
-            // estado:1
+            fk_categoria:dataProducto.fk_categoria,
+            precio:dataProducto.precio,
+            cantidad:dataProducto.cantidad,
+            estado:1,
+            fk_ft:dataProducto.fk_ft,
+          
         })
 
         res.status(201).send(producto)

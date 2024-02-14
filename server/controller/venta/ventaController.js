@@ -3,6 +3,7 @@ const Venta = require("../../models/Venta");
 const DetalleVenta = require("../../models/DetalleVenta");
 const Producto = require("../../models/Producto");
 const Cliente = require("../../models/Cliente");
+const FichaTecnica = require("../../models/Ficha_Tecnica/FichaTecnica");
 
 // 
 async function listarVentas(req, res) {
@@ -37,7 +38,13 @@ async function listarVentas(req, res) {
           include: [
             {
               model: Producto,
-              attributes: ["nombre_producto"],
+              attributes: ["fk_ft"],
+              include: [
+                {
+                  model: FichaTecnica,
+                  attributes: ["nombre_ficha"],
+                },
+              ],
             },
           ],
         });
@@ -93,7 +100,13 @@ async function listarVenta(req, res) {
       include: [
         {
           model: Producto,
-          attributes: ["nombre_producto"],
+          attributes: ["fk_ft"],
+          include: [
+            {
+              model: FichaTecnica,
+              attributes: ["nombre_ficha"],
+            },
+          ],
         },
       ],
     });

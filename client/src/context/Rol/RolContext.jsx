@@ -19,6 +19,7 @@ export const useRol=()=>{
     const [listar, setListar]=useState([])//Lista todos los roles
     const [listar2, setListar2]=useState([])//Lista todos los roles
     const [listar4, setListar4]=useState([])
+    
     const [searchTerm, setSearchTerm] = useState("");
 async function cargarRol(){
        
@@ -28,8 +29,6 @@ async function cargarRol(){
         item.id_rol_x_permiso.toString().includes(searchTerm) ||
         item.rol.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase()) 
      
-       
-       
       );
         setListar(filterList) //Se le pasa los datos al setListar 
  }
@@ -307,34 +306,51 @@ const activarCliente = async (id_rol) => {
         if (result.isConfirmed) {
         
           const responde = await eliminar(id_rol)
-          setListar(listar.filter(listar=>listar.id_rol!==id_rol))
-
-        }
+          // setListar(listar.filter(listar=>listar.id_rol_x_permiso!==id_rol_x_permiso))
+          window.location.reload()
+       }
       })
     }  catch (error) {
       console.log(error)
     }
   }
 
-  const[ListarActualizar, setListarActualizar]=useState({
-    id_rol:"",
-    nombre_rol:"",
-    fecha:""
+  const[listarActualizar, setListarActualizar]=useState({
+    id_rol_x_permiso:"",
+   
+  fk_permiso: "",
+  fk_usuario: "",
+  rol:{
+    nombre_rol:""
+  },
+  permiso:{
+    nombre_permiso:""
+  },
+   
  
  })
     
- async function cargarRolActualizar(id_rol) {
+ async function cargarRolActualizar(id_rol_x_permiso) {
   try {
   
-    const response = await cargaractualizarRol(id_rol);
+    const response = await cargaractualizarRol(id_rol_x_permiso);
     const rolData=response.data
     setListarActualizar({
-      id_rol: rolData.id_rol,
-      nombre_rol:rolData.nombre_rol,
-      fecha:rolData.fecha,
+      id_rol_x_permiso:rolData.id_rol_x_permiso,
       
-   
+      fk_permiso: rolData.fk_permiso,
+      fk_usuario: rolData.fk_usuario,
+      rol: {
+        ...listarActualizar.rol, // Mantenemos los valores anteriores del objeto 'rol'
+        nombre_rol: rolData.rol.nombre_rol // Actualizamos solo el campo 'nombre_rol'
+      },
+      permiso: {
+        ...listarActualizar.permiso, // Mantenemos los valores anteriores del objeto 'rol'
+        nombre_permiso: rolData.permiso.nombre_permiso // Actualizamos solo el campo 'nombre_rol'
+      }
     });
+
+
   } catch (error) {
     console.log(error);
   }
@@ -408,7 +424,7 @@ const actualizarValidar= async(id_rol, values)=>{
 
 
     return( 
-        <RolContext.Provider value={{listar, listar2, listar4,ListarActualizar,cargarRol, showNewRoles,cargarRolxPermiso,desactivarCliente, activarCliente, crearRoles, crearRolesNuevos,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados, eliminarRol,cargarRolActualizar,actualizarValidar}}>
+        <RolContext.Provider value={{listar, listar2, listar4,listarActualizar,cargarRol, showNewRoles,cargarRolxPermiso,desactivarCliente, activarCliente, crearRoles, crearRolesNuevos,searchTerm,setSearchTerm, cargarpermiso,filtrarDesactivados, eliminarRol,cargarRolActualizar,actualizarValidar}}>
             {children}
         </RolContext.Provider>
       )

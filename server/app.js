@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cookieParser())
 
 app.use(cors())
-app.use(express.static('uploads/imagenProductos'));
+app.use(express.static('uploads/imagenFicha'));
 resApi(app)
 
 app.listen(3001, ()=>{

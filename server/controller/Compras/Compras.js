@@ -67,6 +67,13 @@ async function listarcompra(req, res) {
       where: {
         id_compra: id_compra,
     },
+    include:[
+      
+        {
+          model:Proveedor,
+          attributes:["nombre"]
+        }
+    ]
     });
 
     if (!compra) {
@@ -86,7 +93,7 @@ async function listarcompra(req, res) {
         {
           model: Insumo,
           attributes: ["nombre"],
-        },
+        }
       ],
     });
 
@@ -145,9 +152,11 @@ async function crearCompras(req, res) {
             { transaction: t }
           );
 
+          // Actualizar cantidad y precio del insumo
           await Insumo.update(
             {
               cantidad: sequelize.literal(`cantidad + ${insumo.cantidad}`),
+              precio: sequelize.literal(`((precio * cantidad) + (${insumo.precio} * ${insumo.cantidad})) / (cantidad + ${insumo.cantidad})`),
             },
             { where: { id_insumo: insumo.fk_insumo }, transaction: t }
           );
@@ -166,6 +175,7 @@ async function crearCompras(req, res) {
   }
 }
 
+
   
 
   async function listarComprasPorFechas(req, res) {
@@ -178,36 +188,119 @@ async function crearCompras(req, res) {
     }
   }
     
-  const { Op } = require("sequelize");
-
+  const { Op , fn, col} = require("sequelize");
   async function listarComprasPorFechasDia(req, res) {
     try {
-      // Obtén la fecha actual
-      const fechaActual = new Date();
-  
-      // Ajusta la fecha para obtener el rango hasta el día actual
-      const finDia = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate(), 23, 59, 59);
-  
-      // Consulta las ventas hasta el día actual sin tener en cuenta la hora
-      const totalVentas = await Compras.sum('total', {
-        where: {
-          fecha: {
-            [Op.lte]: finDia,
-          },
-        },
-      });
-  
-      res.json(totalVentas);
+        // Consulta todas las compras agrupadas por mes
+        const ventasPorMes = await Compras.findAll({
+            attributes: [
+                [fn('MONTH', col('fecha')), 'mes'],
+                [fn('SUM', col('total')), 'totalComprasMes']
+            ],
+            group: [fn('MONTH', col('fecha'))],
+        });
+
+        // Mapea los resultados para agregar los nombres de los meses y completar los faltantes
+        const ventasPorMesConNombre = agregarMesesFaltantes(ventasPorMes);
+
+        res.json(ventasPorMesConNombre);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error al obtener el total de ventas" });
+        console.error(error);
+        res.status(500).json({ error: "Error al obtener los totales de ventas por mes" });
     }
+}
+
+// Función para obtener el nombre del mes dado su número
+function obtenerNombreMes(numeroMes) {
+    const meses = [
+        "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+        "Jul", "Agos", "Sept", "Octu", "Novi", "Dici"
+    ];
+    return meses[numeroMes - 1];
+}
+
+// Función para agregar meses faltantes
+function agregarMesesFaltantes(ventasPorMes) {
+    const mesesFaltantes = [];
+    for (let i = 1; i <= 12; i++) {
+        const ventaEnMes = ventasPorMes.find(venta => venta.getDataValue('mes') === i);
+        if (ventaEnMes) {
+            mesesFaltantes.push({ mes: obtenerNombreMes(i), totalComprasMes: ventaEnMes.getDataValue('totalComprasMes') });
+        } else {
+            mesesFaltantes.push({ mes: obtenerNombreMes(i), totalComprasMes: 0 });
+        }
+    }
+    return mesesFaltantes;
+}
+
+
+
+async function listarComprasPorFechasDias(req, res) {
+  try {
+    // Obtén la fecha de inicio de la semana actual (domingo)
+    const fechaActual = new Date();
+    const primerDiaSemana = new Date(fechaActual);
+    primerDiaSemana.setDate(primerDiaSemana.getDate() - fechaActual.getDay()); // Resta los días de la semana actual
+
+    // Obtén la fecha de fin de la semana actual (sábado)
+    const ultimoDiaSemana = new Date(fechaActual);
+    ultimoDiaSemana.setDate(ultimoDiaSemana.getDate() + (6 - fechaActual.getDay())); // Agrega los días restantes hasta sábado
+
+    // Consulta las compras dentro del rango de la semana actual
+    const ventasPorDiaSemana = await Compras.findAll({
+      attributes: [
+        [fn('DAYOFWEEK', col('fecha')), 'diaSemana'],
+        [fn('SUM', col('total')), 'totalComprasDia']
+      ],
+      where: {
+        fecha: {
+          [Op.between]: [primerDiaSemana, ultimoDiaSemana],
+        },
+      },
+      group: [fn('DAYOFWEEK', col('fecha'))],
+    });
+
+    // Mapea los resultados para agregar los nombres de los días de la semana y completar los faltantes
+    const ventasPorDiaSemanaConNombre = agregarDiasFaltantess(ventasPorDiaSemana);
+
+    res.json(ventasPorDiaSemanaConNombre);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener los totales de ventas por día de la semana" });
   }
+}
+
+
+// Función para obtener el nombre del día de la semana dado su número
+function obtenerNombreDiaSemanas(numeroDia) {
+  const diasSemana = [
+      "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"
+  ];
+  return diasSemana[numeroDia - 1];
+}
+
+// Función para agregar días de la semana faltantes
+function agregarDiasFaltantess(ventasPorDiaSemana) {
+  const diasFaltantes = [];
+  for (let i = 1; i <= 7; i++) {
+      const ventaEnDia = ventasPorDiaSemana.find(venta => venta.getDataValue('diaSemana') === i);
+      if (ventaEnDia) {
+          diasFaltantes.push({ diaSemana: obtenerNombreDiaSemanas(i), totalComprasDia: ventaEnDia.getDataValue('totalComprasDia') });
+      } else {
+          diasFaltantes.push({ diaSemana: obtenerNombreDiaSemanas(i), totalComprasDia: 0 });
+      }
+  }
+  return diasFaltantes;
+}
+
+
+
 
 module.exports={
     listarCompras,
     crearCompras,
     listarcompra,
     listarComprasPorFechas,
-    listarComprasPorFechasDia
+    listarComprasPorFechasDia,
+    listarComprasPorFechasDias
 }

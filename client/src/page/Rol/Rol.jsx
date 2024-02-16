@@ -81,7 +81,19 @@ const handleCloseInfoModal = () => {
   setSelectedRol(null);
   setShowInfoModal(false);
 };
-
+const handleEliminarUsuario = (idrol, nombre_rol) => {
+  // Validar si el usuario tiene el rol de administrador
+  if (nombre_rol === 'Administrador') {
+    // Puedes mostrar un mensaje o ejecutar alguna lógica para indicar que no se puede eliminar un administrador
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No puedes eliminar al usuario con el rol de administrador.',
+    });    } else {
+    // Llamar a la función de eliminación solo si no es un administrador
+    eliminarRol(idrol);
+  }
+};
 
     return(
       <>
@@ -214,7 +226,7 @@ const handleCloseInfoModal = () => {
 
                         <button
                       className="btn btn-danger"
-                      onClick={() => eliminarRol(item.rol?.id_rol)}
+                      onClick={() => handleEliminarUsuario(item.rol?.id_rol)}
                       disabled={!item.rol?.estado}
                     >
                       <svg
@@ -270,8 +282,10 @@ const handleCloseInfoModal = () => {
                         e.preventDefault();
                         if (params.row.rol?.estado) {
                           desactivarCliente(params.row.rol?.id_rol);
+                          window.location.reload()
                         } else {
                           activarCliente(params.row.rol?.id_rol);
+                          window.location.reload()
                         }
                       }}
                       className="switch-button__checkbox"
@@ -348,7 +362,7 @@ const handleCloseInfoModal = () => {
           ></path>
         </svg>
       </button>
-      {params.row.tieneVentas ? (
+      {params.row.nombre_rol === 'Administrador' || params.row.tieneVentas ? (
         // Si el cliente tiene ventas, el botón de eliminar está deshabilitado
             <button
               className="btn btn-danger"
@@ -374,7 +388,7 @@ const handleCloseInfoModal = () => {
 
       <button
         className="btn btn-danger"
-        onClick={() => eliminarRol(params.row.id_rol)}
+        onClick={() => handleEliminarUsuario(params.row.id_rol)}
         disabled={!params.row.estado}
       >
         <svg

@@ -10,6 +10,7 @@ import { Modal, Button } from 'react-bootstrap';
 import React, { useState } from 'react';
 import CreateProductos from './CreateProductos'
 import ReactDOM from 'react-dom';
+import UpdateProducto from './UpdateProducto'
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat('es-AR', {
@@ -29,6 +30,7 @@ function listarProductos() {
   const isSmallScreen = useMediaQuery('(max-width:1200px)');
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedClienteId, setSelectedClienteId] = useState(null);
 
 
 const handleOpenVentaModal = () => {
@@ -42,6 +44,17 @@ const handleCloseVentaModal = () => {
   setOpenCreateModal(false);
   ShowProducto()
 
+};
+
+// Modal de Actualizar
+const handleOpenUpdateModal = (id_producto) => {
+  setSelectedClienteId(id_producto);
+  setOpenUpdateModal(true);
+};
+
+const handleCloseUpdateModal = () => {
+  setOpenUpdateModal(false);
+  ShowProducto()
 };
 
   useEffect(() => {
@@ -298,7 +311,7 @@ const handleCloseVentaModal = () => {
                             <div>
                               <button
                                 className="btn btn-outline-secondary me-1"
-                                onClick={() => navigate(`/editP/${params.row.id_producto}`)}
+                                onClick={() => handleOpenUpdateModal(params.row.id_producto)}
                                 disabled={!params.row.estado}
                                 style={{
                                   backgroundColor: '#0d6efd',
@@ -379,10 +392,11 @@ const handleCloseVentaModal = () => {
                       initialState={{
                         pagination: {
                           paginationModel: {
-                            pageSize: 8,
+                            pageSize: 5,
                           },
                         },
                       }}
+                      pageSizeOptions={[5]} 
                       getRowClassName={(params) => {
                         if (!params.row.estado) {
                           return 'cliente-desactivado';
@@ -429,7 +443,42 @@ const handleCloseVentaModal = () => {
         </>,
         document.body
       )}
-
+ {openUpdateModal && ReactDOM.createPortal(
+  <>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1049,
+      }}
+      onClick={handleCloseUpdateModal}
+    />
+    <div
+      className="modal-update"
+      style={{
+        maxHeight: '0vh',
+        position: 'fixed',
+        top: '30%',
+        left: '42%',
+        transform: 'translateX(-50%)',
+        zIndex: 1050,
+        maxHeight: '25vh',
+        overflowY: 'visible',
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ width: '150%', height: '180%' }}>
+        <UpdateProducto handleCloseUpdateModal={handleCloseUpdateModal} productoId={selectedClienteId}/>
+      </div>
+    </div>
+  </>,
+  document.body
+)}
 
 
 

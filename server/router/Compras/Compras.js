@@ -10,4 +10,7 @@ Router.get("/compradia", ComprasController.listarComprasPorFechas)
 
 Router.get("/compradeldia", ComprasController.listarComprasPorFechasDia)
 
+
+Router.get("/comprasemana", ComprasController.listarComprasPorFechasDias)
+
 module.exports=Router

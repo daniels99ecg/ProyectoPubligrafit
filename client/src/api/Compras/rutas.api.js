@@ -20,3 +20,10 @@ export const getListarCompraDia = async () => {
     return await axios.get('http://localhost:3001/compras/compradeldia') 
     
   };
+
+
+
+  export const getListarCompraseman = async () => {
+    return await axios.get('http://localhost:3001/compras/comprasemana') 
+    
+  };

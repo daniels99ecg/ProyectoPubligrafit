@@ -2,9 +2,8 @@ const Producto=require("../models/Producto")
 const Categoria = require("../models/Categoria");
 const { request } = require("express");
 const DetalleVenta = require("../models/DetalleVenta");
-
-
 const FichaTenica = require("../models/Ficha_Tecnica/FichaTecnica");
+
 
 async function listarProductos(req, res){
     
@@ -68,7 +67,20 @@ async function listarCategoria(req, res){
 async function listarProducto(req, res){
     try {
         const id=req.params.id;
-        const producto = await Producto.findByPk(id);
+        const producto = await Producto.findOne({
+            where:{id_producto:id},
+            include:[
+                {
+                    model:Categoria,
+                    atributes: ['categoria']
+                },
+                
+                {
+                    model:FichaTenica,
+                    atributes: ['nombre_ficha', 'imagen_producto_final']
+                },
+            ],
+        });
         res.json(producto);
     } catch (error) {
         console.error(error);

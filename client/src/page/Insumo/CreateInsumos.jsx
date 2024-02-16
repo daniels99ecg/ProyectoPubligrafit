@@ -23,7 +23,7 @@ function CreateInsumo() {
               <div className="card-header">
                         <h1>Registrar Insumo</h1>
                       </div>
-                <br />
+                
                 <div className='card w-75 p-3 mx-auto mt-5'>
                   <Formik
                     initialValues={{

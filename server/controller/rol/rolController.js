@@ -90,21 +90,22 @@ async function listarRol(req, res) {
 
 
 
-    async function listarporid(req, res){
-      try {
-        const userId = req.params.id_rol;
-        const user = await Rol.findByPk(userId);
+    // async function listarporid(req, res){
+    //   try {
+    //     const userId = req.params.id_rol;
+    //     const user = await Rol.findByPk(userId);
   
-        if (user) {
-          res.json(user);
-        } else {
-          res.status(404).json({ message: 'Usuario no encontrado' });
-        }
-      } catch (error) {
-        res.status(500).json({ message: 'Error en el servidor' });
-      }
-    }
-    async function listarporid(req, res){
+    //     if (user) {
+    //       res.json(user);
+    //     } else {
+    //       res.status(404).json({ message: 'Usuario no encontrado' });
+    //     }
+    //   } catch (error) {
+    //     res.status(500).json({ message: 'Error en el servidor' });
+    //   }
+    // }
+
+async function listarporid(req, res){
       try {
         const id_rol_x_permiso = req.params.id_rol_x_permiso;
         const rolXPermiso = await RolXPermiso.findOne({
@@ -199,9 +200,6 @@ async function listarRol(req, res) {
     // }
     
     
-
-
-
 
 
     async function listarRolxPermiso(req, res) {
@@ -403,8 +401,9 @@ async function eliminar(req, res) {
   try {
     const id_rol = req.params.id_rol;
     const response = await RolXPermiso.destroy({ where: { fk_rol: id_rol } });
+    const responses = await Rol.destroy({ where: { id_rol: id_rol } });
 
-    if (response === 1) {
+    if (response === 1 || responses ===1) {
       // Si se eliminó correctamente, response será 1.
       res.status(200).json({ message: 'Usuario eliminado con éxito' });
     } else {

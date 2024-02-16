@@ -296,7 +296,7 @@ const activarCliente = async (id_rol) => {
     try {
       Swal.fire({
         title: 'Eliminar Registro?',
-        text: "You won't be able to revert this!",
+        text: "¡No podrás revertir esto!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',

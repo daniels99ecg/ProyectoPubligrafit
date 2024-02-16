@@ -1,17 +1,25 @@
 import React from 'react';
 import Nav from '../../components/nav';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { PieChart } from '@mui/x-charts/PieChart';
+import { PieChart} from '@mui/x-charts/PieChart';
 import { useEffect, useState } from 'react';
 import { getListarVentasDia,getListarVentasdelDia } from '../../api/Rutas.Venta.api';
-import { getListarCompraDia,getListarCompradelDia } from '../../api/Compras/rutas.api';
+import { getListarCompraDia,getListarCompradelDia,getListarCompraseman } from '../../api/Compras/rutas.api';
 import Typography from '@mui/material/Typography';
+
 
 function Dashboard() {
   const [totalVentas, setTotalVentas] = useState(0);
   const [totalCompras, setTotalCompras] = useState(0);
   const [totalVentasDia, setTotalVentasDia] = useState(0);
-  const [totalComprasDia, setTotalComprasDia] = useState(0);
+  const [totalComprasDia, setTotalComprasDia] = useState([{
+    mes:"",
+    totalComprasMes:""
+  }]);
+  const [totalComprasDiasemana, setTotalComprasDiasemas] = useState([{
+    diaSemana:"",
+    totalComprasDia:""
+  }]);
 
   useEffect(() => {
     const fetchVentasPorFechas = async () => {
@@ -49,12 +57,23 @@ function Dashboard() {
       }
     };
 
+    const fetchComprasPorFechaSemana = async () => {
+      try {
+        const response = await getListarCompraseman();
+        setTotalComprasDiasemas(response.data);
+      } catch (error) {
+        console.error('Error al obtener datos de ventas:', error);
+      }
+    };
+
     fetchVentasPorFechas();
     fetchComprasPorFechas();
     fetchVentasPorFechasDia()
     fetchComprasPorFechasDia()
+    fetchComprasPorFechaSemana()
   }, []);
-  
+  const ventasPercentage = totalVentas / (totalVentas + totalCompras) * 100;
+  const comprasPercentage = totalCompras / (totalVentas + totalCompras) * 100;
   return (
     <>
       <Nav />
@@ -96,35 +115,59 @@ function Dashboard() {
                   <PieChart
                     series={[
                       {
+                        arcLabel: (item) => `${item.label}`,
                         data: [
-                          { id: 0, value: totalVentas, label: 'Ventas' },
-                          { id: 1, value: totalCompras, label: 'Compras' },
+                          { id: 0, value: totalVentas, label: `Ventas ${ventasPercentage.toFixed(1)}%` },
+                          { id: 1, value: totalCompras, label: `Compras ${comprasPercentage.toFixed(1)}%` },
                         ],
                       },
                     ]}
-                    width={400}
-                    height={200}
+                    width={350}
+                    height={300}
+
                   />
+
                 </div>
               </div>
 
               <div className='col-md-6'>
                 <div className='card text-center d-flex align-items-center'>
-                  <Typography>Total Ventas y Compras por dia</Typography>
-                  <PieChart
+                  <Typography>Total Compras por Mes</Typography>
+                  <BarChart
+                    xAxis={[{ scaleType: 'band', data: totalComprasDia.map(data => data.mes) }]}
+
                     series={[
                       {
-                        data: [
-                          { id: 0, value: totalVentasDia, label: 'Ventas' },
-                          { id: 1, value: totalComprasDia, label: 'Compras' },
-                        ],
+                        data: totalComprasDia.map(data => data.totalComprasMes),
                       },
                     ]}
-                    width={400}
+                    margin={{  left: 90, }}
+                    width={620}
+                    height={300}
+                  />
+                </div>
+              </div>
+
+
+              <div className='col-md-6'>
+              <br />
+                <div className='card text-center d-flex align-items-center'>
+                  <Typography>Total Ventas y Compras por dias</Typography>
+                  <BarChart
+                    xAxis={[{ scaleType: 'band', data: totalComprasDiasemana.map(data => data.diaSemana) }]}
+
+                    series={[
+                      {
+                        data: totalComprasDiasemana.map(data => data.totalComprasDia),
+                    
+                      },
+                    ]}
+                    width={600}
                     height={200}
                   />
                 </div>
               </div>
+
             </div>
             
           </div>

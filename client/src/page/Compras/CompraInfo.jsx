@@ -80,7 +80,7 @@ const CompraInfo = ({ compra, handleCloseModal, open }) => {
           <h3 style={{ color: 'black'  }}>Información compra</h3>
             <hr />
             <p>
-              <strong>Cliente:</strong> {compra.proveedor} 
+              <strong>Cliente:</strong> {compra.proveedore.nombre} 
             </p>
           
             <p>

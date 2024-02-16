@@ -16,10 +16,7 @@ import Profile from './page/Perfil/perfil';
 import ShowProducto from './page/Producto/Productos'
 import ShowFichasTecnicas from './page/FichaTecnica/FichasTecnicas'
 import ShowInsumos from './page/Insumo/Insumos'
-import CreateProductos from './page/Producto/CreateProductos'
-import CreateFichasTecnicas from './page/FichaTecnica/FichaCreatePruebas'
-import UpdateInsumo from './page/Insumo/UpdateInsumo'
-import UpdateProducto from './page/Producto/UpdateProducto'
+
 import UpdateFichaTecnica from './page/FichaTecnica/UpdateFichaTecnica'
 import {InsumoContextProvider} from './context/Insumos/InsumoContext'
 import { ProductoContextProvider } from './context/Productos/ProductoContext'
@@ -42,14 +39,13 @@ function App() {
 
   return (
     <>
-     <ProveedorContextProvider>
+    <ProveedorContextProvider>
     <VentaContextProvider>
-
-        <CompraContextProvider>
-      <InsumoContextProvider>
-     <ProductoContextProvider>
-      <FichaTecnicaContextProvider>
-<ClienteContextProvider>
+    <CompraContextProvider>
+    <InsumoContextProvider>
+    <ProductoContextProvider>
+    <FichaTecnicaContextProvider>
+    <ClienteContextProvider>
     <UserContextProvider>
      <RolContextProvider>
      <Routes>
@@ -75,28 +71,37 @@ function App() {
 
       {/* Cliente */}
 
-      <Route path='/cliente' element={<ShowCliente/>}/>
-      <Route path='/venta' element={<ShowVenta/>}/>
+      <Route path='/cliente' element={<ProtectedRoute element={<ShowCliente />}/>}/>
+
+      {/*Venta*/}
+
+      <Route path='/venta' element={<ProtectedRoute element={<ShowVenta />}/>}/>
+
+      {/*Producto*/}
 
       <Route path='/producto' element={<ProtectedRoute element={<ShowProducto />}/>} />
+
+      {/*Ficha Tecnica*/}
+
       <Route path='/fichaTecnica' element={<ProtectedRoute element={<ShowFichasTecnicas />}/>} />
+
+      {/*Insumo*/}
+
       <Route path='/insumo' element={<ProtectedRoute element={<ShowInsumos />}/>} />
-      <Route path='/producto/create' element={<ProtectedRoute element={<CreateProductos />}/>} />
-      <Route path='/fichaTecnica/create' element={<ProtectedRoute element={<CreateFichasTecnicas />}/>} />
+
       <Route path='/editF/:id_ft' element={<ProtectedRoute element={<UpdateFichaTecnica />}/>} />
-      <Route path='/editI/:id_insumo' element={<ProtectedRoute element={<UpdateInsumo />}/>} />
-      <Route path='/editP/:id_producto' element={<ProtectedRoute element={<UpdateProducto />}/>} />
+
+      {/*Compras*/}
 
       <Route path='/compras' element={<ProtectedRoute element={<Compras />}/>} />
   
       <Route path='*' element={<NotFound />} />
 
-     </Routes>
-     </RolContextProvider> 
-     </UserContextProvider>
-     </ClienteContextProvider>
-     
-      </FichaTecnicaContextProvider>
+    </Routes>
+    </RolContextProvider> 
+    </UserContextProvider>
+    </ClienteContextProvider>
+    </FichaTecnicaContextProvider>
     </ProductoContextProvider>
     </InsumoContextProvider>
     </CompraContextProvider>

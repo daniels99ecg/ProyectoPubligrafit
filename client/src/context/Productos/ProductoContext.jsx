@@ -192,8 +192,8 @@ const validacionProducto = async (values)=>{
     const [listarProducto, setListarProducto] = useState(
       {
           id_producto: '',
-          fk_categoria: '',
-          nombre_producto: '',
+          categoria:{categoria:""},
+          fichas_tecnica: {nombre_ficha:""},
           precio: '',
           imagen: '',
           cantidad: '',
@@ -207,9 +207,18 @@ const validacionProducto = async (values)=>{
             const response = productoUpdate.data
 
             setListarProducto({
+              
                 id_producto: response.id_producto,
-                fk_categoria: response.fk_categoria,
-                nombre_producto: response.nombre_producto,
+                categoria:{
+                  ...listarProducto.categoria,
+                  categoria:response.categoria.categoria
+                },
+                fichas_tecnica:{
+                  ...listarProducto.fichas_tecnica,
+                  nombre_ficha:response.fichas_tecnica.nombre_ficha,
+                 
+
+                },
                 precio: response.precio,
                 imagen: response.imagen,
                 cantidad: response.cantidad

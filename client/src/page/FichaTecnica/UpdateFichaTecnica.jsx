@@ -7,6 +7,7 @@ import { useFichaTecnica } from "../../context/FichasTecnicas/FichaTecnicaContex
 import TextField from '@mui/material/TextField';
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
+import React from 'react';
 
 
 function primeraMayuscula(input) {

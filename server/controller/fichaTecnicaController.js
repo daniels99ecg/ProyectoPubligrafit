@@ -76,7 +76,7 @@ async function crearFichaTecnica(req, res) {
         for (const insumo of insumos) {
           const insumoActual = await Insumo.findByPk(insumo.fk_insumo);
   
-          if (!insumoActual || insumoActual.cantidad < insumo.cantidad) {
+          if (!insumoActual || insumoActual.cantidad < insumo.cantidad || insumoActual.cantidad === 0) {
             fichaValida = false;
             break;
           }

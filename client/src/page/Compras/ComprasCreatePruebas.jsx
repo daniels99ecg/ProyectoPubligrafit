@@ -17,7 +17,7 @@ import { useProveedor } from '../../context/Proveedor/ProveedorContext';
 
 
 
-function ComprasCreatePruebas({ handleCloseVentaModal }) {
+function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
   const { listar, ShowInsumos } = useInsumo();
   const { Listar, showClientes } = useCliente();
   const {listarP,showProveedor}=useProveedor()
@@ -35,6 +35,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = tableData.slice(startIndex, endIndex);
+  const [precio, setPrecio] = useState(0);
 
   const ventaSchema = Yup.object().shape({
     // id_cliente: Yup.object().shape({
@@ -76,6 +77,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
     const { cantidad, precio } = row;
     const subtotal = isNaN(cantidad) ? 0 : cantidad * precio;
     return { ...row, subtotal: subtotal };
+    
   };
 
   const findProductoEnStock = (productoId) => {
@@ -169,6 +171,11 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
     }
   };
 
+  const handleCantidadChange = (e) => {
+    const newValue = e.target.value;
+    setPrecio(newValue);
+  };
+
   function formatearValores(global) {
     const [int, decimal] = parseFloat(global).toFixed(2).split(".");
     const formateoInt = int.replace(/\d(?=(\d{3})+$)/g, "$&.");
@@ -223,7 +230,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
 
   useEffect(() => {
     const sumaSubtotales = tableData.reduce(
-      (total, insumo) => total + insumo.subtotal,
+      (total, insumo) => total + insumo.subtotal+(parseInt(precio) || 0),
       0
     );
     setSubtotalTotal(sumaSubtotales);
@@ -259,7 +266,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
                     insumo: tableData.map((item) => ({
                       fk_insumo: item.fk_insumo,
                       cantidad: item.cantidad,
-                      precio: item.precio,
+                      precio: precio,
                       subtotal: item.subtotal,
                     })),
                   }}
@@ -502,11 +509,19 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
                                           </thead>
                                           <tbody className="small text-left fs-6">
                                             {currentItems.map((row, index) => (
+                                              
                                               <tr key={index}>
                                                 <td>{row.nombre}</td>
                                                 <td>
-                                                  {formatearPrecios(row.precio)}
-                                                </td>
+                                                  {/* {formatearPrecios(row.precio)} */}
+                                                  
+                                                  <input
+                                                      type="text"
+                                                      style={{ width: "30%" }}
+                                                      value={precio}
+                                                      onChange={handleCantidadChange}
+                                                    /> 
+                                                    </td>
                                                 <td>
                                                   {row.cantidad === 1
                                                     ? `${row.cantidad} Und`
@@ -709,6 +724,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal }) {
   value={listarP.find((proveedor) => proveedor.id_proveedores === values.fk_proveedor) || null}
   sx={{ width: '100%' }}
   renderInput={(params) => <TextField {...params} label="Proveedor" sx={{ width: '100%' }}/>}
+  freeSolo
 />
   {/* <ErrorMessage
     name="id_cliente.fk_id_cliente"

@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Field, Form, Formik } from 'formik'
-import Nav from '../../components/nav';
 import { useProducto } from "../../context/Productos/ProductoContext"
 import TextField from '@mui/material/TextField';
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 import React from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
+import { useFichaTecnica } from '../../context/FichasTecnicas/FichaTecnicaContext';
 
 
 
@@ -29,23 +30,25 @@ function letraRepetida(cadena) {
   return false; // No encuentra más de dos veces la misma letra válida
 }
 
-function UpdateProducto() {
+function UpdateProducto({productoId }) {
 
   const params = useParams()
   const navigate = useNavigate()
-  const { productoActualizar, listarProducto, validarProductoActualizar } = useProducto()
+  const { productoActualizar, listarProducto, validarProductoActualizar,cargarCategoria, Listar } = useProducto()
+  const{listar,ShowFichasTecnicas}=useFichaTecnica()
 
 
   useEffect(() => {
 
-    productoActualizar(params.id_producto)
-
-  }, [params.id_producto])
+    productoActualizar(productoId)
+    cargarCategoria()
+    ShowFichasTecnicas()
+  }, [productoId])
 
   return (
 
     <>
-      <Nav />
+      
 
 
       <div className='dashboard-app'>
@@ -84,13 +87,6 @@ function UpdateProducto() {
                       } else if (!/^[0-9]+$/.test(values.precio)) {
                         errors.precio = 'Este campo solo debe contener numeros';
                       }
-                    console.log(values.imagen.type)
-                    // if (!values.imagen) {
-                    //   errors.imagen = 'Este campo es requerido';
-                    // }else if(['image/png', 'image/jpeg', 'image/jpg'].includes(values.imagen.type)){errors.imagen = 'Este campo solo debe contener archivos';}
-    //                 } else if (/^[a-zA-Z]+\.(jpg|jpeg|png|gif|bmp|svg|webp)$/.test(values.imagen)) {
-    //                   errors.imagen = 'Este campo solo debe contener archivos';
-    //                 }
                       if (!values.cantidad) {
                         errors.cantidad = 'Este campo es requerido';
 
@@ -103,7 +99,7 @@ function UpdateProducto() {
                     }
                     onSubmit={async (values) => {
                       console.log(values)
-                      validarProductoActualizar(params.id_producto, values)
+                      validarProductoActualizar(productoId, values)
                     }
 
                     }
@@ -111,41 +107,19 @@ function UpdateProducto() {
                     {
                       ({ handleChange, handleSubmit, setFieldValue ,values, errors }) => (
                         <Form onSubmit={handleSubmit} className='row g-3'>
-                          <div className="col-md-6">
+                         
                             <label htmlFor="id_producto"></label>
-                            <Field
-                              type="text"
-                              name='id_producto'
-                              onChange={handleChange}
-                              label='Id'
-                              value={values.id_producto}
-                              as={TextField}
-                              className={` ${values.id_producto && /^[0-9]+$/.test(values.id_producto) ? 'is-valid' : 'is-invalid'
-                                }`}
-                              InputProps={{
-                                endAdornment: (
-                                  <React.Fragment>
-                                    {values.id_producto && /^[0-9]+$/.test(values.id_producto) ? (
-                                      <CheckIcon style={{ color: 'green' }} />
-                                    ) : (
-                                      <ErrorIcon style={{ color: 'red' }} />
-                                    )}
-                                  </React.Fragment>
-                                ),
-                              }}
-                              sx={{ width: '100%' }}
-                            />
-                            {errors.id_producto && <div className='invalid-feedback'>{errors.id_producto}</div>}
-                          </div>
+                            <input type="hidden" name='id_producto' value={values.id_producto}/>
+                          
 
                           <div className="col-md-6">
-                            <label htmlFor="fk_categoria"></label>
-                            <Field
+                          {/*  <label htmlFor="fk_categoria"></label>
+                             <Field
                               type="text"
                               name='fk_categoria'
                               onChange={handleChange}
                               label='Categoria'
-                              value={values.fk_categoria}
+                              value={values.categoria.categoria}
                               as={TextField}
                               className={` ${values.fk_categoria && /^[0-9]+$/.test(values.fk_categoria) ? 'is-valid' : 'is-invalid'
                                 }`}
@@ -161,18 +135,30 @@ function UpdateProducto() {
                                 ),
                               }}
                               sx={{ width: '100%' }}
+                            /> */}
+                               <Autocomplete 
+                              disablePortal
+                              id="fixed-tags-demo"
+                              options={Listar}  // Filtrar roles con estado true
+                              getOptionLabel={(option) => option.categoria}
+                              onChange={(event, newValue) => {
+                                handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : '' } });
+                              }}
+                              value={Listar && values && Listar.find((categoria) => categoria.categoria.id_categoria === values.fk_categoria) || null}
+                              sx={{ width: '100%' }}
+                              renderInput={(params) => <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>}
                             />
                             {errors.fk_categoria && <div className='invalid-feedback'>{errors.fk_categoria}</div>}
                           </div>
 
                           <div className="col-md-6">
-                            <label htmlFor="nombre_producto"></label>
-                            <Field
+                           {/* <label htmlFor="nombre_producto"></label>
+                             <Field
                               type="text"
                               name='nombre_producto'
                               onChange={handleChange}
                               label='Nombre'
-                              value={values.nombre_producto}
+                              value={values.fichas_tecnica.nombre_ficha}
                               as={TextField}
                               className={` ${values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
                                 }`}
@@ -188,7 +174,21 @@ function UpdateProducto() {
                                 ),
                               }}
                               sx={{ width: '100%' }}
-                            />
+                            />  */}
+                            <Autocomplete 
+  disablePortal
+  id="fixed-tags-demo"
+  options={listar.filter((fichatecnica) => fichatecnica.estado)}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.nombre_ficha}
+  onChange={(event, newValue) => {
+    handleChange({ target: { name: 'fk_ft', value: newValue ? newValue.id_ft : '' } });
+  }}
+  //value={listar.find((fichatecnica) => fichatecnica.fichas_tecnica.id_ft === values.fk_ft) || null}
+   value={listar && values && listar.find((fichas_tecnica) => fichas_tecnica.fichas_tecnica === values.fk_ft) || null}
+
+  sx={{ width: '100%' }}
+  renderInput={(params) => <TextField {...params} label="Nombre" sx={{ width: '100%' }}/>}
+/>
                             {errors.nombre_producto && <div className='invalid-feedback'>{errors.nombre_producto}</div>}
                           </div>
 
@@ -219,31 +219,6 @@ function UpdateProducto() {
                             {errors.precio && <div className='invalid-feedback'>{errors.precio}</div>}
                           </div>
 
-
-                          <div className="col-md-6">
-                          <input 
-                            type="file" 
-                            name='imagen' 
-                            onChange={(event) => setFieldValue('imagen', event.currentTarget.files[0])} 
-                            label ='Imagen' 
-                            sx={{ width: '100%' }}
-                            className={` ${
-                              ['image/png', 'image/jpeg', 'image/jpg'].includes(values.imagen.type)? 'is-valid' : 'is-invalid'
-                            } form-control form-control-lg`}
-                            InputProps={{
-                              endAdornment: (
-                                <React.Fragment>
-                                  {['image/png', 'image/jpeg', 'image/jpg'].includes(values.imagen.type) ? (
-                                    <CheckIcon style={{ color: 'green' }} />
-                                  ) : (
-                                    <ErrorIcon style={{ color: 'red' }} />
-                                  )}
-                                </React.Fragment>
-                              ),
-                            }}
-                          />
-                          {errors.imagen && <div className='invalid-feedback'>{errors.imagen}</div>}
-                          </div>
 
                           <div className="col-md-6">
                             <label htmlFor="cantidad"></label>

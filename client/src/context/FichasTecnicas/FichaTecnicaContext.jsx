@@ -24,9 +24,8 @@ export const FichaTecnicaContextProvider = ({children})=>{
     const filterList = response.data.filter((item) => 
 
         item.id_ft.toString().includes(searchTerm) ||
-        item.cantidad.toString().includes(searchTerm) ||
-        item.costo_insumo.toString().includes(searchTerm) ||
-        item.detalle.toLowerCase().includes(searchTerm.toLowerCase()) 
+         item.costo_final_producto.toString().includes(searchTerm) ||
+        item.nombre_ficha.toLowerCase().includes(searchTerm.toLowerCase()) 
        
       );
       setListar(filterList);
@@ -179,7 +178,7 @@ const validacionFichaTecnica = async (values)=>{
       try {
         Swal.fire({
           title: 'Eliminar Registro?',
-          text: "You won't be able to revert this!",
+          text: "¡No podrás revertir esto!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',

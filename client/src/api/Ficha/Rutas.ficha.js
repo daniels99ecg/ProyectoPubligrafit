@@ -1,12 +1,18 @@
 import axios from 'axios'
 
+export const postCreateFichaTecnica = async (taks) => {
+    try {
+        const response = await axios.post('http://localhost:3001/fichaTecnica/create', taks, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error; // Lanza el error nuevamente para ser capturado donde se llame a esta función
+    }
+};
 
-export const  postCreateFichaTecnica=async (taks)=>{
-    return await axios.post('http://localhost:3001/fichaTecnica/create',taks,{
-    headers:{'Content-Type':'multipart/form-data',
-    },
-})
-}
 export const  getListarFichasTecnicas=async ()=>{
     return await axios.get('http://localhost:3001/fichaTecnica')
 }

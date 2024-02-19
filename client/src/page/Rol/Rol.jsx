@@ -265,7 +265,7 @@ const handleEliminarUsuario = (idrol, nombre_rol) => {
               ...item,
             }))}
             columns={[
-              { field: 'id', headerName: 'ID', headerClassName: 'encabezado', flex: 1 },
+              { field: 'id_rol', headerName: 'ID', headerClassName: 'encabezado', flex: 1 },
               { field: 'nombre_rol', headerName: 'Rol', headerClassName: 'encabezado', flex: 1 },
               {
                 field: 'estado',
@@ -334,7 +334,7 @@ const handleEliminarUsuario = (idrol, nombre_rol) => {
     <div className="d-flex">
       <button
         className="btn btn-outline-secondary me-1"
-        onClick={() =>{     handleOpenUpdateModal(params.row.id);
+        onClick={() =>{     handleOpenUpdateModal(params.row.id_rol);
 
       }}
         disabled={!params.row.estado}

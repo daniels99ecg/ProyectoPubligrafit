@@ -12,12 +12,14 @@ import { useParams, useNavigate} from 'react-router-dom'
 function RolCreate({RolId}) {
     const params=useParams()
 
-  const { listarActualizar,cargarRolActualizar,actualizarValidar } = useRol();
+  const { listar,listarActualizar,cargarRolActualizar,cargarpermiso } = useRol();
 
   useEffect(() => {
     cargarRolActualizar(RolId)
     console.log(listarActualizar)
+    cargarpermiso()
   }, [RolId]);
+  
   const obtenerFechaActual = () => {
     const hoy = new Date();
     const anio = hoy.getFullYear();
@@ -30,6 +32,34 @@ function RolCreate({RolId}) {
 
     return `${anio}-${mes}-${dia}`;
   };
+
+  function getUniqueUserNames(detalles) {
+    const userNamesSet = new Set();
+
+    detalles.forEach((detalle) => {
+      userNamesSet.add(detalle.usuario.nombres);
+    });
+
+    // Convertir el conjunto a un array y tomar el primer nombre
+    return [...userNamesSet][0] || ''; // Si no hay nombres, devuelve una cadena vacía
+  }
+  
+
+  function getAllPermisos(detalles) {
+    let permisosString = '';
+  
+    detalles.forEach((detalle, index) => {
+      if (index > 0) {
+        permisosString += ', '; // Agregar una coma y un espacio antes del nombre del permiso, excepto para el primer permiso
+      }
+      permisosString += detalle.permiso.nombre_permiso;
+    });
+  
+    return permisosString;
+  }
+
+ 
+  
   return (
     <>
      
@@ -70,14 +100,14 @@ function RolCreate({RolId}) {
                   >
                     {({ handleChange, handleSubmit, setFieldValue, values, errors, isValid }) => (
                       <Form onSubmit={handleSubmit} className='row g-3' id='pruebas'>
-                 <input  type='hidden' name='rol' onChange={handleChange} value={values.id_rol_x_permiso}  className="form-control" disabled/>
+                 <input  type='hidden' name='rol' onChange={handleChange} value={values.id_rol}  className="form-control" disabled/>
 
                         <div className='col-md-6'>
                           <Field
                             type='text'
                             name='nombre_rol'
                             label='Nombre Rol'
-                            value={values.rol.nombre_rol}
+                            value={values.nombre_rol}
                             as={TextField}
                             onChange={handleChange}
                             className={` ${
@@ -99,18 +129,38 @@ function RolCreate({RolId}) {
                           {errors.nombre_rol && <div className='invalid-feedback'>{errors.nombre_rol}</div>}
                         </div>
                         <div className='col-md-6'>
-                          <Field
+                        <Field
                             type='text'
                             name='fecha'
                             as={TextField}
                             className='form-control'
                             placeholder='Fecha'
                             onChange={handleChange}
-                            value={values.permiso.nombre_permiso}
-                           
+                            value={getUniqueUserNames(values.detalles)} // Obtener nombres de usuario únicos
                             fullWidth
                           />
+
                         </div>
+                    
+                          <div className='col-md-12'>
+                          <Autocomplete
+  multiple
+  id='permisos'
+  name='permisos'
+  options={listar || []} // Aquí proporcionas la lista de permisos
+  getOptionLabel={(option) => option.nombre_permiso} // Especificas qué propiedad de cada permiso usar como etiqueta
+  onChange={(event, newValue) => {
+    handleChange({ target: { name: 'fk_permiso', value: newValue ? newValue.id_rol_x_permiso : '' } });
+  }}
+  value={values.detalles.map(detalle => ({ nombre_permiso: detalle.permiso.nombre_permiso }))} // Mapear detalles para obtener una lista de objetos con el nombre del permiso
+
+  renderInput={(params) => (
+    <TextField {...params} label='Permisos' variant='outlined' />
+  )}
+/> 
+
+
+                        </div>  
 
                         <div className='col-auto'>
                           <button className='btn btn-primary' type='submit' disabled={!isValid}>

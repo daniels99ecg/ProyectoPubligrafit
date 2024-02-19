@@ -5,9 +5,7 @@ const DetalleVenta = require("../models/DetalleVenta");
 const FichaTenica = require("../models/Ficha_Tecnica/FichaTecnica");
 
 
-async function listarProductos(req, res){
-    
-    
+async function listarProductos(req, res){ 
     try {
         const producto = await Producto.findAll({
             include:[
@@ -45,7 +43,6 @@ async function listarProductos(req, res){
         }));
         res.json(clientesConVentas);
         
-       
         
     } catch (error) {
         console.error(error);
@@ -74,7 +71,6 @@ async function listarProducto(req, res){
                     model:Categoria,
                     atributes: ['categoria']
                 },
-                
                 {
                     model:FichaTenica,
                     atributes: ['nombre_ficha', 'imagen_producto_final']
@@ -124,10 +120,10 @@ async function actualizarProducto(req, res) {
         }
         await productoExistente.update(
             {
-                nombre_producto:producto.nombre_producto,
+                fk_categoria:producto.fk_categoria,
                 precio:producto.precio,
-                imagen:req.file.filename,
                 cantidad:producto.cantidad,
+                fk_ft:producto.fk_ft
             },
             {
                 where: { id_producto: productoExistente.id_producto }

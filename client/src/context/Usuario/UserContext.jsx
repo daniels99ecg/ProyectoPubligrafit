@@ -86,7 +86,6 @@ async function creacionValidacion(values) {
                       // Verificar errores específicos
                       if (response.data.error === 'el id de usuario ya existe') {
                         console.log('Mostrar alerta de usuario existente');
-              
                         Swal.fire({
                           icon: 'error',
                           title: 'Error',

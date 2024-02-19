@@ -12,10 +12,12 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import { TiDeleteOutline } from "react-icons/ti";
 import { TiShoppingCart } from "react-icons/ti";
+import { useParams } from 'react-router-dom'
+import { useFichaTecnica } from "../../context/FichasTecnicas/FichaTecnicaContext"
 
 
 
-function FichaCreatePruebas({ handleCloseVentaModal }) {
+function FichaCreatePruebas() {
   const { listar, ShowInsumos } = useInsumo();
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
@@ -35,6 +37,15 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = tableData.slice(startIndex, endIndex);
+
+  const {fichaTecnicaActualizar, listarFichaTecnica, validarFichaActualizar}=useFichaTecnica()
+  const params = useParams()
+
+
+  useEffect (() => {
+    fichaTecnicaActualizar(params.id_ft)
+    console.log(listarFichaTecnica)
+  }, [params.id_ft])
 
   const ventaSchema = Yup.object().shape({
     // id_cliente: Yup.object().shape({
@@ -254,16 +265,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
 
                 <Formik
                   initialValues={{
-                    nombre_ficha: nombreFicha,
-                    imagen_producto_final:selectedImage,
-                    costo_final_producto: subtotalTotal,
-                    detalle:"",
-                    insumo: tableData.map((item) => ({
-                      fk_insumo: item.fk_insumo,
-                      cantidad:item.cantidad,
-                      precio: item.precio,
-                      // subtotal:item.subtotal,
-                    })),
+                    listarFichaTecnica
                   }}
                   enableReinitialize={true}
                   onSubmit={async (values, { setErrors, resetForm }) => {
@@ -355,6 +357,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                   <div className="form-group mb-2">
                                     <label className="col-md-9" htmlFor="items">
                                       <span className="small"></span>
+                                      <input type="hidden"  value={listarFichaTecnica.id_ft}/>
                                       <Autocomplete
                                         disablePortal
                                         id="fixed-tags-demo"
@@ -469,7 +472,31 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                       maxWidth: "100%",
                                     }}
                                   >
-                                    {tablaVacia && (
+{/* <table>
+  <thead>
+    <tr>
+      <th>Insumo</th>
+      <th>Cantidad</th>
+      <th>Precio</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    {listarFichaTecnica.detalles.map((detalle, index) => (
+      <tr key={index}>
+        <td>{detalle.insumo.nombre}</td>
+        <td>{detalle.cantidad}</td>
+        <td>{detalle.precio}</td>
+        
+      </tr>
+    ))}
+  </tbody>
+</table> */}
+
+
+
+
+                                    {/* {tablaVacia && (
                                       <div
                                         style={{
                                           fontFamily:
@@ -479,8 +506,9 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                       >
                                         &nbsp;¡Sin productos en el carrito!
                                       </div>
-                                    )}
-                                    {!tablaVacia && (
+                                    )} */}
+                                    
+                                    {tablaVacia && (
                                       <div>
                                         <h4
                                           style={{
@@ -505,9 +533,9 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                             </tr>
                                           </thead>
                                           <tbody className="small text-left fs-6">
-                                            {currentItems.map((row, index) => (
+                                            {listarFichaTecnica.detalles.map((row, index) => (
                                               <tr key={index}>
-                                                <td>{row.nombre}</td>
+                                                <td>{row.insumo.nombre}</td>
                                                 <td>
                                                   {formatearPrecios(row.precio)}
                                                 </td>
@@ -617,7 +645,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                             name='detalle'
                             className='form-control'
                             onChange={handleChange}
-                            value={values.detalle}
+                            value={listarFichaTecnica.detalle}
                           />  
                                 </div>
                               </div>
@@ -637,7 +665,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
             name='nombre_ficha'
             className='form-control'
             as={TextField}
-            value={values.nombre_ficha}
+            value={listarFichaTecnica.nombre_ficha}
             label="Nombre Ficha"
             onChange={(e) => {
               handleChange(e);
@@ -694,7 +722,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                       disabled
                                       as={TextField}
                                       label="Total"
-                                      value={formatearValores(subtotalTotal)}
+                                      value={listarFichaTecnica.costo_final_producto}
                                       onChange={(e) => {
                                         setTotalTouched(true);
                                         handleChange(e);
@@ -749,7 +777,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                         <br />
                                         <button
                                           className="btn btn-danger buttons-doubles"
-                                          onClick={handleCloseVentaModal}
+                                          
                                         >
                                           Cancelar
                                         </button>

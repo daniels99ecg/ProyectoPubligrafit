@@ -17,7 +17,7 @@ import ShowProducto from './page/Producto/Productos'
 import ShowFichasTecnicas from './page/FichaTecnica/FichasTecnicas'
 import ShowInsumos from './page/Insumo/Insumos'
 
-import UpdateFichaTecnica from './page/FichaTecnica/UpdateFichaTecnica'
+import UpdateFichaTecnica from './page/FichaTecnica/FichaUpdatePruebas'
 import {InsumoContextProvider} from './context/Insumos/InsumoContext'
 import { ProductoContextProvider } from './context/Productos/ProductoContext'
 import { FichaTecnicaContextProvider } from './context/FichasTecnicas/FichaTecnicaContext'

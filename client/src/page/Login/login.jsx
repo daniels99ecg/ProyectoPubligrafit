@@ -52,7 +52,7 @@ return(
           <Form>
             
             <div>
-              <label htmlFor="email">Correo electrónico:</label>
+              <label htmlFor="email">Usuario:</label>
               <Field type="email" id="email" name="email"   className="form-control" />
               <ErrorMessage name="email" component="div" />
             </div>

@@ -127,7 +127,7 @@ async function crearFichaTecnica(req, res) {
           res.status(201).json(createdFicha);
         } else {
           res.status(400).json({
-            error: "No hay suficiente cantidad en stock para realizar la compra",
+            error: "No hay suficiente cantidad en stock para realizar la ficha",
           });
         }
       });

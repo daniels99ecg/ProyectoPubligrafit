@@ -269,7 +269,7 @@ const handleCloseInfoVenta = () => {
             pageSizeOptions={[5]} 
             getRowClassName={(params) => {
               if (!params.row.estado) {
-                return 'cliente-desactivado';
+                return 'Ficha-desactivado';
               }
               return
             }}

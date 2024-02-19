@@ -316,38 +316,21 @@ const activarCliente = async (id_rol) => {
   }
 
   const[listarActualizar, setListarActualizar]=useState({
-    id_rol_x_permiso:"",
-   
-  fk_permiso: "",
-  fk_usuario: "",
-  rol:{
-    nombre_rol:""
-  },
-  permiso:{
-    nombre_permiso:""
-  },
-   
- 
+  
+    id_rol:"",
+    nombre_rol:"",
+    detalles:[]
  })
     
- async function cargarRolActualizar(id_rol_x_permiso) {
+ async function cargarRolActualizar(id_rol) {
   try {
   
-    const response = await cargaractualizarRol(id_rol_x_permiso);
+    const response = await cargaractualizarRol(id_rol);
     const rolData=response.data
     setListarActualizar({
-      id_rol_x_permiso:rolData.id_rol_x_permiso,
-      
-      fk_permiso: rolData.fk_permiso,
-      fk_usuario: rolData.fk_usuario,
-      rol: {
-        ...listarActualizar.rol, // Mantenemos los valores anteriores del objeto 'rol'
-        nombre_rol: rolData.rol.nombre_rol // Actualizamos solo el campo 'nombre_rol'
-      },
-      permiso: {
-        ...listarActualizar.permiso, // Mantenemos los valores anteriores del objeto 'rol'
-        nombre_permiso: rolData.permiso.nombre_permiso // Actualizamos solo el campo 'nombre_rol'
-      }
+      id_rol:rolData.id_rol,
+      nombre_rol:rolData.nombre_rol,
+      detalles: rolData.detalles
     });
 
 

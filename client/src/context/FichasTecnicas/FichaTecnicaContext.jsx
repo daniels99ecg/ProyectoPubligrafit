@@ -148,7 +148,7 @@ const validacionFichaTecnica = async (values)=>{
                                 title: 'Ficha ya registrado',
                                 text: response.data.error
                             });
-                        } else {
+                           } else {
                             navigate("/fichaTecnica");
                             swalWithBootstrapButtons.fire(
                                 'Registro Exitoso!',
@@ -198,17 +198,7 @@ const validacionFichaTecnica = async (values)=>{
         console.log(error)
       }
     }
-    const [listarFichaTecnica, setListarFichaTecnica] = useState(
-      {
-          id_ft: '',
-          fk_insumo: '',
-          cantidad_insumo: '',
-          costo_insumo: '',
-          imagen_producto_final: '',
-          costo_final_producto: '',
-          detalle: ''
 
-      })
     const validarFichaActualizar= async (id_ft, values)=>{
     try {
       let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
@@ -293,6 +283,19 @@ const validacionFichaTecnica = async (values)=>{
       console.log(error);
     }
   }
+
+
+  const [listarFichaTecnica, setListarFichaTecnica] = useState(
+    {
+        id_ft: '',
+        nombre_ficha:"",
+      
+        costo_final_producto: '',
+        detalle:"",
+        detalles: []
+
+    })
+
   async function fichaTecnicaActualizar (id_ft){
 
     try{
@@ -302,12 +305,11 @@ const validacionFichaTecnica = async (values)=>{
 
         setListarFichaTecnica({
             id_ft: response.id_ft,
-            fk_insumo: response.fk_insumo,
-            cantidad_insumo: response.cantidad_insumo,
-            costo_insumo: response.costo_insumo,
+            nombre_ficha: response.nombre_ficha,
             imagen_producto_final: response.imagen_producto_final,
             costo_final_producto: response.costo_final_producto,
-            detalle: response.detalle
+            detalle: response.detalle,
+            detalles:response.detalles
         })
     } catch (error) {
         console.log(error)

@@ -192,11 +192,10 @@ const validacionProducto = async (values)=>{
     const [listarProducto, setListarProducto] = useState(
       {
           id_producto: '',
-          categoria:{categoria:""},
-          fichas_tecnica: {nombre_ficha:""},
           precio: '',
-          imagen: '',
           cantidad: '',
+          fk_ft:"",
+          fk_categoria:""
 
       })
       async function productoActualizar (id_producto){
@@ -209,19 +208,10 @@ const validacionProducto = async (values)=>{
             setListarProducto({
               
                 id_producto: response.id_producto,
-                categoria:{
-                  ...listarProducto.categoria,
-                  categoria:response.categoria.categoria
-                },
-                fichas_tecnica:{
-                  ...listarProducto.fichas_tecnica,
-                  nombre_ficha:response.fichas_tecnica.nombre_ficha,
-                 
-
-                },
                 precio: response.precio,
-                imagen: response.imagen,
-                cantidad: response.cantidad
+                cantidad: response.cantidad,
+                fk_ft:response.fk_ft,
+                fk_categoria:response.fk_categoria
             })
         } catch (error) {
             console.log(error)
@@ -231,18 +221,11 @@ const validacionProducto = async (values)=>{
         try {
           let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
           let NumberPattern = /^[0-9]+$/;
-          if(values.nombre_producto =="" || values.precio =="" || values.cantidad =="" || values.imagen=="" ){
+          if(values.precio =="" || values.cantidad ==""){
               Swal.fire({
                   icon: 'error',
                   title: 'Campos Vacios',
                   text: 'Por favor ingresar datos!',
-                  
-                })
-          }else if((!Caracteres.test(values.nombre_producto))){
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Nombre Producto',
-                  text: 'Por favor ingresar solo letras!',
                   
                 })
           }else if((!NumberPattern.test(values.cantidad))){
@@ -280,7 +263,7 @@ const validacionProducto = async (values)=>{
                   if (result.isConfirmed) {
                     // Línea de código importante para cambiar de tipo "button" a "submit"
                     await putActualizarProductos(id_producto, values);
-                    navigate("/producto");
+                    window.location.reload()
             
                     swalWithBootstrapButtons.fire(
                       '¡Insumo Actualizado!',

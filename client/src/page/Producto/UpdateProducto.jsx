@@ -11,7 +11,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useFichaTecnica } from '../../context/FichasTecnicas/FichaTecnicaContext';
 
 
-
 function primeraMayuscula(input) {
   return input
     .toLowerCase()
@@ -43,14 +42,14 @@ function UpdateProducto({productoId }) {
     productoActualizar(productoId)
     cargarCategoria()
     ShowFichasTecnicas()
+    console.log(listarProducto)
+    
   }, [productoId])
 
   return (
 
     <>
       
-
-
       <div className='dashboard-app'>
 
         <div className='dashboard-content'>
@@ -68,33 +67,32 @@ function UpdateProducto({productoId }) {
                     enableReinitialize={true}
                     validate={async (values) => {
                       console.log(values)
-                      const errors = {}
-                      if (!values.fk_categoria) {
-                        errors.fk_categoria = 'Este campo es requerido';
+                      //const errors = {}
+                      // if (!values.fk_categoria) {
+                      //   errors.fk_categoria = 'Este campo es requerido';
 
-                      } else if (!/^[0-9]+$/.test(values.fk_categoria)) {
-                        errors.fk_categoria = 'Este campo solo debe contener letras';
-                      }
-                      if (!values.nombre_producto) {
-                        errors.nombre_producto = 'Este campo es requerido';
+                      // } else if (!/^[0-9]+$/.test(values.fk_categoria)) {
+                      //   errors.fk_categoria = 'Este campo solo debe contener letras';
+                      // }
+                      // if (!values.fk_ft) {
+                      //   errors.nombre_producto = 'Este campo es requerido';
 
-                      } else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto)) {
-                        errors.nombre_producto = 'Este campo solo debe contener letras';
-                      }
-                      if (!values.precio) {
-                        errors.precio = 'Este campo es requerido';
+                      // } else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.fk_ft)) {
+                      //   errors.fk_ft = 'Este campo solo debe contener letras';
+                      // }
+                      // if (!values.precio) {
+                      //   errors.precio = 'Este campo es requerido';
 
-                      } else if (!/^[0-9]+$/.test(values.precio)) {
-                        errors.precio = 'Este campo solo debe contener numeros';
-                      }
-                      if (!values.cantidad) {
-                        errors.cantidad = 'Este campo es requerido';
+                      // } else if (!/^[0-9]+$/.test(values.precio)) {
+                      //   errors.precio = 'Este campo solo debe contener numeros';
+                      // }
+                      // if (!values.cantidad) {
+                      //   errors.cantidad = 'Este campo es requerido';
 
-                      } else if (!/^[0-9]+$/.test(values.cantidad)) {
-                        errors.cantidad = 'Este campo solo debe contener numeros';
-                      }
-                      return errors
-
+                      // } else if (!/^[0-9]+$/.test(values.cantidad)) {
+                      //   errors.cantidad = 'Este campo solo debe contener numeros';
+                      // }
+                      // return errors
                     }
                     }
                     onSubmit={async (values) => {
@@ -113,87 +111,41 @@ function UpdateProducto({productoId }) {
                           
 
                           <div className="col-md-6">
-                          {/*  <label htmlFor="fk_categoria"></label>
-                             <Field
-                              type="text"
-                              name='fk_categoria'
-                              onChange={handleChange}
-                              label='Categoria'
-                              value={values.categoria.categoria}
-                              as={TextField}
-                              className={` ${values.fk_categoria && /^[0-9]+$/.test(values.fk_categoria) ? 'is-valid' : 'is-invalid'
-                                }`}
-                              InputProps={{
-                                endAdornment: (
-                                  <React.Fragment>
-                                    {values.fk_categoria && /^[0-9]+$/.test(values.fk_categoria) ? (
-                                      <CheckIcon style={{ color: 'green' }} />
-                                    ) : (
-                                      <ErrorIcon style={{ color: 'red' }} />
-                                    )}
-                                  </React.Fragment>
-                                ),
-                              }}
-                              sx={{ width: '100%' }}
-                            /> */}
-                               <Autocomplete 
-                              disablePortal
-                              id="fixed-tags-demo"
-                              options={Listar}  // Filtrar roles con estado true
-                              getOptionLabel={(option) => option.categoria}
-                              onChange={(event, newValue) => {
-                                handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : '' } });
-                              }}
-                              value={Listar && values && Listar.find((categoria) => categoria.categoria.id_categoria === values.fk_categoria) || null}
-                              sx={{ width: '100%' }}
-                              renderInput={(params) => <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>}
-                            />
-                            {errors.fk_categoria && <div className='invalid-feedback'>{errors.fk_categoria}</div>}
+  <Autocomplete 
+    disablePortal
+    id="fixed-tags-demo"
+    options={Listar}  
+    getOptionLabel={(option) => option.categoria}
+    onChange={(event, newValue) => {
+        handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : '' } });
+    }}
+    value={Listar.find(categoria => categoria.id_categoria === values.fk_categoria)} // Buscar el valor seleccionado en la lista
+    sx={{ width: '100%' }}
+    renderInput={(params) => <TextField {...params} label="Categoria" sx={{ width: '100%' }} />}
+/>
+ {errors.fk_categoria && <div className='invalid-feedback'>{errors.fk_categoria}</div>}
                           </div>
 
                           <div className="col-md-6">
-                           {/* <label htmlFor="nombre_producto"></label>
-                             <Field
-                              type="text"
-                              name='nombre_producto'
-                              onChange={handleChange}
-                              label='Nombre'
-                              value={values.fichas_tecnica.nombre_ficha}
-                              as={TextField}
-                              className={` ${values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? 'is-valid' : 'is-invalid'
-                                }`}
-                              InputProps={{
-                                endAdornment: (
-                                  <React.Fragment>
-                                    {values.nombre_producto && /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(values.nombre_producto) ? (
-                                      <CheckIcon style={{ color: 'green' }} />
-                                    ) : (
-                                      <ErrorIcon style={{ color: 'red' }} />
-                                    )}
-                                  </React.Fragment>
-                                ),
-                              }}
-                              sx={{ width: '100%' }}
-                            />  */}
-                            <Autocomplete 
-  disablePortal
-  id="fixed-tags-demo"
-  options={listar.filter((fichatecnica) => fichatecnica.estado)}  // Filtrar roles con estado true
-  getOptionLabel={(option) => option.nombre_ficha}
-  onChange={(event, newValue) => {
-    handleChange({ target: { name: 'fk_ft', value: newValue ? newValue.id_ft : '' } });
-  }}
-  //value={listar.find((fichatecnica) => fichatecnica.fichas_tecnica.id_ft === values.fk_ft) || null}
-   value={listar && values && listar.find((fichas_tecnica) => fichas_tecnica.fichas_tecnica === values.fk_ft) || null}
 
-  sx={{ width: '100%' }}
-  renderInput={(params) => <TextField {...params} label="Nombre" sx={{ width: '100%' }}/>}
-/>
-                            {errors.nombre_producto && <div className='invalid-feedback'>{errors.nombre_producto}</div>}
+                            <Autocomplete 
+                            disablePortal
+                            id="fixed-tags-demo"
+                            options={listar}  // Filtrar roles con estado true
+                            getOptionLabel={(option) => option.nombre_ficha}
+                            onChange={(event, newValue) => {
+                              handleChange({ target: { name: 'fk_ft', value: newValue ? newValue.id_ft : '' } });
+                            }}
+                            value={listar.find(fichas_tecnica => fichas_tecnica.id_ft === values.fk_ft)} // Buscar el valor seleccionado en la lista
+                            sx={{ width: '100%' }}
+                            renderInput={(params) => <TextField {...params} label="Nombre" sx={{ width: '100%' }}/>}
+                          />
+                            {/* {errors.fk_ft && <div className='invalid-feedback'>{errors.fk_ft}</div>} */}
                           </div>
 
                           <div className="col-md-6">
                             <label htmlFor="precio"></label>
+
                             <Field
                               type="text"
                               name='precio'
@@ -218,7 +170,6 @@ function UpdateProducto({productoId }) {
                             />
                             {errors.precio && <div className='invalid-feedback'>{errors.precio}</div>}
                           </div>
-
 
                           <div className="col-md-6">
                             <label htmlFor="cantidad"></label>

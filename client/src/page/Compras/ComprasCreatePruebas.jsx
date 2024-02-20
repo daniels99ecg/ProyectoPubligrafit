@@ -27,6 +27,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
   const [tablaVacia, setTablaVacia] = useState(true);
   const [productoSelect, setProductoSelect] = useState(null);
   const [cantidadAlterar, setCantidadAlterar] = useState("");
+  const [precioAlterar, setPrecioAlterar] = useState("");
   // const [metodoPagoTouched, setMetodoPagoTouched] = useState(false);
   const [totalTouched, setTotalTouched] = useState(false);
 
@@ -84,7 +85,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
     const producto = listar.find((item) => item.id_insumo === productoId);
     return producto ? producto.cantidad : 0;
   };
-
+//Edicion para cambiar la cantidad
   const handleEdicionCantidad = (e) => {
     if (e.key === "Enter") {
       // Restablecer el campo a vacío al presionar Enter
@@ -162,6 +163,94 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
           const nuevaTabla = tableData.map((item) =>
             item.fk_insumo === productoSelect.id_insumo
               ? actualizarSubtotal({ ...item, cantidad: nuevaCantidad })
+              : item
+          );
+
+          setTableData(nuevaTabla);
+        }
+      }
+    }
+  };
+
+//Edicion para cambiar el precio
+
+  const handleEdicionPrecio = (e) => {
+    if (e.key === "Enter") {
+      // Restablecer el campo a vacío al presionar Enter
+      e.preventDefault();
+
+      // Verificar si la entrada cumple con el patrón deseado
+      const regexPattern = /^(-\d{1,4}|[1-9]\d{0,3})?$/;
+      if (!regexPattern.test(precioAlterar)) {
+        // Mostrar mensaje de error si la entrada no cumple con el patrón
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Campo inválido",
+        });
+        return;
+      }
+
+      // Agregar la cantidad a la tabla
+      const cantidadAgregada = parseInt(precioAlterar, 10);
+      if (!isNaN(cantidadAgregada) && cantidadAgregada !== 0) {
+        const productoEnTabla = tableData.find(
+          (item) => item.fk_insumo === productoSelect.id_insumo
+        );
+
+        if (productoEnTabla) {
+          const cantidadActual = productoEnTabla.precio;
+          const nuevaCantidad = cantidadActual + cantidadAgregada;
+
+          // Validar si la nueva cantidad supera el stock disponible
+          const productoEnStock = findProductoEnStock(
+            productoEnTabla.fk_insumo
+          );
+          
+
+          // Verificar que la nueva cantidad no sea menor que la cantidad original del producto
+          const cantidadOriginal = productoEnTabla.cantidad_original; // Ajustar el nombre según la estructura de tus datos
+
+          // Establecer la cantidad mínima en la cantidad original o 1
+          const cantidadMinima = Math.max(cantidadOriginal, 1);
+
+          // Verificar que la nueva cantidad no sea menor que la cantidad mínima
+          if (nuevaCantidad < cantidadMinima) {
+            Swal.fire({
+              icon: "warning",
+              title: "Advertencia",
+              text: "La cantidad no puede ser menor a la original del producto.",
+            });
+            return;
+          }
+
+          // Verificar que la cantidad a disminuir no sea mayor que la cantidad actual
+          if (
+            cantidadAgregada < 0 &&
+            Math.abs(cantidadAgregada) > cantidadActual
+          ) {
+            Swal.fire({
+              icon: "warning",
+              title: "Advertencia",
+              text: "La cantidad a disminuir no puede ser mayor a la actual del producto.",
+            });
+            return;
+          }
+
+          // Verificar que la nueva cantidad no sea cero o menos
+          if (nuevaCantidad <= 0) {
+            Swal.fire({
+              icon: "warning",
+              title: "Advertencia",
+              text: "La cantidad no puede ser menor a 1.",
+            });
+            return;
+          }
+
+          // Actualizar la cantidad en tiempo real en la tabla
+          const nuevaTabla = tableData.map((item) =>
+            item.fk_insumo === productoSelect.id_insumo
+              ? actualizarSubtotal({ ...item, precio: nuevaCantidad })
               : item
           );
 
@@ -266,7 +355,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                     insumo: tableData.map((item) => ({
                       fk_insumo: item.fk_insumo,
                       cantidad: item.cantidad,
-                      precio: precio,
+                      precio: item.precio,
                       subtotal: item.subtotal,
                     })),
                   }}
@@ -454,6 +543,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                       name="alterar"
                                       id="alterar"
                                       label="Cantidad"
+                                      style={{width:"40%"}}
                                       className="form-control"
                                       value={cantidadAlterar}
                                       onChange={(e) => {
@@ -461,6 +551,20 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                         setCantidadAlterar(newValue);
                                       }}
                                       onKeyPress={handleEdicionCantidad}
+                                    />
+                                    <TextField
+                                      type="text"
+                                      name="alterna"
+                                      id="alterador"
+                                      label="Precio"
+                                      style={{width:"40%"}}
+                                      className="form-control"
+                                      value={precioAlterar}
+                                      onChange={(e) => {
+                                        const newValue = e.target.value.trim();
+                                        setPrecioAlterar(newValue);
+                                      }}
+                                      onKeyPress={handleEdicionPrecio}
                                     />
                                   </div>
 
@@ -513,14 +617,14 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                               <tr key={index}>
                                                 <td>{row.nombre}</td>
                                                 <td>
-                                                  {/* {formatearPrecios(row.precio)} */}
+                                                {formatearPrecios(row.precio)} 
                                                   
-                                                  <input
+                                                  {/* <input
                                                       type="text"
                                                       style={{ width: "30%" }}
                                                       value={precio}
                                                       onChange={handleCantidadChange}
-                                                    /> 
+                                                    />  */}
                                                     </td>
                                                 <td>
                                                   {row.cantidad === 1

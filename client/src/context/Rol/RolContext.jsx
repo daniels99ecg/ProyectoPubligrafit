@@ -327,10 +327,17 @@ const activarCliente = async (id_rol) => {
   
     const response = await cargaractualizarRol(id_rol);
     const rolData=response.data
+
+    const detallesArray = rolData.detalles.map(detalle => ({
+      usuario: detalle.usuario,
+      permiso: detalle.permiso,
+      fk_usuario:detalle.fk_usuario
+    }));   
+    
     setListarActualizar({
       id_rol:rolData.id_rol,
       nombre_rol:rolData.nombre_rol,
-      detalles: rolData.detalles
+      detalles: detallesArray
     });
 
 
@@ -341,7 +348,7 @@ const activarCliente = async (id_rol) => {
 
 const actualizarValidar= async(id_rol, values)=>{
   try {
-    if( values.nombre_rol=="" || values.fecha==""||values.permisos==""){
+    if( values.nombre_rol==""){
              
       Swal.fire({
           icon: 'error',

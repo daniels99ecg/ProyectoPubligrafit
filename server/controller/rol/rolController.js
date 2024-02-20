@@ -136,119 +136,6 @@ async function listarporid(req, res) {
 }
 
 
-
-    // async function listarporid(req, res){
-    //   try {
-    //     const userId = req.params.id_rol;
-    //     const user = await Rol.findByPk(userId);
-  
-    //     if (user) {
-    //       res.json(user);
-    //     } else {
-    //       res.status(404).json({ message: 'Usuario no encontrado' });
-    //     }
-    //   } catch (error) {
-    //     res.status(500).json({ message: 'Error en el servidor' });
-    //   }
-    // }
-
-// async function listarporid(req, res){
-//       try {
-//         const id_rol_x_permiso = req.params.id_rol_x_permiso;
-//         const rolXPermiso = await RolXPermiso.findOne({
-//           where: {
-//             id_rol_x_permiso: id_rol_x_permiso
-//           },
-//           include: [
-//                     {
-//                       model: Rol,
-//                       attributes: ['nombre_rol'],
-//                     },
-//                             {
-//                               model: Permiso,
-//                               attributes: ['nombre_permiso'],
-//                             },
-//                             {
-//                               model: Usuario,
-//                               attributes: ['nombres'],
-//                             },
-//                   ]
-//         });
-    
-//         if (rolXPermiso) {
-//           res.json(rolXPermiso);
-//         } else {
-//           res.status(404).json({ message: 'RolXPermiso no encontrado' });
-//         }
-//       } catch (error) {
-//         res.status(500).json({ message: 'Error en el servidor' });
-//       }
-//     }
-    
-
-
-    // async function listarporid(req, res) {
-    //   const { fk_rol } = req.params;
-    
-    //   try {
-    //     const rolxp = await RolXPermiso.findAll({
-    //       where: { fk_rol: fk_rol },
-    //       include: [
-    //         {
-    //           model: Rol,
-    //           attributes: [ 'nombre_rol'],
-    //         },
-    //         {
-    //           model: Permiso,
-    //           attributes: ['nombre_permiso'],
-    //         },
-    //         {
-    //           model: Usuario,
-    //           attributes: ['nombres'],
-    //         },
-    //       ],
-    //       attributes: [
-    //         'id_rol_x_permiso',
-    //         'fk_rol',
-    //         'fk_permiso',
-    //         'fk_usuario',
-    //       ],
-    //     });
-    //     // Estructura de datos para almacenar el resultado final
-    //    const resultadoFinal = [];
-    
-    //     // Itera sobre los resultados de la consulta
-    // rolxp.forEach(entry => {
-    //   const { id_rol_x_permiso, rol, usuario, permiso, estado } = entry;
-
-    //   // Busca si ya existe una entrada para este usuario y rol
-    //   const existente = resultadoFinal.find(item => item.usuario.nombres === usuario.nombres && item.rol.nombre_rol === rol.nombre_rol);
-
-    //   // Si ya existe, agrega el permiso a la lista existente
-    //   if (existente) {
-    //     existente.permisos.push(permiso.nombre_permiso);
-    //   } else {
-    //     // Si no existe, crea una nueva entrada con el id, usuario, rol y lista de permisos
-    //     resultadoFinal.push({
-    //       id_rol_x_permiso,
-    //       usuario,
-    //       rol,
-    //       permisos: [permiso.nombre_permiso],
-    //       estado
-    //     });
-    //   }
-    // });
-
-    //     res.json(resultadoFinal);
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).json({ error: "Error al obtener la Ficha" });
-    //   }
-    // }
-    
-    
-
-
     async function listarRolxPermiso(req, res) {
       try {
         
@@ -379,43 +266,42 @@ async function listarporid(req, res) {
     
     async function actualizarRol(req, res) {
       const { id } = req.params;
-      const { 
-        id_rol,
-        nombre_rol,
-        fecha,
-        } = req.body;
+      const { nombre_rol, permiso } = req.body;
   
       try {
-        // Verificar si el documento ya existe, excluyendo al usuario actual
-        const existingUsuario = await Rol.findOne({
-          where: { nombre_rol: nombre_rol, id_rol: { [Op.ne]: id } }
-        });
+        
+          const rol = await Rol.findByPk(id);
+          if (!rol) {
+              return res.status(404).send('Rol no encontrado');
+          }
   
-        if (existingUsuario) {
-          return res.status(400).json({ error: 'El documento ya está registrado para otro usuario' });
-        }
+          // Actualizar el nombre del rol
+          rol.nombre_rol = "Vendedores";
   
-        const rol = await Rol.findByPk(id);
-        if (!rol) {
-          return res.status(404).send('Usuario no encontrado');
-        }
+          // Guardar los cambios en el rol
+          await rol.save();
   
-        // Actualizar campos del usuario
-        rol.id_rol = id_rol;
-        rol.nombre_rol = nombre_rol;
-        rol.fecha=fecha;
-       
+          // Eliminar todos los permisos asociados al rol
+          // await RolXPermiso.destroy({ where: { fk_rol: id } });
   
-        await rol.save();
+
+          // Insertar los nuevos permisos asociados al rol
+          if (permiso && permiso.length > 0) {
+              await Promise.all(permiso.map(async (permisoId) => {
+                  await RolXPermiso.create({ fk_rol: id, fk_permiso:permisoId, fk_usuario: 28});
+              }));
+          }
   
-        console.log('Usuario actualizado:', rol.toJSON());
+          console.log('Rol actualizado:', rol.toJSON());
   
-        return res.status(200).json(rol);
+          return res.status(200).json(rol);
       } catch (error) {
-        console.error('Error al actualizar el rol:', error);
-        return res.status(500).send('Error al actualizar el rol');
+          console.error('Error al actualizar el rol:', error);
+          return res.status(500).send('Error al actualizar el rol');
       }
   }
+  
+  
 
 
   async function desactivarCliente(req, res) {

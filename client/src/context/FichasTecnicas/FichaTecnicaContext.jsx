@@ -289,7 +289,6 @@ const validacionFichaTecnica = async (values)=>{
     {
         id_ft: '',
         nombre_ficha:"",
-      
         costo_final_producto: '',
         detalle:"",
         detalles: []

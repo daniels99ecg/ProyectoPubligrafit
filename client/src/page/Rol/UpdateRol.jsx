@@ -12,11 +12,10 @@ import { useParams, useNavigate} from 'react-router-dom'
 function RolCreate({RolId}) {
     const params=useParams()
 
-  const { listar,listarActualizar,cargarRolActualizar,cargarpermiso } = useRol();
+  const { listar,listarActualizar,cargarRolActualizar,cargarpermiso,actualizarValidar } = useRol();
 
   useEffect(() => {
     cargarRolActualizar(RolId)
-    console.log(listarActualizar)
     cargarpermiso()
   }, [RolId]);
   
@@ -35,31 +34,17 @@ function RolCreate({RolId}) {
 
   function getUniqueUserNames(detalles) {
     const userNamesSet = new Set();
-
+  
     detalles.forEach((detalle) => {
-      userNamesSet.add(detalle.usuario.nombres);
+      if (detalle.usuario && detalle.usuario.nombres) { // Verifica si detalle.usuario y detalle.usuario.nombres están definidos
+        userNamesSet.add(detalle.usuario.nombres);
+      }
     });
-
+  
     // Convertir el conjunto a un array y tomar el primer nombre
     return [...userNamesSet][0] || ''; // Si no hay nombres, devuelve una cadena vacía
   }
-  
 
-  function getAllPermisos(detalles) {
-    let permisosString = '';
-  
-    detalles.forEach((detalle, index) => {
-      if (index > 0) {
-        permisosString += ', '; // Agregar una coma y un espacio antes del nombre del permiso, excepto para el primer permiso
-      }
-      permisosString += detalle.permiso.nombre_permiso;
-    });
-  
-    return permisosString;
-  }
-
- 
-  
   return (
     <>
      
@@ -93,9 +78,18 @@ function RolCreate({RolId}) {
                     onSubmit={async (values) => {
                       console.log(values)
 
-                      if(RolId){
-                        actualizarValidar(RolId, values)
-                      }
+
+                      // Incluir fk_usuario en el objeto values
+                    const updatedValues = {
+                      ...values,
+                      nombre_rol:values.nombre_rol,
+                      permiso: values.detalles.map(detalle => detalle.permiso.id_permiso),
+                    };
+                    console.log(updatedValues)
+                    // Llamar a la función actualizarValidar con los valores actualizados
+                    actualizarValidar(RolId, updatedValues);
+                                        
+                      
                     }}
                   >
                     {({ handleChange, handleSubmit, setFieldValue, values, errors, isValid }) => (
@@ -131,10 +125,10 @@ function RolCreate({RolId}) {
                         <div className='col-md-6'>
                         <Field
                             type='text'
-                            name='fecha'
+                            name='fk_usuario'
+                            label='Usuario'
                             as={TextField}
                             className='form-control'
-                            placeholder='Fecha'
                             onChange={handleChange}
                             value={getUniqueUserNames(values.detalles)} // Obtener nombres de usuario únicos
                             fullWidth
@@ -143,27 +137,33 @@ function RolCreate({RolId}) {
                         </div>
                     
                           <div className='col-md-12'>
-                          <Autocomplete
+                
+<Autocomplete
   multiple
   id='permisos'
-  name='permisos'
-  options={listar || []} // Aquí proporcionas la lista de permisos
-  getOptionLabel={(option) => option.nombre_permiso} // Especificas qué propiedad de cada permiso usar como etiqueta
+  name='permiso'
+  options={listar || []}
+  getOptionLabel={(option) => option ? option.nombre_permiso : ''}
   onChange={(event, newValue) => {
-    handleChange({ target: { name: 'fk_permiso', value: newValue ? newValue.id_rol_x_permiso : '' } });
+    // Creamos una nueva lista de detalles combinando los usuarios existentes con los nuevos permisos seleccionados
+    const updatedDetalles = newValue.map(permiso => ({
+      permiso,
+      usuario: values.detalles.find(detalle => detalle.permiso.nombre_permiso === permiso.nombre_permiso)?.usuario || null
+    }));
+    setFieldValue('detalles', updatedDetalles);
   }}
-  value={values.detalles.map(detalle => ({ nombre_permiso: detalle.permiso.nombre_permiso }))} // Mapear detalles para obtener una lista de objetos con el nombre del permiso
-
+  value={values.detalles.map(detalle => detalle.permiso)}
   renderInput={(params) => (
     <TextField {...params} label='Permisos' variant='outlined' />
   )}
-/> 
+/>
+
 
 
                         </div>  
 
                         <div className='col-auto'>
-                          <button className='btn btn-primary' type='submit' disabled={!isValid}>
+                          <button className='btn btn-primary' type='submit'>
                             Actualizar
                           </button>
                         </div>

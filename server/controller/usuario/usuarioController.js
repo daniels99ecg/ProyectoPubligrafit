@@ -112,7 +112,7 @@
         service: 'gmail',
         auth: {
           user: 'danielsenju1999@gmail.com', // Cambiar a tu dirección de correo electrónico
-          pass: 'bvqn izon clzx gfoa' // Cambiar a tu contraseña de correo electrónico
+          pass: 'iifk mvtw vfga yery' // Cambiar a tu contraseña de correo electrónico
         }
       });
   
@@ -309,7 +309,7 @@
         service: 'gmail',
         auth: {
           user: 'danielsenju1999@gmail.com',
-          pass: 'bvqn izon clzx gfoa'
+          pass: 'iifk mvtw vfga yery'
         }
       });
   
@@ -356,7 +356,7 @@
         service: 'gmail',
         auth: {
           user: 'danielsenju1999@gmail.com',
-          pass: 'bvqn izon clzx gfoa'
+          pass: 'iifk mvtw vfga yery'
         }
       });
   

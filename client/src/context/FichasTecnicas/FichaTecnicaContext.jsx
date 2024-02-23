@@ -204,7 +204,7 @@ const validacionFichaTecnica = async (values)=>{
       let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
       let NumberPattern = /^[0-9]+$/;
     
-      if(values.insumo =="" || values.cantidad_insumo =="" || values.costo_insumo =="" || values.costo_final_producto =="" || values.detalle ==""){
+      if(values.detalle ==""){
           Swal.fire({
               icon: 'error',
               title: 'Campos Vacios',
@@ -212,29 +212,8 @@ const validacionFichaTecnica = async (values)=>{
               
             })
       
-      }else if((!NumberPattern.test(values.cantidad_insumo))){
-          Swal.fire({
-              icon: 'error',
-              title: 'Cantidad',
-              text: 'Por favor ingresar solo numeros!',
-              
-            })
-      }else if((!NumberPattern.test(values.costo_insumo))){
-          Swal.fire({
-              icon: 'error',
-              title: 'Costo de insumo',
-              text: 'Por favor ingresar solo numeros!',
-              
-            })
       }
-      else if((!NumberPattern.test(values.costo_final_producto))){
-        Swal.fire({
-            icon: 'error',
-            title: 'Costo Final',
-            text: 'Costo final del producto!',
-            
-          })
-    }
+      
       else if((!Caracteres.test(values.detalle))){
           Swal.fire({
               icon: 'error',
@@ -251,7 +230,7 @@ const validacionFichaTecnica = async (values)=>{
               buttonsStyling: false
             })
             
-            swalWithBootstrapButtons.fire({
+            Swal.fire({
               title: 'Confirmar el envio del formulario?',
               text: "You won't be able to revert this!",
               icon: 'warning',

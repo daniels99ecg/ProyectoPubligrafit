@@ -11,6 +11,9 @@ import { BsInfoCircleFill } from "react-icons/bs";
 import CompraInfo from "../Compras/CompraInfo"
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 import ComprobanteCliente from "./VentaComprobante";
+import { useMediaQuery } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 function Compras (){ //Inicializar
 const {cargarCompras,setSearchTerm,searchTerm,filtrarDesactivados} = useCompra()
@@ -20,6 +23,7 @@ const [selectVentaDetalles, setSelectVentaDetalles] = useState(null);
 const [selectVenta, setSelectVenta] = useState(null);
 const [comprobanteModal, setComprobanteModal] = useState(false);
 
+const isSmallScreen = useMediaQuery('(max-width:1200px)');
 
 
  // Formatear valores sin decimales
@@ -112,6 +116,65 @@ const handleCloseInfoVenta = () => {
                 </div>
                 </div>
                 <br />
+
+                {isSmallScreen ? (
+                  // Render cards when the screen is small
+                  <div>
+                    {/* Map over your data and render cards here */}
+                    {filtrarDesactivados.map((item) => (
+                      
+                      <Card key={item.id_venta}>
+                      <CardContent>
+                      <ul className="list-group list-group-flush">
+                      <li className="list-group-item">Tipo ID: {item.id_compra}</li>
+                      <li className="list-group-item">Nombre: {item.proveedore.nombre}</li>
+                    
+                      <li className="list-group-item">Fecha: {item.fecha}</li> 
+                      <li className="list-group-item">Total: <span>{formatearPrecios(item.total)}</span></li> 
+                        </ul>
+                        
+                        <div className="col-md-6">
+                        <Tooltip title="Información" arrow>
+                            <span>
+                              <button
+                                className="btn btn-light info-button"
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  padding: '5px',
+                                  borderRadius: '50%',
+                                  backgroundColor: 'white',
+                                }}
+                                onClick={() => handleOpenInfoCompra(item)}
+                              >
+                                <BsInfoCircleFill
+                                  size={30}
+                                  color="grey"
+                                />
+                              </button>
+                            </span>
+                          </Tooltip>
+
+                          <Tooltip title="Factura" arrow>
+                            <span>
+                            <button
+                              onClick={() => handleOpenComprobanteModal(item)}
+                              className="btn btn-link"
+                            >
+                              <FaFileInvoiceDollar style={{ fontSize: '24px', color: '#1A5276' }} />
+                            </button>
+                            </span>
+                            </Tooltip>
+                            </div>
+                        
+                      </CardContent>
+                    </Card>
+                    ))}
+                  
+                  </div>
+                
+                ) : (
+
         <div style={{marginLeft:15}}>
           <br />
         <DataGrid 
@@ -183,7 +246,7 @@ const handleCloseInfoVenta = () => {
         ]}
         />
 </div>
-
+)}
 {openCreateModal && ReactDOM.createPortal(
         <>
           <div

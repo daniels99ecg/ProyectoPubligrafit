@@ -21,8 +21,6 @@ export const getListarCompraDia = async () => {
     
   };
 
-
-
   export const getListarCompraseman = async () => {
     return await axios.get('http://localhost:3001/compras/comprasemana') 
     

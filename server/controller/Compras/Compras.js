@@ -151,12 +151,15 @@ async function crearCompras(req, res) {
             },
             { transaction: t }
           );
+          const insumoActual = await Insumo.findByPk(insumo.fk_insumo);
+          const nuevaCantidad = insumoActual.cantidad + insumo.cantidad;
+          const nuevoPrecio = ((insumoActual.precio * insumoActual.cantidad) + (insumo.precio * insumo.cantidad)) / nuevaCantidad;
 
           // Actualizar cantidad y precio del insumo
           await Insumo.update(
             {
-              cantidad: sequelize.literal(`cantidad + ${insumo.cantidad}`),
-              precio: sequelize.literal(`((precio * cantidad) + (${insumo.precio} * ${insumo.cantidad})) / (cantidad + ${insumo.cantidad})`),
+              cantidad: nuevaCantidad,
+              precio: nuevoPrecio,
             },
             { where: { id_insumo: insumo.fk_insumo }, transaction: t }
           );
@@ -274,7 +277,7 @@ async function listarComprasPorFechasDias(req, res) {
 // Función para obtener el nombre del día de la semana dado su número
 function obtenerNombreDiaSemanas(numeroDia) {
   const diasSemana = [
-      "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"
+      "Domin", "Lun", "Mart", "Miérc", "Juev", "Vier", "Sáb"
   ];
   return diasSemana[numeroDia - 1];
 }

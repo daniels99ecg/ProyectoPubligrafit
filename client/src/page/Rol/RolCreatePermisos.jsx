@@ -56,7 +56,7 @@ function RolCreatePermisos() {
                   
                   
                 >
-                  {({ handleChange, handleSubmit, setFieldValue, values }) => (
+                  {({ handleChange, handleSubmit, setFieldValue, values, errors }) => (
                     <Form onSubmit={handleSubmit} className='row g-3' id='pruebas'>
                       <div className="col-md-6">
                       <Autocomplete 

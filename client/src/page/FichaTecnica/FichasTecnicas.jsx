@@ -10,6 +10,10 @@ import Tooltip from "@mui/material/Tooltip";
 import { BsInfoCircleFill } from "react-icons/bs";
 import FichaInfo from "../FichaTecnica/FichaInfo"
 import { getListarFichaTecnica } from "../../api/Ficha/Rutas.ficha";
+import { useMediaQuery } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import FichaUpdate from './FichaUpdatePruebas'
 
 function ListarFichasTecnicas() {
   const{listar,ShowFichasTecnicas,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm}=useFichaTecnica()
@@ -17,7 +21,9 @@ function ListarFichasTecnicas() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [showInfoVenta, setShowInfoVenta] = useState(false);
   const [selectVentaDetalles, setSelectVentaDetalles] = useState(null);
-
+  const isSmallScreen = useMediaQuery('(max-width:1200px)');
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedClienteId, setSelectedClienteId] = useState(null);
 
   useEffect(() => {
    
@@ -52,6 +58,29 @@ const handleCloseInfoVenta = () => {
   setShowInfoVenta(false);
   setSelectVentaDetalles(null);
 };
+
+
+const handleOpenUpdateModal = (id_ft) => {
+  setSelectedClienteId(id_ft);
+  setOpenUpdateModal(true);
+};
+
+const handleCloseUpdateModal = () => {
+  setOpenUpdateModal(false);
+  ShowFichasTecnicas()
+};
+ 
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+function formatNumber(value) {
+  return new Intl.NumberFormat('es-AR').format(value);
+}
   return (
     <>
     <Nav/>
@@ -88,6 +117,114 @@ const handleCloseInfoVenta = () => {
           </div>
         </div>
         <br />
+        {isSmallScreen ? (
+                  // Render cards when the screen is small
+                  <div>
+                    {/* Map over your data and render cards here */}
+                    {filtrarDesactivados.map((item) => (
+                      
+                      <Card key={item.id_ft}>
+                      <CardContent>
+                      <ul className="list-group list-group-flush">
+                      <li className="list-group-item">Tipo ID: {item.id_ft}</li>
+                     
+                      <li className="list-group-item">Nombre: {item.nombre_ficha}</li>
+                      <li className="list-group-item">Costo Final: {item.costo_final_producto}</li>
+                      <li className="list-group-item"><img
+  src={`http://localhost:3001/${item.imagen_producto_final}`}
+  alt="Imagen del producto"
+  style={{ width: '30%' }}
+/></li>
+                        </ul>
+                      
+                        <div className="row">
+          <div className="col-md-6"></div>
+                        <div className="switch-button">
+                     <input
+                       type="checkbox"
+                        id={`switch-label-${item.id_ft}`}
+                        checked={item.estado}
+                        onChange={(e) => {
+                        e.preventDefault(); // Evitar la navegación por defecto
+                    if (item.estado) {
+                      desactivarFichaTecnica(item.id_ft);
+                  } else {
+                    activarFichaTecnica(item.id_ft);
+                }
+          }}
+        className="switch-button__checkbox"
+      />
+      <label
+        htmlFor={`switch-label-${item.id_ft}`}
+        className="switch-button__label"
+      ></label>
+                  </div>
+                  </div>
+                  <div className="col-md-6">
+
+                        <button
+                      className="btn btn-outline-secondary me-1"
+                      onClick={() =>{ handleOpenUpdateModal(item.id_ft) 
+                     
+                    }}
+                      disabled={!item.estado}
+                      style={{
+                        backgroundColor: '#0d6efd',
+                        borderColor: '#0d6efd',
+                        color: 'black',
+                      }}
+                      data-id={`edit-button-${item.id_ft}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-arrow-clockwise"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+                        ></path>
+                        <path
+                          d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+                        ></path>
+                      </svg>
+                    </button>
+                   
+
+                        <button
+                      className="btn btn-danger"
+                      onClick={() => eliminarFichasTecnicas(item.id_ft)}
+                      disabled={!item.estado}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-trash"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
+                        ></path>
+                        <path
+                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
+                        ></path>
+                      </svg>
+                    </button>
+                    
+</div>
+                      </CardContent>
+                    </Card>
+                    ))}
+                  
+                  </div>
+                
+                ) : (
+
         <div style={{ height: 500, width: '100%' }}>
           <DataGrid
             rows={filtrarDesactivados.map((item) => ({
@@ -97,7 +234,9 @@ const handleCloseInfoVenta = () => {
             columns={[
               { field: 'id_ft', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
               { field: 'nombre_ficha', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
-              { field: 'costo_final_producto', headerName: 'Costo Final', headerClassName: 'encabezado', flex: 1 },              
+              { field: 'costo_final_producto', headerName: 'Costo Final', headerClassName: 'encabezado', flex: 1,
+              valueFormatter: (params) => formatCurrency(params.value),
+            },              
 
               {
                 field: 'imagen_producto_final', headerName: 'Imagen', headerClassName: 'encabezado', flex: 0,
@@ -206,7 +345,7 @@ const handleCloseInfoVenta = () => {
                   <div>
                     <button
                       className="btn btn-outline-secondary me-1"
-                      onClick={() => navigate(`/editF/${params.row.id_ft}`)}
+                      onClick={() =>handleOpenUpdateModal(params.row.id_ft)}
                       disabled={!params.row.estado}
                       style={{
                         backgroundColor: '#0d6efd',
@@ -275,7 +414,9 @@ const handleCloseInfoVenta = () => {
             }}
           />
         </div>
+                )}
         </div>
+                
         {openCreateModal && ReactDOM.createPortal(
         <>
           <div
@@ -318,6 +459,41 @@ const handleCloseInfoVenta = () => {
             handleCloseModal={handleCloseInfoVenta}
             open={showInfoVenta}
           />,
+          document.body
+        )} {openUpdateModal && ReactDOM.createPortal(
+          <>
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 1049,
+              }}
+              onClick={handleCloseUpdateModal}
+            />
+            <div
+              className="modal-update"
+              style={{
+                maxHeight: '0vh',
+                position: 'fixed',
+                top: '30%',
+                left: '42%',
+                transform: 'translateX(-50%)',
+                zIndex: 1050,
+                maxHeight: '25vh',
+                overflowY: 'visible',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{ width: '1200px', height: '200%' }}>
+                <FichaUpdate handleCloseUpdateModal={handleCloseUpdateModal} fichaId={selectedClienteId}/>
+              </div>
+            </div>
+          </>,
           document.body
         )}
                     </div>

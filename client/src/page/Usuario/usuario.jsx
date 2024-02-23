@@ -21,7 +21,7 @@ function User() {
   useEffect(()=>{
     
     cargarUsuario()
-
+    console.log(filtrarDesactivados)
   },[searchTerm])
 
 
@@ -117,9 +117,9 @@ const handleCloseUpdateModal = () => {
                         </ul>
                       
                         <div className="row">
-          <div className="col-md-6"></div>
+                   
                         <div className="switch-button">
-                     <input
+                        <input
                        type="checkbox"
                         id={`switch-label-${item.id_usuario}`}
                         checked={item.estado}
@@ -139,6 +139,7 @@ const handleCloseUpdateModal = () => {
       ></label>
                   </div>
                   </div>
+
                   <div className="col-md-6">
 
                         <button

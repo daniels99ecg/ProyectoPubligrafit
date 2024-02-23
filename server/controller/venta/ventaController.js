@@ -189,7 +189,12 @@ async function createVentaConDetalle(req, res) {
   }
 }
 
-const { Op } = require("sequelize");
+const { Op , fn, col} = require("sequelize");
+
+
+
+
+
 
 
 async function listarVentasPorFechas(req, res) {
@@ -234,7 +239,110 @@ async function listarVentasPorFechasDia(req, res) {
     res.status(500).json({ error: "Error al obtener el total de ventas de la semana" });
   } 
 }
+
+async function listarComprasPorFechasDia(req, res) {
+  try {
+      // Consulta todas las compras agrupadas por mes
+      const ventasPorMes = await Venta.findAll({
+          attributes: [
+              [fn('MONTH', col('fecha')), 'mes'],
+              [fn('SUM', col('total')), 'totalVentasMes']
+          ],
+          group: [fn('MONTH', col('fecha'))],
+      });
+
+      // Mapea los resultados para agregar los nombres de los meses y completar los faltantes
+      const ventasPorMesConNombre = agregarMesesFaltantes(ventasPorMes);
+
+      res.json(ventasPorMesConNombre);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error al obtener los totales de ventas por mes" });
+  }
+}
+
+// Función para obtener el nombre del mes dado su número
+function obtenerNombreMes(numeroMes) {
+  const meses = [
+      "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+      "Jul", "Agos", "Sept", "Octu", "Novi", "Dici"
+  ];
+  return meses[numeroMes - 1];
+}
+
+// Función para agregar meses faltantes
+function agregarMesesFaltantes(ventasPorMes) {
+  const mesesFaltantes = [];
+  for (let i = 1; i <= 12; i++) {
+      const ventaEnMes = ventasPorMes.find(venta => venta.getDataValue('mes') === i);
+      if (ventaEnMes) {
+          mesesFaltantes.push({ mes: obtenerNombreMes(i), totalVentasMes: ventaEnMes.getDataValue('totalVentasMes') });
+      } else {
+          mesesFaltantes.push({ mes: obtenerNombreMes(i), totalVentasMes: 0 });
+      }
+  }
+  return mesesFaltantes;
+}
   
+
+async function listarComprasPorFechasDias(req, res) {
+  try {
+    // Obtén la fecha de inicio de la semana actual (domingo)
+    const fechaActual = new Date();
+    const primerDiaSemana = new Date(fechaActual);
+    primerDiaSemana.setDate(primerDiaSemana.getDate() - fechaActual.getDay()); // Resta los días de la semana actual
+
+    // Obtén la fecha de fin de la semana actual (sábado)
+    const ultimoDiaSemana = new Date(fechaActual);
+    ultimoDiaSemana.setDate(ultimoDiaSemana.getDate() + (6 - fechaActual.getDay())); // Agrega los días restantes hasta sábado
+
+    // Consulta las compras dentro del rango de la semana actual
+    const ventasPorDiaSemana = await Venta.findAll({
+      attributes: [
+        [fn('DAYOFWEEK', col('fecha')), 'diaSemana'],
+        [fn('SUM', col('total')), 'totalVentasDia']
+      ],
+      where: {
+        fecha: {
+          [Op.between]: [primerDiaSemana, ultimoDiaSemana],
+        },
+      },
+      group: [fn('DAYOFWEEK', col('fecha'))],
+    });
+
+    // Mapea los resultados para agregar los nombres de los días de la semana y completar los faltantes
+    const ventasPorDiaSemanaConNombre = agregarDiasFaltantess(ventasPorDiaSemana);
+
+    res.json(ventasPorDiaSemanaConNombre);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener los totales de ventas por día de la semana" });
+  }
+}
+
+
+// Función para obtener el nombre del día de la semana dado su número
+function obtenerNombreDiaSemanas(numeroDia) {
+  const diasSemana = [
+      "Domin", "Lun", "Mart", "Miérc", "Juev", "Vier", "Sáb"
+  ];
+  return diasSemana[numeroDia - 1];
+}
+
+// Función para agregar días de la semana faltantes
+function agregarDiasFaltantess(ventasPorDiaSemana) {
+  const diasFaltantes = [];
+  for (let i = 1; i <= 7; i++) {
+      const ventaEnDia = ventasPorDiaSemana.find(venta => venta.getDataValue('diaSemana') === i);
+      if (ventaEnDia) {
+          diasFaltantes.push({ diaSemana: obtenerNombreDiaSemanas(i), totalVentasDia: ventaEnDia.getDataValue('totalVentasDia') });
+      } else {
+          diasFaltantes.push({ diaSemana: obtenerNombreDiaSemanas(i), totalVentasDia: 0 });
+      }
+  }
+  return diasFaltantes;
+}
+
 
 
 module.exports = {
@@ -242,5 +350,7 @@ module.exports = {
   listarVenta,
   createVentaConDetalle,
   listarVentasPorFechas,
-  listarVentasPorFechasDia
+  listarVentasPorFechasDia,
+  listarComprasPorFechasDia,
+  listarComprasPorFechasDias
 };

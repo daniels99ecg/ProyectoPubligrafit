@@ -15,7 +15,9 @@ import VentaCreate from "./VentaCreate"
 import { BsDownload } from "react-icons/bs";
 import * as XLSX from "xlsx";
 import { saveAs } from 'file-saver';
-
+import { useMediaQuery } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 function listarVentas() {
   const { searchTerm, setSearchTerm, listar, setListar, showVentas } = useVenta();
   const [showInfoVenta, setShowInfoVenta] = useState(false);
@@ -23,6 +25,7 @@ function listarVentas() {
   const [selectVentaDetalles, setSelectVentaDetalles] = useState(null);
   const [selectVenta, setSelectVenta] = useState(null);
   const [comprobanteModal, setComprobanteModal] = useState(false);
+  const isSmallScreen = useMediaQuery('(max-width:1200px)');
 
   const handleExportToExcel = async () => {
     try {
@@ -173,6 +176,75 @@ function listarVentas() {
                   </div>
                 </div>
                 <br />
+                {isSmallScreen ? (
+                  // Render cards when the screen is small
+                  <div>
+                    {/* Map over your data and render cards here */}
+                    {listar.map((item) => (
+                      
+                      <Card key={item.id_venta}>
+                      <CardContent>
+                      <ul className="list-group list-group-flush">
+                      <li className="list-group-item">Tipo ID: {item.id_venta}</li>
+                      <li className="list-group-item">Nombre: {item.cliente.nombre}</li>
+                      <li className="list-group-item">Apellido: {item.cliente.apellido}</li>
+                      <li className="list-group-item">Método:
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {item.metodo_pago === 'Efectivo' ? (
+                              <BsCashCoin style={{ color: 'green', marginRight: '5px' }} />
+                            ) : (
+                              item.metodo_pago === 'Transferencia' && (
+                                <FaCreditCard style={{ color: '#2E4053', marginRight: '5px' }} />
+                              )
+                            )}
+                            <span>{item.metodo_pago}</span>
+                            </div>
+                      </li>
+                      <li className="list-group-item">Fecha: {item.fecha}</li> 
+                      <li className="list-group-item">Total: {item.total}</li> 
+                        </ul>
+                        
+                        <div className="col-md-6">
+                        <Tooltip title="Información" arrow>
+                            <span>
+                              <button
+                                className="btn btn-light info-button"
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  padding: '5px',
+                                  borderRadius: '50%',
+                                  backgroundColor: 'white',
+                                }}
+                                onClick={() => handleOpenInfoVenta(item)}
+                              >
+                                <BsInfoCircleFill
+                                  size={30}
+                                  color="grey"
+                                />
+                              </button>
+                            </span>
+                          </Tooltip>
+
+                          <Tooltip title="Factura" arrow>
+                            <span>
+                            <button
+                              onClick={() => handleOpenComprobanteModal(item)}
+                              className="btn btn-link"
+                            >
+                              <FaFileInvoiceDollar style={{ fontSize: '24px', color: '#1A5276' }} />
+                            </button>
+                            </span>
+                            </Tooltip>
+                            </div>
+                        
+                      </CardContent>
+                    </Card>
+                    ))}
+                  
+                  </div>
+                
+                ) : (
                 <div style={{ flex: 1, height: "100%", width: "100%" }}>
                   <DataGrid
                     rows={listar.map((row) => ({ ...row, id: row.id_venta, nombreCliente: `${row.cliente.nombre} ${row.cliente.apellido}` }))}
@@ -275,7 +347,7 @@ function listarVentas() {
                     getRowId={(row) => row.id}
                   />
                 </div>
-                
+                )}
                 {openCreateModal && ReactDOM.createPortal(
         <>
           <div

@@ -1,6 +1,6 @@
 import { Form, Formik,Field } from 'formik';
 import Nav from '../../components/nav';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRol } from '../../context/Rol/RolContext';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -13,6 +13,7 @@ function RolCreate({RolId}) {
     const params=useParams()
 
   const { listar,listarActualizar,cargarRolActualizar,cargarpermiso,actualizarValidar } = useRol();
+  
 
   useEffect(() => {
     cargarRolActualizar(RolId)
@@ -77,15 +78,16 @@ function RolCreate({RolId}) {
                     enableReinitialize={true}
                     onSubmit={async (values) => {
                       console.log(values)
-
+                     
+                      const selectedPermissions = values.detalles.map(detalle => detalle.permiso);
 
                       // Incluir fk_usuario en el objeto values
                     const updatedValues = {
                       ...values,
                       nombre_rol:values.nombre_rol,
-                      permiso: values.detalles.map(detalle => detalle.permiso.id_permiso),
-                    };
-                    console.log(updatedValues)
+                      permiso: selectedPermissions.map(permiso => permiso.id_permiso),
+                       };
+                       console.log(updatedValues)
                     // Llamar a la función actualizarValidar con los valores actualizados
                     actualizarValidar(RolId, updatedValues);
                                         
@@ -149,6 +151,7 @@ function RolCreate({RolId}) {
     const updatedDetalles = newValue.map(permiso => ({
       permiso,
       usuario: values.detalles.find(detalle => detalle.permiso.nombre_permiso === permiso.nombre_permiso)?.usuario || null
+  
     }));
     setFieldValue('detalles', updatedDetalles);
   }}

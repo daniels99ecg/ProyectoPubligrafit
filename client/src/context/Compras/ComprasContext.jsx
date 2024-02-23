@@ -20,7 +20,7 @@ export const CompraContextProvider=({children})=>{
 
         const filterList = response.data.filter((item) => 
             item.id_compra.toString().includes(searchTerm) ||
-            item.proveedor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.proveedore.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.cantidad.toString().includes(searchTerm) ||
             item.total.toString().includes(searchTerm) ||
             item.fecha.toString().includes(searchTerm)

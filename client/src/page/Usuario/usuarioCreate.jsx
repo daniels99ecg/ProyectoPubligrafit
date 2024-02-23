@@ -1,5 +1,5 @@
 import { Form ,Formik, Field} from 'formik'
-import {  useEffect } from 'react'
+import {  useEffect, useState } from 'react'
 import { useUser } from "../../context/Usuario/UserContext";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -76,8 +76,10 @@ function UserCreate() {
       errors.contrasena = 'La contraseña debe tener al menos 8 caracteres';
     }else if (!/[!@#$%^&*(),.?":{}|<>]/.test(values.contrasena)) {
       errors.contrasena = 'La contraseña debe contener al menos un carácter especial (!@#$%^&*(),.?":{}|<>)';
+    }if(!values.tipo_documento){
+      errors.tipo_documento = 'Este campo es requerido';
     }
-     
+   
     return errors;
 
    }}
@@ -95,24 +97,27 @@ function UserCreate() {
     
       <Form onSubmit={handleSubmit}  className='row g-3' id='pruebas'>
         <div className="col-md-6">
-  <Autocomplete
-    disablePortal
-    id="tipo-documento-autocomplete"
-    options={[
-      { id: 'CC', label: 'CC - Cédula de ciudadanía' },
-      { id: 'CE', label: 'CE - Cédula de extranjería' },
-      { id: 'TI', label: 'TI - Tarjeta de identidad' }
-      // Agrega más opciones según tus necesidades
-    ]}
-    getOptionLabel={(option) => option.label}
-    onChange={(event, newValue) => {
-      handleChange({ target: { name: 'tipo_documento', value: newValue ? newValue.id : '' } });
-    }}
-     // Puedes establecer un valor predeterminado si lo necesitas
-    sx={{ width: '100%' }}
-    renderInput={(params) => <TextField {...params} label="Tipo de Documento" sx={{ width: '100%' }} />}
-  />
-</div>
+        <Autocomplete
+              disablePortal
+              id="tipo-documento-autocomplete"
+              options={[
+                { id: 'CC', label: 'CC - Cédula de ciudadanía' },
+                { id: 'CE', label: 'CE - Cédula de extranjería' },
+                { id: 'TI', label: 'TI - Tarjeta de identidad' }
+                // Agrega más opciones según tus necesidades
+              ]}
+              getOptionLabel={(option) => option.label}
+              onChange={(event, newValue) => {
+                handleChange({ target: { name: 'tipo_documento', value: newValue ? newValue.id : '' } });
+              }}
+              className={`${values.tipo_documento  ? 'is-valid' : 'is-invalid'}`}
+
+              // Puedes establecer un valor predeterminado si lo necesitas
+              sx={{ width: '100%' }}
+              renderInput={(params) => <TextField {...params} label="Tipo de Documento" sx={{ width: '100%' }} />}
+            />
+            {errors.tipo_documento && <div className='invalid-feedback'>{errors.tipo_documento}</div>}
+          </div>
         <div className='col-md-6'>
         <Field
           type='text'
@@ -132,7 +137,8 @@ function UserCreate() {
           InputProps={{
             endAdornment: (
               <React.Fragment>
-                {values.documento && /^[0-9]+$/.test(values.documento) ? (
+                {values.documento && /^[0-9]+$/.test(values.documento) && values.documento.length >= 6 &&
+            values.documento.length <= 12 ? (
                   <CheckIcon style={{ color: 'green' }} />
                 ) : (
                   <ErrorIcon style={{ color: 'red' }} />

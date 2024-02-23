@@ -17,7 +17,7 @@ import { useFichaTecnica } from "../../context/FichasTecnicas/FichaTecnicaContex
 
 
 
-function FichaCreatePruebas() {
+function FichaCreatePruebas({fichaId}) {
   const { listar, ShowInsumos } = useInsumo();
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
@@ -36,16 +36,14 @@ function FichaCreatePruebas() {
   const itemsPerPage = 5; // Número de elementos por página
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = tableData.slice(startIndex, endIndex);
 
   const {fichaTecnicaActualizar, listarFichaTecnica, validarFichaActualizar}=useFichaTecnica()
   const params = useParams()
 
+  const currentItems = tableData.slice(startIndex, endIndex);
 
-  useEffect (() => {
-    fichaTecnicaActualizar(params.id_ft)
-    console.log(listarFichaTecnica)
-  }, [params.id_ft])
+ 
+
 
   const ventaSchema = Yup.object().shape({
     // id_cliente: Yup.object().shape({
@@ -73,16 +71,12 @@ function FichaCreatePruebas() {
     const yyyy = hoy.getFullYear();
     return `${yyyy}-${mm}-${dd}`;
   };
-
   const eliminarProducto = (index) => {
-    if (index >= 0 && index < tableData.length) {
-      const nuevaTabla = tableData.filter((_, i) => i !== index);
-      setTableData(nuevaTabla);
-    } else {
-      console.error("Índice inválido al intentar eliminar producto");
-    }
+    const nuevosDetalles = [...tableData];
+    nuevosDetalles.splice(index, 1);
+    setTableData(nuevosDetalles);
   };
-
+  
   const actualizarSubtotal = (row) => {
     const { cantidad, precio } = row;
     const subtotal = isNaN(cantidad) ? 0 : cantidad * precio;
@@ -98,7 +92,7 @@ function FichaCreatePruebas() {
     if (e.key === "Enter") {
       // Restablecer el campo a vacío al presionar Enter
       e.preventDefault();
-
+  
       // Verificar si la entrada cumple con el patrón deseado
       const regexPattern = /^(-\d{1,4}|[1-9]\d{0,3})?$/;
       if (!regexPattern.test(cantidadAlterar)) {
@@ -110,76 +104,26 @@ function FichaCreatePruebas() {
         });
         return;
       }
-
+  
       // Agregar la cantidad a la tabla
       const cantidadAgregada = parseInt(cantidadAlterar, 10);
       if (!isNaN(cantidadAgregada) && cantidadAgregada !== 0) {
-        const productoEnTabla = tableData.find(
-          (item) => item.fk_insumo === productoSelect.id_insumo
-        );
-
-        if (productoEnTabla) {
-          const cantidadActual = productoEnTabla.cantidad;
-          const nuevaCantidad = cantidadActual + cantidadAgregada;
-
-          // Validar si la nueva cantidad supera el stock disponible
-          const productoEnStock = findProductoEnStock(
-            productoEnTabla.fk_insumo
-          );
-          
-
-          // Verificar que la nueva cantidad no sea menor que la cantidad original del producto
-          const cantidadOriginal = productoEnTabla.cantidad_original; // Ajustar el nombre según la estructura de tus datos
-
-          // Establecer la cantidad mínima en la cantidad original o 1
-          const cantidadMinima = Math.max(cantidadOriginal, 1);
-
-          // Verificar que la nueva cantidad no sea menor que la cantidad mínima
-          if (nuevaCantidad < cantidadMinima) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad no puede ser menor a la original del producto.",
-            });
-            return;
-          }
-
-          // Verificar que la cantidad a disminuir no sea mayor que la cantidad actual
-          if (
-            cantidadAgregada < 0 &&
-            Math.abs(cantidadAgregada) > cantidadActual
-          ) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad a disminuir no puede ser mayor a la actual del producto.",
-            });
-            return;
-          }
-
-          // Verificar que la nueva cantidad no sea cero o menos
-          if (nuevaCantidad <= 0) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad no puede ser menor a 1.",
-            });
-            return;
-          }
-
-          // Actualizar la cantidad en tiempo real en la tabla
-          const nuevaTabla = tableData.map((item) =>
-            item.fk_insumo === productoSelect.id_insumo
-              ? actualizarSubtotal({ ...item, cantidad: nuevaCantidad })
-              : item
-          );
-
-          setTableData(nuevaTabla);
-        }
+        // Actualizar la cantidad en tiempo real en la tabla
+        const nuevaTabla = tableData.map((item) => ({
+          ...item,
+          cantidad: item.cantidad + cantidadAgregada,
+          subtotal: (item.cantidad + cantidadAgregada) * item.precio // Actualizar también el subtotal
+        }));
+  
+        setTableData(nuevaTabla);
       }
     }
   };
+  
+  
+  
 
+  
   function formatearValores(global) {
     const [int, decimal] = parseFloat(global).toFixed(2).split(".");
     const formateoInt = int.replace(/\d(?=(\d{3})+$)/g, "$&.");
@@ -246,6 +190,59 @@ function FichaCreatePruebas() {
     setTotal(totalVenta);
   }, [tableData]);
 
+
+  useEffect(() => {
+    fichaTecnicaActualizar(fichaId);
+  }, [fichaId]);
+
+  useEffect(() => {
+    if (listarFichaTecnica.detalles.length > 0) {
+      setTableData(listarFichaTecnica.detalles);
+    }
+  }, [listarFichaTecnica]);
+
+
+  const agregarNuevoInsumo = (nuevoInsumo) => {
+    // Verificar si el insumo ya existe en la tabla
+    const insumoExistenteIndex = tableData.findIndex(item => item.fk_insumo === nuevoInsumo.id_insumo);
+  
+    if (insumoExistenteIndex !== -1) {
+      // Duplicar el insumo existente en la tabla con una cantidad adicional
+      const insumoExistente = tableData[insumoExistenteIndex];
+      const nuevaTabla = [
+        ...tableData.slice(0, insumoExistenteIndex),
+        {
+          ...insumoExistente,
+          cantidad: insumoExistente.cantidad + 1,
+          subtotal: (insumoExistente.cantidad + 1) * insumoExistente.precio,
+        },
+        ...tableData.slice(insumoExistenteIndex + 1)
+      ];
+  
+      setTableData(nuevaTabla);
+    } else {
+      // Agregar un nuevo insumo a la tabla
+      setTableData(prevTableData => [
+        ...prevTableData,
+        {
+          fk_insumo: nuevoInsumo.id_insumo,
+          cantidad: 1,
+          precio: nuevoInsumo.precio,
+          subtotal: nuevoInsumo.precio,
+          nombre: nuevoInsumo.nombre,
+        }
+      ]);
+    }
+  };
+  
+
+  const allDetails = [
+    ...listarFichaTecnica.detalles.map((detalle) => ({
+      ...detalle,
+      nombre: detalle.insumo.nombre, // Renombra insumo.nombre a nombre
+    })),
+    ...tableData,
+  ].filter((detalle) => detalle.nombre && detalle.nombre.trim() !== "");
   return (
     <>
       <div className="dashboard-app">
@@ -264,78 +261,22 @@ function FichaCreatePruebas() {
                 <br />
 
                 <Formik
-                  initialValues={{
+                  initialValues={
                     listarFichaTecnica
-                  }}
+                  }
                   enableReinitialize={true}
                   onSubmit={async (values, { setErrors, resetForm }) => {
-                    try {
-                      ventaSchema
-                          .validate(values, { abortEarly: false })
-                          .then(() => {
-                              const swalWithBootstrapButtons = Swal.mixin({
-                                  customClass: {
-                                      confirmButton: "btn btn-success me-3",
-                                      cancelButton: "btn btn-danger",
-                                  },
-                                  buttonsStyling: false,
-                              });
-                  
-                              Swal
-                                  .fire({
-                                      title: "¿Confirmar el registro?",
-                                      text: "Tu registro será guardado",
-                                      icon: "warning",
-                                      showCancelButton: true,
-                                      confirmButtonText: "Aceptar",
-                                      cancelButtonText: "Cancelar",
-                                      buttons: true,
-                                  })
-                                  .then((result) => {
-                                      if (result.isConfirmed) {
-                                          postCreateFichaTecnica(values)
-                                              .then(() => {
-                                                  Swal.fire({
-                                                      icon: "success",
-                                                      title: "Registro exitoso!",
-                                                      text: "Tu archivo ha sido registrado",
-                                                  }).then(() => {
-                                                      handleCloseVentaModal();
-                                                      setNombreFicha(values.nombre_ficha);
-                                                      resetForm();
-                                                  });
-                                              })
-                                              .catch((error) => {
-                                                  console.error(error);
-                                                  Swal.fire({
-                                                      icon: "error",
-                                                      title: "Error en la solicitud",
-                                                      text: error.response ? error.response.data.error : error.message,
-                                                  });
-                                              });
-                                      } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                          swalWithBootstrapButtons.fire(
-                                              "Registro cancelado",
-                                              "Registro no completado",
-                                              "error"
-                                          );
-                                      }
-                                  });
-                          })
-                          .catch((validationErrors) => {
-                              const formattedErrors = {};
-                              validationErrors.inner.forEach((error) => {
-                                  formattedErrors[error.path] = error.message;
-                              });
-                              setErrors(formattedErrors);
-                          });
-                  } catch (error) {
-                      console.error(error);
-                      // Aquí puedes manejar errores generales si es necesario
-                  }
-                  
-                  
-                  }}
+                  console.log(values)
+                  const datosParaEnviar = {
+                    ...values,
+                    detalles: allDetails, // Asegúrate de que esto refleje los insumos actuales, incluidos los nuevos insumos
+                  };
+                
+                  console.log(datosParaEnviar);
+                
+                  // Ahora, enviar `datosParaEnviar` al backend
+                  validarFichaActualizar(fichaId, datosParaEnviar);
+                }}
                 >
                   {({
                     handleChange,
@@ -359,93 +300,31 @@ function FichaCreatePruebas() {
                                       <span className="small"></span>
                                       <input type="hidden"  value={listarFichaTecnica.id_ft}/>
                                       <Autocomplete
-                                        disablePortal
-                                        id="fixed-tags-demo"
-                                        options={listar.filter((option) => option.estado)}
-                                        getOptionLabel={(option) =>
-                                          `${option.nombre}`
-                                        }
-                                        onChange={(event, newValue) => {
-                                          if (newValue) {
-                                            setProductoSelect(newValue);
+  disablePortal
+  id="fixed-tags-demo"
+  options={listar.filter((option) => option.estado)}
+  getOptionLabel={(option) => `${option.nombre}`}
+  onChange={(event, newValue) => {
+    if (Array.isArray(newValue)) {
+      setProductoSelect(newValue[0]); // Establecer el primer elemento del array como productoSelect
+    } else if (newValue === null) {
+      setProductoSelect(null);
+    } else {
+      // Si newValue no es un array ni null, podría ser un nuevo producto seleccionado
+      agregarNuevoInsumo(newValue); // Asegúrate de manejar la lógica de agregar el nuevo insumo correctamente
+    }
+  }}
+  value={productoSelect}
+  noOptionsText="Producto no encontrado"
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Insumos"
+      sx={{ width: "70%" }}
+    />
+  )}
+/>
 
-                                            const productoAgregadoTabla =
-                                              tableData.some(
-                                                (item) =>
-                                                  item.fk_insumo ===
-                                                  newValue.id_insumo
-                                              );
-
-                                            if (!productoAgregadoTabla) {
-                                              const precioProducto = newValue
-                                                ? newValue.precio
-                                                : 0;
-                                              const cantidadPredeterminada =
-                                              newValue.cantidad !== 0 ? 1 : 0; // Set to 1 if newValue.cantidad is 0
-
-                                              if (
-                                                cantidadPredeterminada === 0
-                                              ) {
-                                                Swal.fire({
-                                                  icon: "warning",
-                                                  title: "Advertencia",
-                                                  text: "Insumo sin stock",
-                                                });
-                                              } else {
-                                                setTableData(
-                                                  (prevTableData) => [
-                                                    ...prevTableData,
-                                                    {
-                                                      fk_insumo:
-                                                        newValue.id_insumo,
-                                                      cantidad:
-                                                        cantidadPredeterminada,
-                                                      precio: precioProducto,
-                                                      subtotal:
-                                                        cantidadPredeterminada *
-                                                        precioProducto,
-                                                      nombre:
-                                                        newValue.nombre,
-                                                    },
-                                                  ]
-                                                );
-
-                                                setFieldValue("insumo", [
-                                                  ...values.insumo,
-                                                  {
-                                                    fk_insumo:
-                                                      newValue.id_insumo,
-                                                    cantidad:
-                                                      cantidadPredeterminada,
-                                                    precio: precioProducto,
-                                                    subtotal:
-                                                      cantidadPredeterminada *
-                                                      precioProducto,
-                                                    nombre:
-                                                      newValue.nombre,
-                                                  },
-                                                ]);
-                                                event.target.value = null;
-                                            }
-                                            } else {
-                                              console.log(
-                                                "Producto existente en la tabla"
-                                              );
-                                            }
-                                          } else {
-                                            console.log("Nuevo valor es nulo");
-                                          }
-                                        }}
-                                        value={productoSelect}
-                                        noOptionsText="Producto no encontrado"
-                                        renderInput={(params) => (
-                                          <TextField
-                                            {...params}
-                                            label="Insumos"
-                                            sx={{ width: "70%" }}
-                                          />
-                                        )}
-                                      />
                                     </label>
                                   </div>
                                   <div className="col-md-5 mb-3 new-cant">
@@ -472,52 +351,10 @@ function FichaCreatePruebas() {
                                       maxWidth: "100%",
                                     }}
                                   >
-{/* <table>
-  <thead>
-    <tr>
-      <th>Insumo</th>
-      <th>Cantidad</th>
-      <th>Precio</th>
-      
-    </tr>
-  </thead>
-  <tbody>
-    {listarFichaTecnica.detalles.map((detalle, index) => (
-      <tr key={index}>
-        <td>{detalle.insumo.nombre}</td>
-        <td>{detalle.cantidad}</td>
-        <td>{detalle.precio}</td>
-        
-      </tr>
-    ))}
-  </tbody>
-</table> */}
 
-
-
-
-                                    {/* {tablaVacia && (
-                                      <div
-                                        style={{
-                                          fontFamily:
-                                            "Helvetica, Arial, sans-serif",
-                                          fontStyle: "italic",
-                                        }}
-                                      >
-                                        &nbsp;¡Sin productos en el carrito!
-                                      </div>
-                                    )} */}
-                                    
-                                    {tablaVacia && (
+                                  
                                       <div>
-                                        <h4
-                                          style={{
-                                            fontFamily: "Candara",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          Descripción <TiShoppingCart />
-                                        </h4>
+                                       
                                         <table
                                           id="detallesVenta"
                                           className="display  tabble-striped w-100 shadow custom-table"
@@ -533,9 +370,9 @@ function FichaCreatePruebas() {
                                             </tr>
                                           </thead>
                                           <tbody className="small text-left fs-6">
-                                            {listarFichaTecnica.detalles.map((row, index) => (
+                                            {allDetails.map((row, index) => (
                                               <tr key={index}>
-                                                <td>{row.insumo.nombre}</td>
+                                                <td>{row.nombre}</td>
                                                 <td>
                                                   {formatearPrecios(row.precio)}
                                                 </td>
@@ -547,7 +384,7 @@ function FichaCreatePruebas() {
                                                 <td></td>
                                                 <td>
                                                   {formatearPrecios(
-                                                    row.subtotal
+                                                    row.precio * row.cantidad
                                                   )}
                                                 </td>
                                                 <td>
@@ -557,7 +394,9 @@ function FichaCreatePruebas() {
                                                   >
                                                     <span>
                                                       <button
+                                                      
                                                         className="btn"
+                                                        type="button"
                                                         style={{
                                                           boxShadow: "none",
                                                           background: "none",
@@ -587,7 +426,7 @@ function FichaCreatePruebas() {
                                           </tbody>
                                         </table>
                                       </div>
-                                    )}
+                                  
                                   </div>
                                   
                                   {/* Paginación de Bootstrap */}
@@ -645,7 +484,7 @@ function FichaCreatePruebas() {
                             name='detalle'
                             className='form-control'
                             onChange={handleChange}
-                            value={listarFichaTecnica.detalle}
+                            value={values.detalle}
                           />  
                                 </div>
                               </div>
@@ -665,12 +504,14 @@ function FichaCreatePruebas() {
             name='nombre_ficha'
             className='form-control'
             as={TextField}
-            value={listarFichaTecnica.nombre_ficha}
+            value={values.nombre_ficha}
             label="Nombre Ficha"
-            onChange={(e) => {
-              handleChange(e);
-              setNombreFicha(e.target.value); // Actualizar el estado local
-            }}
+            onChange={handleChange}
+
+            // onChange={(e) => {
+            //   handleChange(e);
+            //   // setNombreFicha(e.target.value); // Actualizar el estado local
+            // }}
           />
 <br />
 <br />
@@ -722,7 +563,7 @@ function FichaCreatePruebas() {
                                       disabled
                                       as={TextField}
                                       label="Total"
-                                      value={listarFichaTecnica.costo_final_producto}
+                                      value={formatearPrecios(values.costo_final_producto)}
                                       onChange={(e) => {
                                         setTotalTouched(true);
                                         handleChange(e);

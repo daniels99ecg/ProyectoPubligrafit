@@ -21,3 +21,16 @@ export const getListaVenta = async (id_venta) => {
 export const postCreateVentas = async (task) => {
     return await axios.post('http://localhost:3001/venta/create', task)
 }
+
+
+export const getListarVentadelDia = async () => {
+  return await axios.get('http://localhost:3001/venta/ventames') 
+  
+};
+
+
+
+export const getListarVentadelDiasemana = async () => {
+  return await axios.get('http://localhost:3001/venta/ventasemana') 
+  
+};

@@ -115,7 +115,7 @@ const handleCloseUpdateModal = () => {
                             <li className="list-group-item">Nombre: {item.nombre_producto}</li>
                             <li className="list-group-item">Precio: {formatCurrency(item.precio)}</li>
                             <li className="list-group-item"><img
-  src={`http://localhost:3001/${item.imagen}`}
+  src={`http://localhost:3001/${item.fichas_tecnica.imagen_producto_final}`}
   alt="Imagen del producto"
   style={{ width: '30%' }}
 /></li>

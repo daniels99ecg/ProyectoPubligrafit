@@ -61,6 +61,7 @@ async function listarFichaTecnica(req, res) {
 }
 
 
+
 async function crearFichaTecnica(req, res) {
     try {
       const dataFicha = req.body;
@@ -138,33 +139,55 @@ async function crearFichaTecnica(req, res) {
   }
 
 
-async function actualizarFichaTecnica(req, res) {
+
+
+  async function actualizarFichaTecnica(req, res) {
+    const id = req.params.id;
+    const { nombre_ficha, imagen_producto_final, costo_final_producto,detalle, detalles } = req.body; // Asumiendo que `detalles` es un array de detalles de la ficha técnica
+  
     try {
-        const id =req.params.id;
-        const fichaTecnica =req.body;
-        const fichaTecnicaExistente = await FichaTecnica.findByPk(id);
-        if (!fichaTecnicaExistente) {
-            return res.status(404).json({ error: 'FichaTecnica no encontrado' });
+      const fichaTecnicaExistente = await FichaTecnica.findByPk(id);
+      if (!fichaTecnicaExistente) {
+        return res.status(404).json({ error: 'Ficha Técnica no encontrada' });
+      }
+  
+      // Actualiza la ficha técnica principal
+      await fichaTecnicaExistente.update({
+        nombre_ficha,
+        imagen_producto_final,
+        costo_final_producto,
+        detalle
+        // Omitir actualizar 'detalle' directamente aquí, ya que lo manejaremos por separado
+      });
+  
+      // Actualizar los detalles de la ficha técnica
+      // Esto es un esquema básico, necesitarás ajustarlo a tu lógica de negocio específica
+      if (detalles && detalles.length > 0) {
+        // Eliminar detalles existentes, una opción es eliminarlos todos y volver a insertar
+        // Otra opción es actualizar los existentes y añadir los nuevos
+        await DetalleFichaTecnica.destroy({
+          where: { fk_ficha_tecnica: id }
+        });
+  
+        // Insertar los nuevos detalles
+        for (const detalle of detalles) {
+          await DetalleFichaTecnica.create({
+            fk_ficha_tecnica: id,
+            fk_insumo: detalle.fk_insumo,
+            cantidad: detalle.cantidad,
+            precio: detalle.precio,
+            // Agrega los campos necesarios según tu modelo
+          });
         }
-        await fichaTecnicaExistente.update(
-            {   
-                id_ft: fichaTecnica.id_ft,
-                cantidad_insumo: fichaTecnica.cantidad_insumo,
-                costo_insumo:  fichaTecnica.costo_insumo,
-                imagen_producto_final: fichaTecnica.imagen_producto_final,
-                costo_final_producto:  fichaTecnica.costo_final_producto,
-                detalle:  fichaTecnica.detalle
-            },
-            {
-                where: { id_ft: fichaTecnicaExistente.id_ft }
-            }
-        );
-        res.status(201).send(fichaTecnica)
-    }catch (error){
-        console.error(error);
-        res.status(500).json({error: 'Error al actualizar fichaTecnica'});
+      }
+  
+      res.status(200).json({ message: 'Ficha Técnica actualizada con éxito' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al actualizar la Ficha Técnica' });
     }
-}
+  }
+  
 
 async function eliminarFichaTecnica(req, res) {
     try {

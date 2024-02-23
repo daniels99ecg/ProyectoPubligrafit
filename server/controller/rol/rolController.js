@@ -115,7 +115,7 @@ async function listarporid(req, res) {
         },
         {
           model: Permiso,
-          attributes: ['nombre_permiso'],
+          attributes: ['id_permiso','nombre_permiso'],
         },{
          model:Rol,
          attributes: ['nombre_rol'],
@@ -276,13 +276,13 @@ async function listarporid(req, res) {
           }
   
           // Actualizar el nombre del rol
-          rol.nombre_rol = "Vendedores";
+          rol.nombre_rol = nombre_rol;
   
           // Guardar los cambios en el rol
           await rol.save();
   
           // Eliminar todos los permisos asociados al rol
-          // await RolXPermiso.destroy({ where: { fk_rol: id } });
+          await RolXPermiso.destroy({ where: { fk_rol: id } });
   
 
           // Insertar los nuevos permisos asociados al rol

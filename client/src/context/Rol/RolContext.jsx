@@ -27,7 +27,8 @@ async function cargarRol(){
 
         const filterList = response.data.filter((item) => 
         item.id_rol_x_permiso.toString().includes(searchTerm) ||
-        item.rol.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase()) 
+        item.rol.nombre_rol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.rol.id_rol.toString().includes(searchTerm) 
      
       );
         setListar(filterList) //Se le pasa los datos al setListar 

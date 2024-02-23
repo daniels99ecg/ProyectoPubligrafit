@@ -8,26 +8,27 @@ const secretKey = 'your-secret-key';
 
 async function listaRoles(req, res){
   try {
-    const rol = await Rol.findAll();
-    const clientesConVentas = await Promise.all(rol.map(async (rol) => {
-      const ventasAsociadas = await RolXPermiso.findOne({
-          where: {
-              fk_rol: rol.id_rol, 
-          },
-      });
+    const roles = await Rol.findAll();
+    
+    // Utilizar un conjunto para almacenar nombres únicos de roles
+    const rolesUnicos = new Set();
 
-      return {
-          ...rol.toJSON(),
-          tieneVentas: !!ventasAsociadas,
-      };
-  }));
+    // Filtrar roles duplicados y almacenar solo un rol por nombre
+    const rolesFiltrados = roles.filter(rol => {
+      if (!rolesUnicos.has(rol.nombre_rol)) {
+        rolesUnicos.add(rol.nombre_rol);
+        return true;
+      }
+      return false;
+    });
 
-    res.json(clientesConVentas);
+    res.json(rolesFiltrados);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener usuarios' });
   }
 }
+
 
 
 async function listarRol(req, res) {
@@ -180,14 +181,14 @@ async function listarporid(req, res) {
           const t = await sequelize.transaction();
           try {
 
-            const existingRol = await Rol.findOne({
-              where: { nombre_rol: dataRol.nombre_rol }
-            });
+            // const existingRol = await Rol.findOne({
+            //   where: { nombre_rol: dataRol.nombre_rol }
+            // });
         
-            if (existingRol) {
-              // Si el ID de usuario ya existe, muestra una alerta
-              return res.status(400).json({ error: 'el nombre del rol ya existe' });
-            }
+            // if (existingRol) {
+            //   // Si el ID de usuario ya existe, muestra una alerta
+            //   return res.status(400).json({ error: 'el nombre del rol ya existe' });
+            // }
 
 
             // Insertar el rol

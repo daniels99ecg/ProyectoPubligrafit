@@ -172,7 +172,6 @@ function Dashboard() {
 
               <div className='col-md-6'>
                 <br />
-                <div className='card text-center d-flex align-items-center'>
                   <Card>
                     <CardContent>
                       <Tabs value={tabIndexDay} onChange={handleChangeTabDay} centered>
@@ -198,7 +197,7 @@ function Dashboard() {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
+              
               </div>
             </div>
           </div>

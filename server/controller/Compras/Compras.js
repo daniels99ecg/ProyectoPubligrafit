@@ -113,6 +113,24 @@ async function listarcompra(req, res) {
 async function crearCompras(req, res) {
   try {
     const datacompra = req.body;
+    let proveedorId;
+
+    // Verificar si el proveedor ya existe o crear uno nuevo
+    if (datacompra.id_proveedores && datacompra.id_proveedores.fk_proveedor) {
+      proveedorId = datacompra.id_proveedores.fk_proveedor;
+    } else {
+      // Crear un nuevo proveedor
+      const nuevoProveedor = await Proveedor.create({
+        // Asegúrate de que estos campos coincidan con tu modelo Proveedor
+        nombre: datacompra.nombre_proveedor,
+        telefono:0,
+        estado:1
+        // Otros campos del proveedor según tu modelo
+      });
+      proveedorId = nuevoProveedor.id_proveedores;
+    }
+
+
 
     await sequelize.transaction(async (t) => {
       const insumos = datacompra.insumo || [];
@@ -131,7 +149,7 @@ async function crearCompras(req, res) {
       if (compraValida) {
         const createdCompra = await Compras.create(
           {
-            fk_proveedor: datacompra.id_proveedores.fk_proveedor,
+            fk_proveedor: proveedorId,
             cantidad: datacompra.cantidad,
             fecha: datacompra.fecha,
             total: datacompra.total,

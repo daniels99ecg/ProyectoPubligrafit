@@ -1,4 +1,5 @@
 const Cliente = require("../../models/Cliente")
+const Venta=require("../../models/Venta")
 const { Op } = require("sequelize")
 
 async function existenteCliente(documento) {
@@ -18,7 +19,23 @@ async function existenteCliente(documento) {
 async function listarClientes(req, res) {
     try {
         const cliente = await Cliente.findAll();
-        res.json(cliente);
+        const clientesConVentas = await Promise.all(cliente.map(async (cliente) => {
+            const ventasAsociadas = await Venta.findOne({
+                where: {
+                    fk_id_cliente: cliente.id_cliente, 
+                },
+            });
+  
+            return {
+                ...cliente.toJSON(),
+                tieneVentas: !!ventasAsociadas,
+            };
+        }));
+        res.json(clientesConVentas);
+
+
+
+       
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener clientes' });

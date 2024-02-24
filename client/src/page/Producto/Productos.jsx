@@ -111,8 +111,8 @@ const handleCloseUpdateModal = () => {
                           <ul className="list-group list-group-flush">
 
                             <li className="list-group-item">ID: {item.id_producto}</li>
-                            <li className="list-group-item">Categoria: {item.fk_categoria}</li>
-                            <li className="list-group-item">Nombre: {item.nombre_producto}</li>
+                            <li className="list-group-item">Categoria: {item.categoria.categoria}</li>
+                            <li className="list-group-item">Nombre: {item.fichas_tecnica.nombre_ficha}</li>
                             <li className="list-group-item">Precio: {formatCurrency(item.precio)}</li>
                             <li className="list-group-item"><img
   src={`http://localhost:3001/${item.fichas_tecnica.imagen_producto_final}`}
@@ -133,9 +133,9 @@ const handleCloseUpdateModal = () => {
                                 onChange={(e) => {
                                   e.preventDefault(); // Evitar la navegación por defecto
                                   if (item.estado) {
-                                    desactivarCliente(item.id_producto);
+                                    desactivarProducto(item.id_producto);
                                   } else {
-                                    activarCliente(item.id_producto);
+                                    activarProducto(item.id_producto);
                                   }
                                 }}
                                 className="switch-button__checkbox"
@@ -150,10 +150,7 @@ const handleCloseUpdateModal = () => {
 
                             <button
                               className="btn btn-outline-secondary me-1"
-                              onClick={() => {
-                                navigate(`/editP/${item.id_producto}`)
-                                window.location.reload();
-                              }}
+                              onClick={() => handleOpenUpdateModal(item.id_producto)}
                               disabled={!item.estado}
                               style={{
                                 backgroundColor: '#0d6efd',
@@ -179,7 +176,28 @@ const handleCloseUpdateModal = () => {
                                 ></path>
                               </svg>
                             </button>
-
+                            {item.tieneVentas ? (
+            <button
+              className="btn btn-danger"
+              disabled
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-trash"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
+                ></path>
+                <path
+                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
+                ></path>
+              </svg>
+            </button>
+           ) : (
 
                             <button
                               className="btn btn-danger"
@@ -202,6 +220,7 @@ const handleCloseUpdateModal = () => {
                                 ></path>
                               </svg>
                             </button>
+)}
                           </div>
                         </CardContent>
                       </Card>

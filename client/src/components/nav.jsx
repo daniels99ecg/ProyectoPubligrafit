@@ -27,6 +27,8 @@ function Nav() {
             
             </a><a href="/dashboard" className="brand-logo">
           
+
+            <img src="../img/PubliGrafit2.png" style={{width:40, background:"white", borderRadius:20, marginRight:10}}/>
               <span>PubliGrafit</span>
               </a>
               </header>

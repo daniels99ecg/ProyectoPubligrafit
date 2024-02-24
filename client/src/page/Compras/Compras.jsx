@@ -244,7 +244,22 @@ const handleCloseInfoVenta = () => {
           }
             
         ]}
-        />
+        autoHeight
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5
+            },
+          },
+        }} 
+        pageSizeOptions={[5]} 
+        getRowClassName={(params) => {
+          if (!params.row.estado) {
+            return 'Compra-desactivado';
+          }
+          return
+        }}
+      />
 </div>
 )}
 {openCreateModal && ReactDOM.createPortal(

@@ -342,9 +342,20 @@ function listarVentas() {
                       }
                     ]}
                     autoHeight
-                    pageSize={5}
-                    pageSizeOptions={[5, 25, 50, 100]}
-                    getRowId={(row) => row.id}
+                    initialState={{
+                      pagination: {
+                        paginationModel: {
+                          pageSize: 5
+                        },
+                      },
+                    }} 
+                    pageSizeOptions={[5]} 
+                    getRowClassName={(params) => {
+                      if (!params.row.estado) {
+                        return 'Compra-desactivado';
+                      }
+                      return
+                    }}
                   />
                 </div>
                 )}

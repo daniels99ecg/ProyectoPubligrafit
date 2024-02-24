@@ -38,6 +38,10 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
   const currentItems = tableData.slice(startIndex, endIndex);
   const [precio, setPrecio] = useState(0);
 
+
+  const [nombreRol, setNombreRol]=useState("")
+
+
   const ventaSchema = Yup.object().shape({
     // id_cliente: Yup.object().shape({
     //   fk_id_cliente: Yup.string().required("Campo requerido"),
@@ -349,7 +353,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
 
                 <Formik
                   initialValues={{
-                    id_proveedores:{fk_proveedor: ""},
+                    nombre_proveedor:"",
                     fecha: fechaActual(),
                     total: total,
                     insumo: tableData.map((item) => ({
@@ -361,6 +365,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                   }}
                   enableReinitialize={true}
                   onSubmit={async (values, { setErrors, resetForm }) => {
+                    console.log(values)
                     try {
                       ventaSchema
                         .validate(values, { abortEarly: false })
@@ -385,7 +390,9 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                             })
                             .then((result) => {
                               if (result.isConfirmed) {
-                                postCrearCompras(values)
+                                // Establecer el valor del proveedor seleccionado en el campo fk_proveedor
+                              
+                                postCrearCompras({...values, nombre_proveedor:nombreRol})
                                   .then(() => {
                                     Swal.fire({
                                       icon: "success",
@@ -771,65 +778,23 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                   </div>
                                   <hr />
                                   <div className="form-group mb-2">
-  {/* <Autocomplete
-    disablePortal
-    id="fixed-tags-demo"
-    options={Listar.filter((option) => option.estado)}
-    getOptionLabel={(option) =>
-      `${option.documento} - ${option.nombre} ${option.apellido}`
-    }
-    onChange={(event, newValue) => {
-      setFieldValue("id_cliente.fk_id_cliente", newValue ? newValue.id_cliente : "");
-      setFieldValue("clienteSeleccionado", newValue);
-    }}
-    value={values.clienteSeleccionado || null}
-    sx={{ width: "100%" }}
-    noOptionsText="Cliente no encontrado"
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        label="Proveedor"
-        sx={{ width: "100%" }}
-        InputProps={{
-          ...params.InputProps,
-          endAdornment: (
-            <>
-              {(touched.id_cliente?.fk_id_cliente && values.clienteSeleccionado) && (
-                <CheckCircleIcon
-                  sx={{ color: "green", marginLeft: "10px" }}
-                />
-              )}
-              {(touched.id_cliente?.fk_id_cliente && !values.clienteSeleccionado) && (
-                <ErrorIcon
-                  sx={{ color: "red", marginLeft: "10px" }}
-                />
-              )}
-            </>
-          ),
-        }}
-      />
-    )}
-  /> */}
-  {/* <input
-                            type='text'
-                            name='proveedor'
-                            className='form-control'
-                            onChange={handleChange}
-                            value={values.fk_proveedor}
-                          /> */}
+  
                           <Autocomplete 
   disablePortal
-  id="fixed-tags-demo"
-  options={listarP.filter((proveedor) => proveedor.estado)}  // Filtrar roles con estado true
-  getOptionLabel={(option) => option.nombre}
-  onChange={(event, newValue) => {
-    handleChange({ target: { name: 'id_proveedores.fk_proveedor', value: newValue ? newValue.id_proveedores : '' } });
+  id="proveedor"
+  options={listarP.filter((proveedor) => proveedor.estado).map(proveedor => proveedor.nombre)}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option}
+  value={values.nombre} 
+  onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
+    setNombreRol(newInputValue);
   }}
-  value={listarP.find((proveedor) => proveedor.id_proveedores === values.fk_proveedor) || null}
-  sx={{ width: '100%' }}
-  renderInput={(params) => <TextField {...params} label="Proveedor" sx={{ width: '100%' }}/>}
   freeSolo
+   renderInput={(params) => (
+    <TextField {...params} label="Proveedor" sx={{ width: '100%' }}/>
+  )}  
 />
+
+
   {/* <ErrorMessage
     name="id_cliente.fk_id_cliente"
     component="div"

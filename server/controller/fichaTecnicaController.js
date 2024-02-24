@@ -3,6 +3,7 @@ const sequelize=require("../database/db")
 const FichaTecnica=require("../models/Ficha_Tecnica/FichaTecnica")
 const Insumo=require("../models/Insumo")
 const DetalleFichaTecnica=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
+const Producto=require("../models/Producto")
 
 const fs = require('fs')
 const { request } = require("express");
@@ -10,7 +11,20 @@ const { request } = require("express");
 async function listarFichasTecnicas(req, res){
     try {
         const fichaTecnica = await FichaTecnica.findAll();
-        res.json(fichaTecnica);
+        const clientesConVentas = await Promise.all(fichaTecnica.map(async (fichaTecnica) => {
+          const ventasAsociadas = await Producto.findOne({
+              where: {
+                  fk_ft: fichaTecnica.id_ft, 
+              },
+          });
+
+          return {
+              ...fichaTecnica.toJSON(),
+              tieneVentas: !!ventasAsociadas,
+          };
+      }));
+      res.json(clientesConVentas);
+        // res.json(fichaTecnica);
         
     } catch (error) {
         console.error(error);
@@ -18,6 +32,10 @@ async function listarFichasTecnicas(req, res){
         
     }
 }
+
+
+
+
 
 async function listarFichaTecnica(req, res) {
   const  {id_ft}  = req.params;

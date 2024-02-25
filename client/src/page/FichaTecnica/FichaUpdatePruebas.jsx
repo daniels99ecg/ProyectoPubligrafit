@@ -43,6 +43,9 @@ function FichaCreatePruebas({fichaId}) {
   const currentItems = tableData.slice(startIndex, endIndex);
 
  
+  const [detalles, setDetalles] = useState(listarFichaTecnica.detalles);
+
+
 
 
   const ventaSchema = Yup.object().shape({
@@ -75,6 +78,11 @@ function FichaCreatePruebas({fichaId}) {
     const nuevosDetalles = [...tableData];
     nuevosDetalles.splice(index, 1);
     setTableData(nuevosDetalles);
+  
+    // Eliminar el insumo correspondiente de allDetails
+    const nuevosAllDetails = [...allDetails];
+    nuevosAllDetails.splice(index, 1);
+    setDetalles(nuevosAllDetails);
   };
   
   const actualizarSubtotal = (row) => {
@@ -236,13 +244,32 @@ function FichaCreatePruebas({fichaId}) {
   };
   
 
+  const actualizarCantidad = (nuevaCantidad, index) => {
+    const parsedCantidad = parseInt(nuevaCantidad);
+    const cantidad = isNaN(parsedCantidad) ? 0 : parsedCantidad;
+  
+    setDetalles(prevDetalles => {
+      const nuevosDetalles = [...prevDetalles];
+      nuevosDetalles[index] = {
+        ...nuevosDetalles[index],
+        cantidad: cantidad,
+        subtotal: cantidad * nuevosDetalles[index].precio,
+      };
+      return nuevosDetalles;
+    });
+  };
+
   const allDetails = [
-    ...listarFichaTecnica.detalles.map((detalle) => ({
+    ...detalles.map((detalle) => ({
       ...detalle,
-      nombre: detalle.insumo.nombre, // Renombra insumo.nombre a nombre
+      nombre: detalle.insumo.nombre,
     })),
     ...tableData,
   ].filter((detalle) => detalle.nombre && detalle.nombre.trim() !== "");
+
+ 
+
+
   return (
     <>
       <div className="dashboard-app">
@@ -376,11 +403,20 @@ function FichaCreatePruebas({fichaId}) {
                                                 <td>
                                                   {formatearPrecios(row.precio)}
                                                 </td>
-                                                <td>
+                                                {/* <td>
                                                   {row.cantidad === 1
                                                     ? `${row.cantidad} Und`
                                                     : `${row.cantidad} Unds`}
-                                                </td>
+                                                </td> */}
+                                                <td>
+                                                <input
+                                                type="text"
+                                                value={row.cantidad}
+                                                style={{width:60, height:25}}
+                                                onChange={(e) => actualizarCantidad(e.target.value, index)}
+                                                InputProps={{ inputProps: { min: 1 } }}
+                                              />
+                                          </td>
                                                 <td></td>
                                                 <td>
                                                   {formatearPrecios(
@@ -430,7 +466,7 @@ function FichaCreatePruebas({fichaId}) {
                                   </div>
                                   
                                   {/* Paginación de Bootstrap */}
-                                  {tableData.length > 0 && (
+                                  {allDetails.length > 0 && (
                                     <div className="d-flex mt-2">
                                       <Pagination>
                                         <Pagination.Prev
@@ -618,7 +654,7 @@ function FichaCreatePruebas({fichaId}) {
                                         <br />
                                         <button
                                           className="btn btn-danger buttons-doubles"
-                                          
+                                          type="button"
                                         >
                                           Cancelar
                                         </button>

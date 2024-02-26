@@ -123,6 +123,9 @@ async function listarVenta(req, res) {
   }
 }
 
+
+
+
 async function createVentaConDetalle(req, res) {
   try {
     const dataVenta = req.body;
@@ -189,12 +192,11 @@ async function createVentaConDetalle(req, res) {
   }
 }
 
+
+
+
+
 const { Op , fn, col} = require("sequelize");
-
-
-
-
-
 
 
 async function listarVentasPorFechas(req, res) {

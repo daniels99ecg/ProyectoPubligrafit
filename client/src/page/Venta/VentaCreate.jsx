@@ -264,6 +264,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                       cantidad: item.cantidad,
                       precio: item.precio,
                       subtotal: item.subtotal,
+                     
                     })),
                   }}
                   enableReinitialize={true}
@@ -401,7 +402,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                                         cantidadPredeterminada *
                                                         precioProducto,
                                                       nombre_producto:
-                                                        newValue.nombre_producto,
+                                                        newValue.fichas_tecnica.nombre_ficha,
                                                     },
                                                   ]
                                                 );
@@ -418,7 +419,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                                       cantidadPredeterminada *
                                                       precioProducto,
                                                     nombre_producto:
-                                                      newValue.nombre_producto,
+                                                      newValue.fichas_tecnica.nombre_ficha,
                                                   },
                                                 ]);
                                                 event.target.value = null;

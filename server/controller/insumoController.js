@@ -1,15 +1,28 @@
 const Insumo=require("../models/Insumo")
-const Ficha=require("../models/Ficha_Tecnica/FichaTecnica")
+const DetalleFichaTecnica=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
+const Compras_detalle=require('../models/Detalle_Compra/Detalle_Compra')
 
 async function listarInsumos(req, res){
     try {
         const insumo = await Insumo.findAll();
-      
-            
-  
-          
-    
-        res.json(insumo);
+        const clientesConVentas = await Promise.all(insumo.map(async (insumo) => {
+            const ventasAsociadas = await Compras_detalle.findOne({
+                where: {
+                    fk_insumo: insumo.id_insumo, 
+                },
+            });
+            const detalleFichaTecnica = await DetalleFichaTecnica.findOne({
+                where: { fk_insumo: insumo.id_insumo },
+            });
+            return {
+                ...insumo.toJSON(),
+                tieneVentas: !!ventasAsociadas,
+                detalleFichaTecnica:  !!detalleFichaTecnica
+
+            };
+        }));
+        res.json(clientesConVentas);
+        // res.json(insumo);
         
     } catch (error) {
         console.error(error);
@@ -61,6 +74,16 @@ async function actualizarInsumo(req, res) {
     try {
         const id =req.params.id;
         const insumo =req.body;
+
+             const existingRol = await Insumo.findOne({
+              where: { nombre: insumo.nombre }
+            });
+        
+            if (existingRol) {
+              // Si el ID de usuario ya existe, muestra una alerta
+              return res.status(400).json({ error: 'el nombre del insumo ya existe' });
+            }
+
         const insumoExistente = await Insumo.findByPk(id);
         if (!insumoExistente) {
             return res.status(404).json({ error: 'Insumo no encontrado' });

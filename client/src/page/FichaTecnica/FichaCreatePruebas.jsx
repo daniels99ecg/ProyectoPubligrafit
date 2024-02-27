@@ -36,7 +36,21 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = tableData.slice(startIndex, endIndex);
 
+  const [error, setError] = useState('');
+
+  const handleChangee = (e) => {
+    const newValue = e.target.value.trim();
+    if (newValue === '' || (!isNaN(newValue) && newValue > 0)) {
+      setManoObra(newValue);
+      setError(''); // Limpiar el mensaje de error si el valor es válido
+    } else {
+      setError('El valor debe ser un número positivo y diferente de cero');
+    }
+  };
+  
+
   const ventaSchema = Yup.object().shape({
+
     // id_cliente: Yup.object().shape({
     //   fk_id_cliente: Yup.string().required("Campo requerido"),
     // }),
@@ -258,6 +272,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                     imagen_producto_final:selectedImage,
                     costo_final_producto: subtotalTotal,
                     detalle:"",
+                    mano_obra:manoObra,
                     insumo: tableData.map((item) => ({
                       fk_insumo: item.fk_insumo,
                       cantidad:item.cantidad,
@@ -265,6 +280,8 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                       // subtotal:item.subtotal,
                     })),
                   }}
+              
+
                   enableReinitialize={true}
                   onSubmit={async (values, { setErrors, resetForm }) => {
                     try {
@@ -658,16 +675,16 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
 
              <br />  
 <Field
-                            type='text'
+                            type='number'
                             name='costo_produccion'
                             className='form-control'
                             as={TextField}
                             value={manoObra}
                             label="Mano de Obra"
-                            onChange={(e) => {
-                              const newValue = e.target.value.trim();
-                              setManoObra(newValue);
-                            }}
+                            onChange={handleChangee}
+                            error={!!error} // Marcar el campo como error si hay un mensaje de error
+                            helperText={error} 
+                            
                           /> 
                           <br />
            

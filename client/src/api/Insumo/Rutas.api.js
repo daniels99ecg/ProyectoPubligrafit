@@ -23,7 +23,14 @@ export const  getListarInsumo=async (id_isumo)=>{
 }
 
 export const  putActualizarInsumos=async (id_isumo, taks)=>{
-    return await axios.put(`http://localhost:3001/insumo/update/${id_isumo}`,taks)
+    try {
+    const response= await axios.put(`http://localhost:3001/insumo/update/${id_isumo}`,taks)
+    return response.data;
+} catch (error) {
+    if (error.response) {
+      return { error: 'Error del servidor', data: error.response.data };
+    }
+  }
 }
 
 export const eliminarInsumo= async (id_insumo) => {

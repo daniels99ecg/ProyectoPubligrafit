@@ -25,7 +25,6 @@ const DetalleFichaTecnica=sequelize.define("detalle_fichas_tecnicas",{
         type:DataTypes.FLOAT,
         
     },
-    estado:DataTypes.BOOLEAN
 
 },{
     timestamps:false,

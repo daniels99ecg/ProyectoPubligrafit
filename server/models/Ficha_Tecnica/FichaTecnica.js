@@ -23,6 +23,9 @@ const FichaTecnica=sequelize.define("fichas_tecnicas",{
         type:DataTypes.STRING
         
     },
+    mano_obra:{
+        type:DataTypes.INTEGER,
+    },
     estado:DataTypes.BOOLEAN
 
 },{

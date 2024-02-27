@@ -89,6 +89,9 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
             <p>
               <strong>Detalle:</strong> {ficha.detalle}
             </p>
+            <p>
+              <strong>Mano de Obra:</strong> {ficha.mano_obra}
+            </p>
             <table style={tableStyle}>
               <thead>
                 <tr>

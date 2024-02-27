@@ -116,7 +116,7 @@
   }}
   value={listar.find((fichatecnica) => fichatecnica.id_ft === values.fk_ft) || null}
   sx={{ width: '100%' }}
-  renderInput={(params) => <TextField {...params} label="Nombre" sx={{ width: '100%' }}/>}
+  renderInput={(params) => <TextField {...params} label="Nombre Ficha" sx={{ width: '100%' }}/>}
 />
 
 

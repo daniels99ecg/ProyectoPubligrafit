@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-02-2024 a las 04:00:38
+-- Tiempo de generación: 27-02-2024 a las 15:00:34
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -87,7 +87,9 @@ CREATE TABLE `compras` (
 
 INSERT INTO `compras` (`id_compra`, `fk_proveedor`, `cantidad`, `fecha`, `total`) VALUES
 (89, 1, 0, '2024-01-04', 834425),
-(90, 2, 0, '2024-01-04', 954975);
+(90, 2, 0, '2024-01-04', 954975),
+(100, 3, 0, '2024-02-23', 1190),
+(101, 4, 0, '2024-02-24', 595);
 
 -- --------------------------------------------------------
 
@@ -112,7 +114,9 @@ CREATE TABLE `detalle_compras` (
 INSERT INTO `detalle_compras` (`id_detalle_compra`, `fk_compra`, `fk_insumo`, `cantidad`, `precio`, `iva`, `subtotal`) VALUES
 (93, 89, 1, 3, 100, 0, 300),
 (94, 90, 2, 5, 500, 0, 2500),
-(95, 90, 3, 10, 80000, 0, 800000);
+(95, 90, 3, 10, 80000, 0, 800000),
+(105, 100, 1, 5, 200, 0, 1000),
+(106, 101, 14, 5, 100, 0, 500);
 
 -- --------------------------------------------------------
 
@@ -134,12 +138,13 @@ CREATE TABLE `detalle_fichas_tecnicas` (
 
 INSERT INTO `detalle_fichas_tecnicas` (`id_detalle_ft`, `fk_insumo`, `fk_ficha_tecnica`, `cantidad`, `precio`) VALUES
 (5, 1, 155, 5, 50),
-(31, 1, 180, 1, 100),
 (38, 1, 198, 1, 100),
-(41, 1, 201, 5, 60),
-(42, 2, 201, 4, 100),
-(43, 3, 201, 6, 80000),
-(44, 4, 201, 10, 15000);
+(49, 1, 201, 5, 60),
+(50, 2, 201, 4, 100),
+(51, 3, 201, 6, 80000),
+(52, 4, 201, 10, 15000),
+(53, 1, 180, 10, 50),
+(56, 2, 203, 1, 100);
 
 -- --------------------------------------------------------
 
@@ -163,7 +168,8 @@ CREATE TABLE `detalle_ventas` (
 INSERT INTO `detalle_ventas` (`id_detalle_venta`, `fk_venta`, `fk_producto`, `cantidad`, `precio`, `subtotal`) VALUES
 (18, 19, 72, 1, 15000, 15000),
 (19, 20, 72, 11, 15000, 165000),
-(20, 21, 72, 1, 15000, 15000);
+(20, 21, 72, 1, 15000, 15000),
+(21, 22, 72, 6, 15000, 90000);
 
 -- --------------------------------------------------------
 
@@ -177,6 +183,7 @@ CREATE TABLE `fichas_tecnicas` (
   `imagen_producto_final` varchar(255) NOT NULL,
   `costo_final_producto` float NOT NULL,
   `detalle` varchar(500) NOT NULL,
+  `mano_obra` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -184,11 +191,12 @@ CREATE TABLE `fichas_tecnicas` (
 -- Volcado de datos para la tabla `fichas_tecnicas`
 --
 
-INSERT INTO `fichas_tecnicas` (`id_ft`, `nombre_ficha`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `estado`) VALUES
-(155, 'Prueba1', 'vtkyAQp6k.jpeg', 200, 'Descripción de la ficha técnica', 1),
-(180, 'Cuaderno', 'vtkyAQp6k.jpeg', 5100, 'Esto es una prueba de ', 1),
-(198, 'estoes2', 'vtkyAQp6k.jpeg', 5100, 'Blabla', 1),
-(201, 'Valla', 'FdKsdSrDS.jpeg', 4630700, '', 1);
+INSERT INTO `fichas_tecnicas` (`id_ft`, `nombre_ficha`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `mano_obra`, `estado`) VALUES
+(155, 'Prueba1', 'vtkyAQp6k.jpeg', 200, 'Descripción de la ficha técnica', 5000, 1),
+(180, 'Cuaderno', 'vtkyAQp6k.jpeg', 5100, 'Esto es una prueba de ', 4000, 1),
+(198, 'estoes2', 'vtkyAQp6k.jpeg', 5100, 'Blabla', 600, 1),
+(201, 'Valla', 'FdKsdSrDS.jpeg', 4630700, 'Esto es una prueba', 400, 1),
+(203, 'danieprueba', '5snKxA8XE.png', 2600, 'Pruebas y mas', 5000, 1);
 
 -- --------------------------------------------------------
 
@@ -209,10 +217,11 @@ CREATE TABLE `insumos` (
 --
 
 INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `estado`) VALUES
-(1, 'Papel Bond', 181.667, 113, 1),
-(2, 'Sellastrip', 100, 96, 1),
+(1, 'Papel Bond', 150, 10, 1),
+(2, 'Sellastrip', 100, 95, 1),
 (3, 'Guillotinas', 80000, 94, 1),
-(4, 'Plumígrafos', 15000, 90, 1);
+(4, 'Plumígrafos', 15000, 90, 1),
+(14, 'prueba', 100, 94, 1);
 
 -- --------------------------------------------------------
 
@@ -259,7 +268,7 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `fk_categoria`, `precio`, `cantidad`, `estado`, `fk_ft`) VALUES
-(72, 1, 15000, 37, 1, 155);
+(72, 1, 15000, 31, 1, 155);
 
 -- --------------------------------------------------------
 
@@ -280,7 +289,9 @@ CREATE TABLE `proveedores` (
 
 INSERT INTO `proveedores` (`id_proveedores`, `nombre`, `telefono`, `estado`) VALUES
 (1, 'Exito', '1234567890', 1),
-(2, 'Alguien', '4444444', 1);
+(2, 'Alguien', '4444444', 1),
+(3, 'Alguien', '0', 1),
+(4, 'Exito', '0', 1);
 
 -- --------------------------------------------------------
 
@@ -301,7 +312,7 @@ CREATE TABLE `rols` (
 
 INSERT INTO `rols` (`id_rol`, `nombre_rol`, `fecha`, `estado`) VALUES
 (247, 'Administrador', '2024-02-15', 1),
-(248, 'Vendedora', '2024-02-15', 1);
+(249, 'Vendedora', '2024-02-23', 1);
 
 -- --------------------------------------------------------
 
@@ -329,10 +340,9 @@ INSERT INTO `rol_x_permisos` (`id_rol_x_permiso`, `fk_rol`, `fk_permiso`, `fk_us
 (461, 247, '005Ficha', 27),
 (462, 247, '007produc', 27),
 (463, 247, '008Cliente', 27),
-(464, 248, '0001Rol', 28),
-(465, 248, '0003Compra', 28),
-(466, 248, '0004Insumo', 28),
-(467, 248, '0006Venta', 28);
+(468, 249, '0001Rol', 28),
+(469, 249, '0003Compra', 28),
+(470, 249, '0004Insumo', 28);
 
 -- --------------------------------------------------------
 
@@ -356,9 +366,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `tipo_documento`, `documento`, `nombres`, `apellidos`, `email`, `contrasena`, `estado`) VALUES
-(27, 'CC', 1036134760, 'DANIEL EMILIO', 'CRUZ GARCIA', 'danielsenju1999@gmail.com', '$2b$10$RhrHO97o78I4zhPnv2CW3eFwwqGbe71gZSrY8ReOYJeWlz70I83Di', 1),
-(28, 'CC', 21939559, 'MARIA GILMA', 'GOEZ', 'algomas00@hotmail.com', '$2b$10$xz8NVSIHrPB2XuqXaFM/neK/rvtH/QVi/cUUs02EK1zUEzfGeS9du', 1),
-(52, 'CC', 1039693098, 'Camilo', 'Perez', 'carlosj@gmail.com', '$2b$10$vJFAJAenWyRcWtsL9cNY0Oc8HlYDZVoTpD.GctE4vwqq/RZdmXdva', 1);
+(27, 'CC', 1036134760, 'DANIEL EMILIO', 'CRUZ GARCIA', 'danielsenju1999@gmail.com', '$2b$10$Rqk5BouybtP4WWHMNhrLmun1/4YbGq4BqrurZ4Dt021fiYUbh1eUu', 1),
+(28, 'CC', 21939559, 'MARIA GILMA', 'GOEZ', 'algomas00@hotmail.com', '$2b$10$xz8NVSIHrPB2XuqXaFM/neK/rvtH/QVi/cUUs02EK1zUEzfGeS9du', 1);
 
 -- --------------------------------------------------------
 
@@ -381,7 +390,8 @@ CREATE TABLE `ventas` (
 INSERT INTO `ventas` (`id_venta`, `fk_id_cliente`, `metodo_pago`, `fecha`, `total`) VALUES
 (19, 1, 'Efectivo', '2024-02-05', 17850),
 (20, 1, 'Efectivo', '2024-02-06', 196350),
-(21, 1, 'Efectivo', '2024-02-07', 17850);
+(21, 1, 'Efectivo', '2024-02-07', 17850),
+(22, 1, 'Efectivo', '2024-02-23', 107100);
 
 --
 -- Índices para tablas volcadas
@@ -510,37 +520,37 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `id_compra` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id_compra` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_compras`
 --
 ALTER TABLE `detalle_compras`
-  MODIFY `id_detalle_compra` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id_detalle_compra` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_fichas_tecnicas`
 --
 ALTER TABLE `detalle_fichas_tecnicas`
-  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `fichas_tecnicas`
 --
 ALTER TABLE `fichas_tecnicas`
-  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
+  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=204;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -552,19 +562,19 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_proveedores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `rols`
 --
 ALTER TABLE `rols`
-  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
+  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
 
 --
 -- AUTO_INCREMENT de la tabla `rol_x_permisos`
 --
 ALTER TABLE `rol_x_permisos`
-  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=468;
+  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=471;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -576,7 +586,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Restricciones para tablas volcadas

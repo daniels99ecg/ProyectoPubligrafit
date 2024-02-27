@@ -276,28 +276,75 @@ const validacionInsumo = async (values)=>{
           buttons: true
         }).then(async (result) => {
           if (result.isConfirmed) {
-            // Línea de código importante para cambiar de tipo "button" a "submit"
-            await putActualizarInsumos(id_insumo, values);
-            navigate("/insumo");
-    
-            Swal.fire(
-              '¡Insumo Actualizado!',
-              'Su archivo ha sido actualizado.',
-              'success'
-            );
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            Swal.fire(
-              'Se canceló el envío para la actualización',
-              'Su archivo imaginario está a salvo :)',
-              'error'
-            );
+            try{
+              const response=await putActualizarInsumos(id_insumo, values);
+              console.log(response)
+                    
+                      if (response.data && response.data.error) {
+                        // Verificar errores específicos
+                        if (response.data.error === 'el nombre del insumo ya existe') {
+                          console.log('Mostrar alerta de usuario existente');
+                
+                          Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'El Insumo ya existe.',
+                          });
+                        } else {
+                          console.log('Mostrar alerta de otro error');
+                
+                          Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.data.error,
+                          });
+                        }
+                      } else {
+                        // Verificar si se creó el usuario correctamente
+                        if (response.data && response.data.usuario) {
+                          // Si no hay errores, redirige a la página de usuario
+                        
+                          window.location.reload()
+                          swalWithBootstrapButtons.fire(
+                            'Registro Enviado!',
+                            'Your file has been deleted.',
+                            'success'
+                          );
+                        } else {
+                          
+                          window.location.reload()
+        
+                          swalWithBootstrapButtons.fire(
+                            'Registro Enviado!',
+                            'Your file has been deleted.',
+                            'success'
+                          );
+                        }
+                      }
+                    } catch (error) {
+                      console.error(error);
+                      swalWithBootstrapButtons.fire(
+                        'Error',
+                        'Ocurrió un error al crear el insumo.',
+                        'error'
+                      );
+                    }
+                  } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire(
+                      'Se cancelo el envio',
+                      'Your imaginary file is safe :)',
+                      'error'
+                    );
+                  }
+                });
+              }              
+            } catch (error) {
+              console.log(error);
+            }
           }
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+
+
+
   async function insumoActualizar (id_insumo){
 
     try{

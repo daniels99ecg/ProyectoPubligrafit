@@ -320,7 +320,7 @@
         html: `
           <h1>¡Hola ${usuario.nombres}!</h1>
           <p>Tu contraseña ha sido cambiada exitosamente.</p>
-          <p>Tu nueva contraseña es ${contrasena}</p>
+          <p>Si no has sido tu comunicate con el administrador</p>
         `
       };
   

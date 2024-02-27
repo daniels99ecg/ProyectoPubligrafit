@@ -21,7 +21,7 @@ function User() {
   useEffect(()=>{
     
     cargarUsuario()
-    console.log(filtrarDesactivados)
+    // console.log(filtrarDesactivados)
   },[searchTerm])
 
 

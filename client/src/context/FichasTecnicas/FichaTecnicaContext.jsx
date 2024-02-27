@@ -222,40 +222,13 @@ const validacionFichaTecnica = async (values)=>{
               
             })
       }else{
-          const swalWithBootstrapButtons = Swal.mixin({
-              customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-              },
-              buttonsStyling: false
-            })
-            
-            Swal.fire({
-              title: 'Confirmar el envio del formulario?',
-              text: "You won't be able to revert this!",
-              icon: 'warning',
-              showCancelButton: true,
-              cancelButtonText: 'Cancelar!',
-              confirmButtonText: 'Aceptar!',
-              Buttons: true
-            }).then(async (result) => {
-          if (result.isConfirmed) {
-            // Línea de código importante para cambiar de tipo "button" a "submit"
-            await putActualizarFichasTecnicas(id_ft, values);
-            navigate("/fichaTecnica");
-    
-            swalWithBootstrapButtons.fire(
-              '¡Insumo Actualizado!',
-              'Su archivo ha sido eliminado.',
-              'success'
-            );
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            swalWithBootstrapButtons.fire(
-              'Se canceló el envío para la actualización',
-              'Su archivo imaginario está a salvo :)',
-              'error'
-            );
-          }
+        await putActualizarFichasTecnicas(id_ft, values);
+        Swal.fire({
+          icon: 'success',
+          title: '¡Insumo Actualizado!',
+          text: 'Su archivo ha sido Actualizado.',
+        }).then(() => {
+          window.location.reload();
         });
       }
     } catch (error) {
@@ -270,6 +243,7 @@ const validacionFichaTecnica = async (values)=>{
         nombre_ficha:"",
         costo_final_producto: '',
         detalle:"",
+        mano_obra:"",
         detalles: []
 
     })
@@ -287,6 +261,7 @@ const validacionFichaTecnica = async (values)=>{
             imagen_producto_final: response.imagen_producto_final,
             costo_final_producto: response.costo_final_producto,
             detalle: response.detalle,
+            mano_obra:response.mano_obra,
             detalles:response.detalles
         })
     } catch (error) {

@@ -562,17 +562,14 @@ function FichaCreatePruebas({fichaId}) {
             />
 
              <br />  
-<Field
+                          <Field
                             type='text'
-                            name='costo_produccion'
+                            name='mano_obra'
                             className='form-control'
                             as={TextField}
-                            value={manoObra}
+                            value={values.mano_obra}
                             label="Mano de Obra"
-                            onChange={(e) => {
-                              const newValue = e.target.value.trim();
-                              setManoObra(newValue);
-                            }}
+                            onChange={handleChange}
                           /> 
                           <br />
            

@@ -9,11 +9,12 @@ function Recuperar(){
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  
   const handleSubmit = async (values, { setSubmitting }) => {
     const { email, contrasena } = values;
     try {
       const response = await loginIngreso(email, contrasena);
-      console.log('Valores enviados:', response);
+    
 
       if (response.token) {
         Cookies.set('token', response.token);

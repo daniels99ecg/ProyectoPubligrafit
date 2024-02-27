@@ -33,10 +33,6 @@ async function listarFichasTecnicas(req, res){
     }
 }
 
-
-
-
-
 async function listarFichaTecnica(req, res) {
   const  {id_ft}  = req.params;
 
@@ -79,13 +75,21 @@ async function listarFichaTecnica(req, res) {
 }
 
 
-
 async function crearFichaTecnica(req, res) {
     try {
       const dataFicha = req.body;
 
       if(!req.file) {
         return res.json({ message: "Error la imagen del producto es requerida" });
+    }
+    const existeNombre = await FichaTecnica.findOne({
+      where: {
+        nombre_ficha: dataFicha.nombre_ficha,
+      },
+    });
+
+    if (existeNombre) {
+      return res.status(400).json({ error: "El nombre de la ficha técnica ya está registrado" });
     }
       await sequelize.transaction(async (t) => {
         const insumos = dataFicha.insumo || [];
@@ -108,6 +112,7 @@ async function crearFichaTecnica(req, res) {
               imagen_producto_final:req.file.filename,
               costo_final_producto:dataFicha.costo_final_producto,
               detalle: dataFicha.detalle,
+              mano_obra:dataFicha.mano_obra,
               estado: 1,
               
               // nombre_ficha:dataFicha.nombre_ficha,
@@ -157,11 +162,9 @@ async function crearFichaTecnica(req, res) {
   }
 
 
-
-
   async function actualizarFichaTecnica(req, res) {
     const id = req.params.id;
-    const { nombre_ficha, imagen_producto_final, costo_final_producto,detalle, detalles } = req.body; // Asumiendo que `detalles` es un array de detalles de la ficha técnica
+    const { nombre_ficha, imagen_producto_final, costo_final_producto,detalle, mano_obra,detalles } = req.body; // Asumiendo que `detalles` es un array de detalles de la ficha técnica
   
     try {
       const fichaTecnicaExistente = await FichaTecnica.findByPk(id);
@@ -174,6 +177,7 @@ async function crearFichaTecnica(req, res) {
         nombre_ficha,
         imagen_producto_final,
         costo_final_producto,
+        mano_obra,
         detalle
         // Omitir actualizar 'detalle' directamente aquí, ya que lo manejaremos por separado
       });
@@ -210,16 +214,25 @@ async function crearFichaTecnica(req, res) {
 async function eliminarFichaTecnica(req, res) {
     try {
         const id = req.params.id;
-        const fichas_tecnicas = await FichaTecnica.findByPk(id);
+        const responses = await DetalleFichaTecnica.destroy({ where: { fk_ficha_tecnica: id } });
 
-        if (!fichas_tecnicas) {
-            return res.status(404).json({ error: 'Cliente no encontrado' });
+        // const fichas_tecnicas = await FichaTecnica.findByPk(id);
+        const response = await FichaTecnica.destroy({ where: { id_ft: id } });
+
+
+        // if (!fichas_tecnicas) {
+        //     return res.status(404).json({ error: 'Cliente no encontrado' });
+        // }
+
+        // // Elimina el cliente
+        // await fichas_tecnicas.destroy();
+        if (response === 1 || responses ===1) {
+          // Si se eliminó correctamente, response será 1.
+          res.status(200).json({ message: 'Ficha eliminado con éxito' });
+        } else {
+          // Si no se encontró el usuario o no se pudo eliminar, response será 0.
+          res.status(404).json({ message: 'Ficha no encontrado o no se pudo eliminar' });
         }
-
-        // Elimina el cliente
-        await fichas_tecnicas.destroy();
-
-        res.json({ message: 'Cliente eliminado exitosamente' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al eliminar cliente' });

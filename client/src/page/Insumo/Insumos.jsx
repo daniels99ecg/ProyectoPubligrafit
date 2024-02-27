@@ -310,7 +310,7 @@ const handleCloseUpdateModal = () => {
                       </svg>
                     </button>
 
-                    {params.row.tieneVentas ? (
+                    {params.row.tieneVentas || params.row.detalleFichaTecnica ? (
         // Si el cliente tiene ventas, el botón de eliminar está deshabilitado
             <button
               className="btn btn-danger"

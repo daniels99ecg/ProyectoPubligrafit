@@ -332,7 +332,7 @@ const activarCliente = async (id_rol) => {
     const detallesArray = rolData.detalles.map(detalle => ({
       usuario: detalle.usuario,
       permiso: detalle.permiso,
-      fk_usuario:detalle.fk_usuario
+      // fk_usuario:detalle.fk_usuario
     }));   
     
     setListarActualizar({

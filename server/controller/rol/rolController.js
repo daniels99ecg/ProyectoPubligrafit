@@ -29,8 +29,6 @@ async function listaRoles(req, res){
   }
 }
 
-
-
 async function listarRol(req, res) {
   try {
     
@@ -112,14 +110,14 @@ async function listarporid(req, res) {
       include: [
         {
           model: Usuario,
-          attributes: ["nombres"],
+          attributes: ["id_usuario","nombres"],
         },
         {
           model: Permiso,
           attributes: ['id_permiso','nombre_permiso'],
         },{
          model:Rol,
-         attributes: ['nombre_rol'],
+         attributes: ['id_rol','nombre_rol'],
         }
       ],
     });
@@ -267,7 +265,7 @@ async function listarporid(req, res) {
     
     async function actualizarRol(req, res) {
       const { id } = req.params;
-      const { nombre_rol, permiso } = req.body;
+      const { nombre_rol, permiso, fk_usuario } = req.body;
   
       try {
         
@@ -289,7 +287,7 @@ async function listarporid(req, res) {
           // Insertar los nuevos permisos asociados al rol
           if (permiso && permiso.length > 0) {
               await Promise.all(permiso.map(async (permisoId) => {
-                  await RolXPermiso.create({ fk_rol: id, fk_permiso:permisoId, fk_usuario: 28});
+                  await RolXPermiso.create({ fk_rol: id, fk_permiso:permisoId, fk_usuario:fk_usuario});
               }));
           }
   

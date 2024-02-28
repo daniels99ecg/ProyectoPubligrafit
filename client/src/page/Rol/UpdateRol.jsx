@@ -37,8 +37,8 @@ function RolCreate({RolId}) {
     const userNamesSet = new Set();
   
     detalles.forEach((detalle) => {
-      if (detalle.usuario && detalle.usuario.nombres) { // Verifica si detalle.usuario y detalle.usuario.nombres están definidos
-        userNamesSet.add(detalle.usuario.nombres);
+      if (detalle.usuario && detalle.usuario.id_usuario) { // Verifica si detalle.usuario y detalle.usuario.nombres están definidos
+        userNamesSet.add(detalle.usuario.id_usuario);
       }
     });
   
@@ -86,6 +86,7 @@ function RolCreate({RolId}) {
                       ...values,
                       nombre_rol:values.nombre_rol,
                       permiso: selectedPermissions.map(permiso => permiso.id_permiso),
+                      fk_usuario:getUniqueUserNames(values.detalles)
                        };
                        console.log(updatedValues)
                     // Llamar a la función actualizarValidar con los valores actualizados
@@ -124,7 +125,7 @@ function RolCreate({RolId}) {
                           />
                           {errors.nombre_rol && <div className='invalid-feedback'>{errors.nombre_rol}</div>}
                         </div>
-                        <div className='col-md-6'>
+                        {/* <div className='col-md-6'>
                         <Field
                             type='text'
                             name='fk_usuario'
@@ -136,7 +137,7 @@ function RolCreate({RolId}) {
                             fullWidth
                           />
 
-                        </div>
+                        </div> */}
                     
                           <div className='col-md-12'>
                 

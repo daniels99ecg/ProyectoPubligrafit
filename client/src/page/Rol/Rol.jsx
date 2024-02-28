@@ -33,18 +33,18 @@ const [openCreateModal, setOpenCreateModal] = useState(false);
     cargarRol()
     },[searchTerm])
 
-    const handleOpenVentaModal = () => {
-      setOpenCreateModal(true);
-  };
+  //   const handleOpenVentaModal = () => {
+  //     setOpenCreateModal(true);
+  // };
   
-  const handleSubmitForm = async () => {
-  };
+  // const handleSubmitForm = async () => {
+  // };
   
-  const handleCloseVentaModal = () => {
-    setOpenCreateModal(false);
-    cargarRol()
+  // const handleCloseVentaModal = () => {
+  //   setOpenCreateModal(false);
+  //   cargarRol()
   
-  };
+  // };
   
   // Modal de Actualizar
   const handleOpenUpdateModal = (id) => {
@@ -111,13 +111,13 @@ const handleEliminarUsuario = (idrol, nombre_rol) => {
    
     <div className='row'>
     <div className="col-md-2 col-12 mb-2">  
-    <button
+    {/* <button
         className="btn btn-primary"
         onClick={handleOpenVentaModal}
         role="button"
       >
         Nuevo Registro
-      </button>
+      </button> */}
 
     </div>
     {/* <div className="col-md-2">  
@@ -467,7 +467,7 @@ const handleEliminarUsuario = (idrol, nombre_rol) => {
             />,
             document.body
           )} 
-                 {openCreateModal && ReactDOM.createPortal(
+                 {/* {openCreateModal && ReactDOM.createPortal(
         <>
           <div
             style={{
@@ -502,7 +502,7 @@ const handleEliminarUsuario = (idrol, nombre_rol) => {
           </div>
         </>,
         document.body
-      )}
+      )} */}
       
       {openUpdateModal && ReactDOM.createPortal(
         <>

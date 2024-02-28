@@ -3,6 +3,8 @@ import Nav from '../../components/nav';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Typography, Card, CardContent, Tab, Tabs } from '@mui/material';
+import { LineChart } from '@mui/x-charts/LineChart'; // Importa LineChart
+
 import { getListarVentasDia, getListarVentasdelDia, getListarVentadelDia, getListarVentadelDiasemana } from '../../api/Rutas.Venta.api';
 import { getListarCompraDia, getListarCompradelDia, getListarCompraseman } from '../../api/Compras/rutas.api';
 
@@ -85,7 +87,7 @@ function Dashboard() {
                     <h4 className='text-center'>
                       {totalVentas.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}
                       <br />
-                      Ventas
+                   <strong>Ventas</strong>   
                     </h4>
                   </div>
                 </div>
@@ -98,7 +100,7 @@ function Dashboard() {
                     <h4 className='text-center'>
                       {totalCompras.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}
                       <br />
-                      Compras
+                      <strong>Compras</strong>
                     </h4>
                   </div>
                 </div>
@@ -110,8 +112,10 @@ function Dashboard() {
               <Card>
                 <CardContent>
         <Typography variant="h6" align="center">
-          Total Ventas y Compras
+        <br />
+        <strong> Total Ventas y Compras </strong>
         </Typography>
+        <br />
         <div className='card text-center d-flex align-items-center'>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
         <div style={{ marginRight: '20px' }}>
@@ -150,8 +154,11 @@ function Dashboard() {
                       <Tab label="Ventas" />
                     </Tabs>
                     <Typography variant="h6" align="center">
-                      {tabIndexMonth === 0 ? 'Total Compras por Mes' : 'Total Ventas por Mes'}
+                      <br />
+                      <strong>{tabIndexMonth === 0 ? 'Total Compras por Mes' : 'Total Ventas por Mes'}</strong>
+                      
                     </Typography>
+                    <br />
                     <div className='card text-center d-flex align-items-center'>
                       <BarChart
                         xAxis={[{ scaleType: 'band', data: (tabIndexMonth === 0 ? totalComprasDia : totalVentaDia).map(data => data.mes) }]}
@@ -179,8 +186,11 @@ function Dashboard() {
                         <Tab label="Ventas" />
                       </Tabs>
                       <Typography variant="h6" align="center">
-                        {tabIndexDay === 0 ? 'Total Compras por Día' : 'Total Ventas por Día'}
+                      <br />
+                        <strong>{tabIndexDay === 0 ? 'Total Compras por Día' : 'Total Ventas por Día'}</strong>
+                        
                       </Typography>
+                      <br />
                       <div className='card text-center d-flex align-items-center'>
                         <BarChart
                           xAxis={[{ scaleType: 'band', data: (tabIndexDay === 0 ? totalComprasDiasemana : totalVentasDiasemana).map(data => data.diaSemana) }]}
@@ -192,13 +202,51 @@ function Dashboard() {
                           ]}
                           margin={{ left: 90 }}
                           width={600}
-                          height={200}
+                          height={292}
                         />
                       </div>
                     </CardContent>
                   </Card>
               
               </div>
+
+
+              <div className='col-md-6'>
+                <br />
+  <Card>
+    <CardContent>
+      <Typography variant="h6" align="center">
+        <br />
+        <strong>Total Ventas y Compras por Mes</strong>
+      </Typography>
+      <br />
+      <div className='card text-center d-flex align-items-center'>
+      <LineChart
+  xAxis={[{ scaleType: 'band', data: totalComprasDia.map(data => data.mes) }]}
+  series={[
+    {
+      data: (totalComprasDia).map(data => ( data.totalComprasMes )),
+      color: "#2e96ff",
+      label: "Compras"
+    },
+    {
+      data: (totalVentaDia).map(data => ( data.totalVentasMes )),
+      color: "#02b2af",
+      label: "Ventas"
+    }
+    
+  ]}
+  margin={{ left: 99 }}
+  width={620}
+  height={341}
+/>
+
+
+      </div>
+    </CardContent>
+  </Card>
+</div>
+
             </div>
           </div>
         </div>

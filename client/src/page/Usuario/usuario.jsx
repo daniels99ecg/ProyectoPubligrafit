@@ -10,6 +10,11 @@ import Swal from 'sweetalert2'; // Import SweetAlert2
 import ReactDOM from 'react-dom';
 import UserCreate from './usuarioCreate'
 import UserUpdate from './usuarioUpdate'
+import Tooltip from '@mui/material/Tooltip';
+import { BsInfoCircleFill, BsArrowClockwise, BsTrash } from "react-icons/bs"; 
+import Button from '@mui/material/Button';
+
+import RolCreatePermisos from './RolCreatePermisos'
 
 function User() {
   const {cargarUsuario,searchTerm, setSearchTerm,desactivarCliente, activarCliente, eliminarUsuario,filtrarDesactivados}=useUser()
@@ -18,6 +23,10 @@ function User() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedClienteId, setSelectedClienteId] = useState(null);
+
+  const [openPermisosModal, setOpenPermisosModal] = useState(false);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null); 
+
   useEffect(()=>{
     
     cargarUsuario()
@@ -38,6 +47,18 @@ const handleCloseVentaModal = () => {
 
 };
 
+
+const handleOpenPermisosModal = (usuario) => {
+  setUsuarioSeleccionado(usuario); // Guarda el usuario seleccionado si es necesario
+  setOpenPermisosModal(true);
+};
+
+const handleClosePermisosModal = () => {
+  setOpenPermisosModal(false);
+  cargarUsuario(); // Suponiendo que esto recarga los datos del usuario
+};
+
+
 // Modal de Actualizar
 const handleOpenUpdateModal = (id_usuario) => {
   setSelectedClienteId(id_usuario);
@@ -49,6 +70,7 @@ const handleCloseUpdateModal = () => {
   cargarUsuario()
 };
  
+
 
   const handleEliminarUsuario = (idUsuario, rol) => {
     // Validar si el usuario tiene el rol de administrador
@@ -88,6 +110,8 @@ const handleCloseUpdateModal = () => {
       >
         Nuevo Registro
       </button>
+
+
 </div>
 <div className="col-md-3 col-12" style={{ marginLeft: 'auto' }}>
 <input
@@ -273,6 +297,51 @@ const handleCloseUpdateModal = () => {
                 ),
               },
               {
+                field: 'permisos',
+                headerName: 'Permisos',
+                sortable: false,
+                headerClassName: 'encabezado',
+                width: 150,
+                
+                renderCell: (params) => (
+                  <div>
+                  {params.row.tieneVentas ? (
+                    // Si el cliente tiene ventas, el botón de eliminar está deshabilitado
+                    <button
+                    className="btn btn-outline-secondary me-1"
+                      disabled
+                      style={{
+                        backgroundColor: '#0d6efd',
+                        borderColor: '#0d6efd',
+                        color: 'black',
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person-fill-gear" viewBox="0 0 16 16" >
+                    <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"></path>
+                  </svg>
+                    </button>
+                  ) : (
+
+                  <button
+                    variant="contained"
+                    className="btn btn-outline-secondary me-1"
+                    onClick={() => handleOpenPermisosModal(params.row)}
+                    disabled={!params.row.estado}
+                    style={{
+                      backgroundColor: '#0d6efd',
+                      borderColor: '#0d6efd',
+                      color: 'black',
+                    }}
+                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person-fill-gear" viewBox="0 0 16 16" >
+                    <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"></path>
+                  </svg>
+                  </button>
+                  )}
+                      </div>
+                ),
+              },
+              {
                 field: 'acciones',
                 headerName: 'Acciones',
                 headerClassName: 'encabezado',
@@ -448,6 +517,42 @@ const handleCloseUpdateModal = () => {
     </div>
   </>,
   document.body
+)}
+{openPermisosModal  && ReactDOM.createPortal(
+    <>
+      <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1049,
+            }}
+            onClick={handleClosePermisosModal}
+          />
+          <div
+            className="modal-create"
+            style={{
+              position: 'fixed',
+              top: '43%',  
+              left: '42%',
+              transform: 'translate(-50%, -50%)', 
+              zIndex: 1050,
+              width: '400%', 
+              maxWidth: '1200px', 
+              overflowY: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+          <div style={{ width: '100%', height: '100%' }}>
+        <RolCreatePermisos handleSubmitForm={handleSubmitForm} usuario={usuarioSeleccionado}/>
+        </div>
+      </div>
+    </>,
+    document.body
 )}
 
                     </div>

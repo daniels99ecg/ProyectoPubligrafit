@@ -12,6 +12,10 @@ import CreateProductos from './CreateProductos'
 import ReactDOM from 'react-dom';
 import UpdateProducto from './UpdateProducto'
 
+
+const baseURL = import.meta.env.VITE_REACT_API_URL;
+
+
 function formatCurrency(amount) {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -115,7 +119,7 @@ const handleCloseUpdateModal = () => {
                             <li className="list-group-item">Nombre: {item.fichas_tecnica.nombre_ficha}</li>
                             <li className="list-group-item">Precio: {formatCurrency(item.precio)}</li>
                             <li className="list-group-item"><img
-  src={`http://localhost:3001/${item.fichas_tecnica.imagen_producto_final}`}
+  src={`${baseURL}${item.fichas_tecnica.imagen_producto_final}`}
   alt="Imagen del producto"
   style={{ width: '30%' }}
 /></li>
@@ -274,7 +278,7 @@ const handleCloseUpdateModal = () => {
                                   </Modal.Header>
                                   <Modal.Body>
                                     <img
-                                      src={`http://localhost:3001/${params.row.imagen_ft}`}
+                                      src={`${baseURL}${params.row.imagen_ft}`}
                                       alt="Imagen del producto"
                                       style={{ width: '100%' }}
                                     />

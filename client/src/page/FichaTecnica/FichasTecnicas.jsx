@@ -15,6 +15,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import FichaUpdate from './FichaUpdatePruebas'
 
+const baseURL = import.meta.env.VITE_REACT_API_URL;
+
 function ListarFichasTecnicas() {
   const{listar,ShowFichasTecnicas,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm}=useFichaTecnica()
   const navigate=useNavigate()
@@ -131,7 +133,7 @@ function formatNumber(value) {
                       <li className="list-group-item">Nombre: {item.nombre_ficha}</li>
                       <li className="list-group-item">Costo Final: {item.costo_final_producto}</li>
                       <li className="list-group-item"><img
-  src={`http://localhost:3001/${item.imagen_producto_final}`}
+  src={`${baseURL}${item.imagen_producto_final}`}
   alt="Imagen del producto"
   style={{ width: '30%' }}
 /></li>
@@ -287,7 +289,7 @@ function formatNumber(value) {
                         </Modal.Header>
                         <Modal.Body>
                           <img
-                            src={`http://localhost:3001/${params.row.imagen_producto_final}`}
+                            src={`${baseURL}${params.row.imagen_producto_final}`}
                             alt="Imagen del producto"
                             style={{ width: '100%' }}
                           />

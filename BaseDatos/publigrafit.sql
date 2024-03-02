@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-02-2024 a las 15:00:34
+-- Tiempo de generación: 02-03-2024 a las 03:14:36
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -243,6 +243,7 @@ INSERT INTO `permisos` (`id_permiso`, `nombre_permiso`) VALUES
 ('0003Compra', 'Compra'),
 ('0004Insumo', 'Insumo'),
 ('0006Venta', 'Venta'),
+('0009Dash', 'Dashboard'),
 ('002Usuario', 'Usuario'),
 ('005Ficha', 'FichaTecnica'),
 ('007produc', 'Producto'),
@@ -311,8 +312,8 @@ CREATE TABLE `rols` (
 --
 
 INSERT INTO `rols` (`id_rol`, `nombre_rol`, `fecha`, `estado`) VALUES
-(247, 'Administrador', '2024-02-15', 1),
-(249, 'Vendedora', '2024-02-23', 1);
+(254, 'Administrador', '2024-02-27', 1),
+(266, 'Vendedora', '2024-02-29', 1);
 
 -- --------------------------------------------------------
 
@@ -332,17 +333,18 @@ CREATE TABLE `rol_x_permisos` (
 --
 
 INSERT INTO `rol_x_permisos` (`id_rol_x_permiso`, `fk_rol`, `fk_permiso`, `fk_usuario`) VALUES
-(456, 247, '0001Rol', 27),
-(457, 247, '0003Compra', 27),
-(458, 247, '0004Insumo', 27),
-(459, 247, '0006Venta', 27),
-(460, 247, '002Usuario', 27),
-(461, 247, '005Ficha', 27),
-(462, 247, '007produc', 27),
-(463, 247, '008Cliente', 27),
-(468, 249, '0001Rol', 28),
-(469, 249, '0003Compra', 28),
-(470, 249, '0004Insumo', 28);
+(503, 254, '0001Rol', 27),
+(504, 254, '005Ficha', 27),
+(505, 254, '0003Compra', 27),
+(506, 254, '0004Insumo', 27),
+(507, 254, '002Usuario', 27),
+(508, 254, '0006Venta', 27),
+(509, 254, '007produc', 27),
+(510, 254, '008Cliente', 27),
+(514, 254, '0009Dash', 27),
+(546, 266, '0003Compra', 55),
+(547, 266, '0004Insumo', 55),
+(548, 266, '0006Venta', 55);
 
 -- --------------------------------------------------------
 
@@ -367,7 +369,7 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `tipo_documento`, `documento`, `nombres`, `apellidos`, `email`, `contrasena`, `estado`) VALUES
 (27, 'CC', 1036134760, 'DANIEL EMILIO', 'CRUZ GARCIA', 'danielsenju1999@gmail.com', '$2b$10$Rqk5BouybtP4WWHMNhrLmun1/4YbGq4BqrurZ4Dt021fiYUbh1eUu', 1),
-(28, 'CC', 21939559, 'MARIA GILMA', 'GOEZ', 'algomas00@hotmail.com', '$2b$10$xz8NVSIHrPB2XuqXaFM/neK/rvtH/QVi/cUUs02EK1zUEzfGeS9du', 1);
+(55, 'CC', 21939559, 'MARIA', 'GOEZ', 'algo00@hotmail.com', '$2b$10$/hVW0p3ZB5veWzkVBYzyCO7j12OoIvqiJvlNHqER/TK2Rteqpl.Zu', 1);
 
 -- --------------------------------------------------------
 
@@ -568,19 +570,19 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT de la tabla `rols`
 --
 ALTER TABLE `rols`
-  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
+  MODIFY `id_rol` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=267;
 
 --
 -- AUTO_INCREMENT de la tabla `rol_x_permisos`
 --
 ALTER TABLE `rol_x_permisos`
-  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=471;
+  MODIFY `id_rol_x_permiso` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=549;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id_usuario` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`

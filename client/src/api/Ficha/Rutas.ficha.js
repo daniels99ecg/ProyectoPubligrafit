@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export const postCreateFichaTecnica = async (taks) => {
     try {
-        const response = await axios.post('http://localhost:3001/fichaTecnica/create', taks, {
+        const response = await axios.post('https://danielg99.alwaysdata.net/fichaTecnica/create', taks, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -14,25 +14,25 @@ export const postCreateFichaTecnica = async (taks) => {
 };
 
 export const  getListarFichasTecnicas=async ()=>{
-    return await axios.get('http://localhost:3001/fichaTecnica')
+    return await axios.get('https://danielg99.alwaysdata.net/fichaTecnica')
 }
 
 export const  getListarFichaTecnica=async (id_ft)=>{
-    return await axios.get(`http://localhost:3001/fichaTecnica/fichaOne/${id_ft}`)
+    return await axios.get(`https://danielg99.alwaysdata.net/fichaTecnica/fichaOne/${id_ft}`)
 }
 
 export const  putActualizarFichasTecnicas=async (id_ft, taks)=>{
-    return await axios.put(`http://localhost:3001/fichaTecnica/update/${id_ft}`,taks)
+    return await axios.put(`https://danielg99.alwaysdata.net/fichaTecnica/update/${id_ft}`,taks)
 }
 
 export const eliminarFichaTecnica= async (id_ft) => {
-    return await axios.delete(`http://localhost:3001/fichaTecnica/delete/${id_ft}`);
+    return await axios.delete(`https://danielg99.alwaysdata.net/fichaTecnica/delete/${id_ft}`);
 }
 
 export const putDesactivarFichaTecnica = async (id_ft) => {
-    return await axios.put(`http://localhost:3001/fichaTecnica/disable/${id_ft}`);
+    return await axios.put(`https://danielg99.alwaysdata.net/fichaTecnica/disable/${id_ft}`);
 }
 
 export const putActivarFichaTecnica = async (id_ft) => {
-    return await axios.put(`http://localhost:3001/fichaTecnica/activate/${id_ft}`);
+    return await axios.put(`https://danielg99.alwaysdata.net/fichaTecnica/activate/${id_ft}`);
 }

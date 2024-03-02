@@ -2,12 +2,12 @@ import axios from 'axios'
 
 
  export const getListarUsuarios= async ()=>{
-  return await axios.get('http://localhost:3001/usuario')
+  return await axios.get('https://danielg99.alwaysdata.net/usuario')
 }
 
 export const enviarUsuario = async (task) => {
   try {
-    const response = await axios.post('http://localhost:3001/usuario/create', task);
+    const response = await axios.post('https://danielg99.alwaysdata.net/usuario/create', task);
     return response.data; // Devuelve los datos exitosos
   } catch (error) {
     if (error.response) {
@@ -19,12 +19,12 @@ export const enviarUsuario = async (task) => {
 
 
 export const cargaractualizarUsuario=async (id_usuario)=>{
-  return await axios.get(`http://localhost:3001/usuario/${id_usuario}`)
+  return await axios.get(`https://danielg99.alwaysdata.net/usuario/${id_usuario}`)
 }
 
 export const actualizarUsuario=async (id_usuario, task)=>{
   try{
- const response=await axios.put(`http://localhost:3001/usuario/update/${id_usuario}`, task);
+ const response=await axios.put(`https://danielg99.alwaysdata.net/usuario/update/${id_usuario}`, task);
  return response.data; // Devuelve los datos exitosos
 }catch (error) {
     if (error.response) {
@@ -36,7 +36,7 @@ export const actualizarUsuario=async (id_usuario, task)=>{
 
 export const loginIngreso = async (email, contrasena) => {
   try {
-    const response = await axios.post('http://localhost:3001/usuario/login/', {
+    const response = await axios.post('https://danielg99.alwaysdata.net/usuario/login/', {
       email: email,
       contrasena: contrasena,
     });
@@ -48,7 +48,7 @@ export const loginIngreso = async (email, contrasena) => {
 };
 export const cambiarContrasena = async (email, contrasena) => {
   try {
-    const response = await axios.post(`http://localhost:3001/usuario/cambiarcontrasena/`, {
+    const response = await axios.post(`https://danielg99.alwaysdata.net/usuario/cambiarcontrasena/`, {
       email: email,
       contrasena: contrasena,
     });
@@ -63,7 +63,7 @@ export const cambiarContrasena = async (email, contrasena) => {
 
 export const enviarContrasena = async (email) => {
   try {
-    const response = await axios.post('http://localhost:3001/usuario/enviaremail/', {
+    const response = await axios.post('https://danielg99.alwaysdata.net/usuario/enviaremail/', {
       email: email,
       
     });
@@ -72,25 +72,25 @@ export const enviarContrasena = async (email) => {
   }
 };
 export const putDesactivarCliente = async (id_usuario) => {
-  return await axios.put(`http://localhost:3001/usuario/disable/${id_usuario}`);
+  return await axios.put(`https://danielg99.alwaysdata.net/usuario/disable/${id_usuario}`);
 }
 
 export const putActivarCliente = async (id_usuario) => {
-  return await axios.put(`http://localhost:3001/usuario/activate/${id_usuario}`);
+  return await axios.put(`https://danielg99.alwaysdata.net/usuario/activate/${id_usuario}`);
 }
 
 export const eliminar = async (id_usuario) => {
-  return await axios.delete(`http://localhost:3001/usuario/delete/${id_usuario}`);
+  return await axios.delete(`https://danielg99.alwaysdata.net/usuario/delete/${id_usuario}`);
 }
 
 export const verifyToken = async()=>{
-  return await axios.get('http://localhost:3001/usuario/verefy/')
+  return await axios.get('https://danielg99.alwaysdata.net/usuario/verefy/')
 }
 
 
 
 export const getListarRoles=async ()=>{
-  return await axios.get('http://localhost:3001/rol/rolesnuevo')
+  return await axios.get('https://danielg99.alwaysdata.net/rol/rolesnuevo')
 }
 
 

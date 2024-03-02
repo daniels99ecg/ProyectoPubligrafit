@@ -8,13 +8,8 @@ const app=express()
 app.use(express.json());
 app.use(cookieParser())
 
-const corsOption={
-    origin:"http://localhost:3001",
-    methods:["POST", "GET"],
-    credentials: true,
-}
 
-app.use(cors(corsOption))
+app.use(cors())
 app.use(express.static('uploads/imagenFicha'));
 resApi(app)
 

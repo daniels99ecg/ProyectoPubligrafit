@@ -364,7 +364,7 @@ const validacionInsumo = async (values)=>{
   }
 return(
     <InsumoContext.Provider
-    value={{listar,ShowInsumos,searchTerm,setSearchTerm, validarInsumoActualizar,insumoActualizar,listarInsumo,insumoActualizar,activarInsumo, eliminarInsumos, desactivarInsumo, validacionInsumo ,filtrarDesactivados}}>
+    value={{listar,ShowInsumos,searchTerm,setSearchTerm, validarInsumoActualizar,insumoActualizar,listarInsumo,activarInsumo, eliminarInsumos, desactivarInsumo, validacionInsumo ,filtrarDesactivados}}>
     {children}
     </InsumoContext.Provider>
 )

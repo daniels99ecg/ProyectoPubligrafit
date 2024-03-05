@@ -196,7 +196,7 @@ const ComprobanteCliente = ({ venta, handleCloseModal, open }) => {
 <hr />
 <div style={{ display: 'flex', justifyContent: 'space-between', textAlign: 'left' }}>
   <div>
-    Atendido por: Nombre del Atendente
+    Atendido por: {venta.vendedor}
     <br />
     Referencia de venta: {venta.id_venta}
     <br />

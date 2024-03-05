@@ -32,6 +32,12 @@ function CreateVenta({ handleCloseVentaModal }) {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = tableData.slice(startIndex, endIndex);
 
+
+
+
+  const storedUser = localStorage.getItem('user');
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
   const ventaSchema = Yup.object().shape({
     id_cliente: Yup.object().shape({
       fk_id_cliente: Yup.string().required("Campo requerido"),
@@ -259,6 +265,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                     metodo_pago: "",
                     fecha: fechaActual(),
                     total: total,
+                    vendedor:user.nombre,
                     productos: tableData.map((item) => ({
                       fk_producto: item.fk_producto,
                       cantidad: item.cantidad,

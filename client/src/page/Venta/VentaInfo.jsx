@@ -91,6 +91,9 @@ const VentaInfo = ({ venta, handleCloseModal, open }) => {
             <p>
               <strong>Total:</strong> {formatearPrecios(venta.total)}
             </p>
+            <p>
+              <strong>Vendedor:</strong> {venta.vendedor}
+            </p>
              <p>
               <strong>Subtotal:</strong> {formatearPrecios(totalSubtotal)}
             </p>
@@ -101,6 +104,7 @@ const VentaInfo = ({ venta, handleCloseModal, open }) => {
                   <th style={thStyle}>Cantidad</th>
                   <th style={thStyle}>Precio</th>
                   <th style={thSubtotalStyle}>Subtotal</th>
+                  
                 </tr>
               </thead>
               <tbody>

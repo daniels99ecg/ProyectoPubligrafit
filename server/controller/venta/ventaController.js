@@ -15,6 +15,7 @@ async function listarVentas(req, res) {
         "metodo_pago",
         "fecha",
         "total",
+        "vendedor"
       ],
       include: [
         {
@@ -75,6 +76,7 @@ async function listarVenta(req, res) {
         "metodo_pago",
         "fecha",
         "total",
+        "vendedor"
       ],
       include: [
         {
@@ -151,6 +153,7 @@ async function createVentaConDetalle(req, res) {
             metodo_pago: dataVenta.metodo_pago,
             fecha: dataVenta.fecha,
             total: dataVenta.total,
+            vendedor:dataVenta.vendedor
           },
           { transaction: t }
         );

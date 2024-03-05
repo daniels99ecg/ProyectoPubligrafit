@@ -159,7 +159,13 @@ function Dashboard() {
                       
                     </Typography>
                     <br />
-                    <div className='card text-center d-flex align-items-center'>
+                    <div className="card text-center">
+      {/* Contenedor fluido para la gráfica */}
+      <div className="d-flex justify-content-center">
+        {/* Estilo inline para el contenedor de la gráfica, permitiendo un ancho máximo */}
+        <div style={{ width: '100%', maxWidth: '620px', padding: '0 10px' }}>
+        <div className=' d-flex align-items-center'>
+
                       <BarChart
                         xAxis={[{ scaleType: 'band', data: (tabIndexMonth === 0 ? totalComprasDia : totalVentaDia).map(data => data.mes) }]}
                         series={[
@@ -168,14 +174,18 @@ function Dashboard() {
                             color: (tabIndexMonth === 0 ? "#2e96ff" : "#02b2af")
                           },
                         ]}
-                        margin={{ left: 99 }}
+                        margin={{ left: 80 }}
                         width={620}
                         height={341}
                       />
                     </div>
+                    </div>
+                    </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
+              
 
               <div className='col-md-6'>
                 <br />
@@ -191,7 +201,12 @@ function Dashboard() {
                         
                       </Typography>
                       <br />
-                      <div className='card text-center d-flex align-items-center'>
+                      <div className="card text-center">
+      {/* Contenedor fluido para la gráfica */}
+      <div className="d-flex justify-content-center">
+        {/* Estilo inline para el contenedor de la gráfica, permitiendo un ancho máximo */}
+        <div style={{ width: '100%', maxWidth: '620px', padding: '0 10px' }}>
+        <div className=' d-flex align-items-center'>
                         <BarChart
                           xAxis={[{ scaleType: 'band', data: (tabIndexDay === 0 ? totalComprasDiasemana : totalVentasDiasemana).map(data => data.diaSemana) }]}
                           series={[
@@ -204,6 +219,9 @@ function Dashboard() {
                           width={600}
                           height={292}
                         />
+                      </div>
+                      </div>
+                      </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -220,8 +238,12 @@ function Dashboard() {
         <strong>Total Ventas y Compras por Mes</strong>
       </Typography>
       <br />
-      <div className='card text-center d-flex align-items-center'>
-      <LineChart
+      <div className="card text-center">
+      {/* Contenedor fluido para la gráfica */}
+      <div className="d-flex justify-content-center">
+        {/* Estilo inline para el contenedor de la gráfica, permitiendo un ancho máximo */}
+        <div style={{ width: '100%', maxWidth: '620px', padding: '0 10px' }}>
+        <div className=' d-flex align-items-center'>      <LineChart
   xAxis={[{ scaleType: 'band', data: totalComprasDia.map(data => data.mes) }]}
   series={[
     {
@@ -242,6 +264,9 @@ function Dashboard() {
 />
 
 
+      </div>
+      </div>
+      </div>
       </div>
     </CardContent>
   </Card>

@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize")
 const sequelize = require("../database/db")
-const Producto = require("../models/Producto")
+const Orden = require("../models/Ficha_Tecnica/FichaTecnica")
 const Venta = require("../models/Venta")
 
 const detalleVenta = sequelize.define("detalle_ventas", {
@@ -13,7 +13,7 @@ const detalleVenta = sequelize.define("detalle_ventas", {
         type: DataTypes.INTEGER,
         allowNull: false // Asegura que la fk_venta_id no sea nula
     },    
-    fk_producto:{
+    fk_ordenes:{
         type: DataTypes.INTEGER,
         allowNull: false
     }, 
@@ -34,6 +34,6 @@ const detalleVenta = sequelize.define("detalle_ventas", {
 })
 
 detalleVenta.belongsTo(Venta, { foreignKey: 'fk_venta' })
-detalleVenta.belongsTo(Producto, { foreignKey: 'fk_producto' })
+detalleVenta.belongsTo(Orden, { foreignKey: 'fk_ordenes' })
 
 module.exports = detalleVenta

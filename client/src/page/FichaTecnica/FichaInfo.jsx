@@ -77,7 +77,7 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
       <div style={modalStyle}>
         <div style={contentStyle} className="ficha-info-modal">
           <div>
-          <h3 style={{ color: 'black'  }}>Información ficha</h3>
+          <h3 style={{ color: 'black'  }}>Información Órdenes</h3>
             <hr />
             <p>
               <strong>Nombre:</strong> {ficha.nombre_ficha} 

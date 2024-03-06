@@ -110,7 +110,7 @@ const VentaInfo = ({ venta, handleCloseModal, open }) => {
               <tbody>
                 {currentProducts.map((detalle) => (
                   <tr key={detalle.id_detalle_venta}>
-                    <td style={tdStyle}>{detalle.producto.fichas_tecnica.nombre_ficha}</td>
+                    <td style={tdStyle}>{detalle.ordene.nombre_ficha}</td>
                     <td style={tdStyle}>
                       {detalle.cantidad === 1
                         ? `${detalle.cantidad} Und`

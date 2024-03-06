@@ -1,7 +1,7 @@
 const {DataTypes}=require("sequelize")
 const sequelize= require("../../database/db")
 
-const FichaTecnica=sequelize.define("fichas_tecnicas",{
+const Orden=sequelize.define("ordenes",{
     id_ft:{
         type:DataTypes.INTEGER,
         autoIncrement:true,
@@ -26,7 +26,10 @@ const FichaTecnica=sequelize.define("fichas_tecnicas",{
     mano_obra:{
         type:DataTypes.INTEGER,
     },
-    estado:DataTypes.BOOLEAN
+    estado:DataTypes.BOOLEAN,
+    operacion:{
+        type:DataTypes.STRING
+    }
 
 },{
     timestamps:false,
@@ -34,4 +37,4 @@ const FichaTecnica=sequelize.define("fichas_tecnicas",{
 }
 )
 
-module.exports=FichaTecnica;
+module.exports=Orden;

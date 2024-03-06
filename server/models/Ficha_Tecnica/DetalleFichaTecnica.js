@@ -3,7 +3,7 @@ const sequelize= require("../../database/db")
 const Insumo= require("../Insumo")
 const FichaTecnica= require("../Ficha_Tecnica/FichaTecnica")
 
-const DetalleFichaTecnica=sequelize.define("detalle_fichas_tecnicas",{
+const DetalleOrden=sequelize.define("detalle_ordenes",{
     id_detalle_ft:{
         type:DataTypes.INTEGER,
         autoIncrement:true,
@@ -31,7 +31,7 @@ const DetalleFichaTecnica=sequelize.define("detalle_fichas_tecnicas",{
     
 }
 )
-DetalleFichaTecnica.belongsTo(Insumo, { foreignKey: 'fk_insumo' });
-DetalleFichaTecnica.belongsTo(FichaTecnica, { foreignKey: 'fk_ficha_tecnica' });
+DetalleOrden.belongsTo(Insumo, { foreignKey: 'fk_insumo' });
+DetalleOrden.belongsTo(FichaTecnica, { foreignKey: 'fk_ficha_tecnica' });
 
-module.exports=DetalleFichaTecnica;
+module.exports=DetalleOrden;

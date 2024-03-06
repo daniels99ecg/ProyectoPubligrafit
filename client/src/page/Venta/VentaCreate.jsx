@@ -4,6 +4,9 @@ import Tooltip from "@mui/material/Tooltip";
 import { useEffect, useState } from "react";
 import { MenuItem, TextField } from "@mui/material";
 import { useProducto } from "../../context/Productos/ProductoContext";
+
+import {useFichaTecnica} from "../../context/FichasTecnicas/FichaTecnicaContext";
+
 import { useCliente } from "../../context/Clientes/ClienteContext";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
@@ -15,7 +18,7 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { TiShoppingCart } from "react-icons/ti";
 
 function CreateVenta({ handleCloseVentaModal }) {
-  const { listar, ShowProducto } = useProducto();
+  const { listar, ShowFichasTecnicas } = useFichaTecnica();
   const { Listar, showClientes } = useCliente();
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
@@ -220,7 +223,7 @@ function CreateVenta({ handleCloseVentaModal }) {
   }, [tableData]);
 
   useEffect(() => {
-    ShowProducto();
+    ShowFichasTecnicas();
     showClientes();
   }, []);
 
@@ -367,7 +370,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                         id="fixed-tags-demo"
                                         options={listar.filter((option) => option.estado)}
                                         getOptionLabel={(option) =>
-                                          `${option.fichas_tecnica.nombre_ficha}`
+                                          `${option.nombre_ficha}`
                                         }
                                         onChange={(event, newValue) => {
                                           if (newValue) {
@@ -409,7 +412,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                                         cantidadPredeterminada *
                                                         precioProducto,
                                                       nombre_producto:
-                                                        newValue.fichas_tecnica.nombre_ficha,
+                                                        newValue.nombre_ficha,
                                                     },
                                                   ]
                                                 );
@@ -426,7 +429,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                                       cantidadPredeterminada *
                                                       precioProducto,
                                                     nombre_producto:
-                                                      newValue.fichas_tecnica.nombre_ficha,
+                                                      newValue.nombre_ficha,
                                                   },
                                                 ]);
                                                 event.target.value = null;

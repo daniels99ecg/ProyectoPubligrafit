@@ -95,7 +95,7 @@ function formatNumber(value) {
             <div className='card'>
                 <div className='card-body'>
                 <div className="card-header">
-                        <h1>Gestionar Fichas Tecnicas</h1>
+                        <h1>Gestionar Órdenes</h1>
                       </div>
                 <br />
         <div className="row">
@@ -259,8 +259,10 @@ function formatNumber(value) {
               { field: 'id_ft', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
               { field: 'nombre_ficha', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
               { field: 'costo_final_producto', headerName: 'Costo Final', headerClassName: 'encabezado', flex: 1,
+              
               valueFormatter: (params) => formatCurrency(params.value),
             },              
+            { field: 'operacion', headerName: 'Operación', headerClassName: 'encabezado', flex: 1 },
 
               {
                 field: 'imagen_producto_final', headerName: 'Imagen', headerClassName: 'encabezado', flex: 0,

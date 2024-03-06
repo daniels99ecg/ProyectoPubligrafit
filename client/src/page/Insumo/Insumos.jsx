@@ -12,6 +12,7 @@ import UpdateInsumo from './UpdateInsumo'
 
 
 
+
 function formatCurrency(amount) {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -233,9 +234,11 @@ const handleCloseUpdateModal = () => {
             rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.id_insumo,
+              pruebas:item.categoria.categoria
             }))}
             columns={[
               { field: 'id_insumo', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
+              { field: 'pruebas', headerName: 'Categoria', headerClassName: 'encabezado', flex: 1 },
               { field: 'nombre', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
               { field: 'precio', headerName: 'Precio', headerClassName: 'encabezado', flex: 1,
               valueFormatter: (params) => formatCurrency(params.value),

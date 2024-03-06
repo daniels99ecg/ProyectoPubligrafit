@@ -1,9 +1,8 @@
 const sequelize = require("../../database/db");
 const Venta = require("../../models/Venta");
 const DetalleVenta = require("../../models/DetalleVenta");
-const Producto = require("../../models/Producto");
 const Cliente = require("../../models/Cliente");
-const FichaTecnica = require("../../models/Ficha_Tecnica/FichaTecnica");
+const Orden = require("../../models/Ficha_Tecnica/FichaTecnica");
 
 // 
 async function listarVentas(req, res) {
@@ -31,21 +30,16 @@ async function listarVentas(req, res) {
           where: { fk_venta: venta.id_venta },
           attributes: [
             "id_detalle_venta",
-            "fk_producto",
+            "fk_ordenes",
             "cantidad",
             "precio",
             "subtotal",
           ],
           include: [
             {
-              model: Producto,
-              attributes: ["fk_ft"],
-              include: [
-                {
-                  model: FichaTecnica,
-                  attributes: ["nombre_ficha"],
-                },
-              ],
+              model: Orden,
+              attributes: ["nombre_ficha"],
+             
             },
           ],
         });
@@ -94,21 +88,16 @@ async function listarVenta(req, res) {
       where: { fk_venta: id_venta },
       attributes: [
         "id_detalle_venta",
-        "fk_producto",
+        "fk_ordenes",
         "cantidad",
         "precio",
         "subtotal",
       ],
       include: [
         {
-          model: Producto,
-          attributes: ["fk_ft"],
-          include: [
-            {
-              model: FichaTecnica,
-              attributes: ["nombre_ficha"],
-            },
-          ],
+          model: Orden,
+          attributes: ["nombre_ficha"],
+         
         },
       ],
     });
@@ -162,7 +151,7 @@ async function createVentaConDetalle(req, res) {
           await DetalleVenta.create(
             {
               fk_venta: venta.id_venta,
-              fk_producto: producto.fk_producto,
+              fk_ordenes: producto.fk_ordenes,
               cantidad: producto.cantidad,
               precio: producto.precio,
               subtotal: producto.subtotal,
@@ -170,7 +159,7 @@ async function createVentaConDetalle(req, res) {
             { transaction: t }
           );
 
-          await Producto.update(
+          await Orden.update(
             {
               cantidad: sequelize.literal(
                 `CASE WHEN cantidad >= ${producto.cantidad} THEN cantidad - ${producto.cantidad} ELSE cantidad END`
@@ -197,7 +186,7 @@ async function createVentaConDetalle(req, res) {
 
 
 
-
+//Esto es del dashboard
 
 const { Op , fn, col} = require("sequelize");
 

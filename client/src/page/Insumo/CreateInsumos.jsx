@@ -6,12 +6,20 @@ import TextField from '@mui/material/TextField';
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 import React from 'react';
-
+import { useProducto } from '../../context/Productos/ProductoContext';
+import {  useEffect } from 'react'
+import Autocomplete from '@mui/material/Autocomplete';
 
 function CreateInsumo() {
   const {validacionInsumo}=useInsumo()
 
+  const {validacionProducto, cargarCategoria, Listar}=useProducto()
+  useEffect(()=>{
+    
+    cargarCategoria()
+ 
 
+   },[])
   return (
     <>
       
@@ -29,6 +37,7 @@ function CreateInsumo() {
                     initialValues={{
                       id_insumo: '',
                       nombre: '',
+                      fk_categoria:'',
                      
                     }}
                     validate={async(values)=>{
@@ -52,7 +61,24 @@ function CreateInsumo() {
                   >
                     {({ handleChange, values , errors, isValid}) => (
                       <Form className='row g-3'>
-                        <div className="col-md-12 mx-auto">
+
+<div className="col-md-6 ">
+                           <Autocomplete 
+                              disablePortal
+                              id="fixed-tags-demo"
+                              options={Listar}  // Filtrar roles con estado true
+                              getOptionLabel={(option) => option.categoria}
+                              onChange={(event, newValue) => {
+                                handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : '' } });
+                              }}
+                              value={Listar && values && Listar.find((categoria) => categoria.id_categoria === values.fk_categoria) || null}
+                              sx={{ width: '100%' }}
+                              renderInput={(params) => <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>}
+                            />
+
+                            </div>
+
+                        <div className="col-md-6">
                           <label htmlFor="nombre"></label>
                           <Field 
                           type="text" 

@@ -1,17 +1,33 @@
 const Insumo=require("../models/Insumo")
-const DetalleFichaTecnica=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
+const DetalleOrden=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
 const Compras_detalle=require('../models/Detalle_Compra/Detalle_Compra')
-
+const Categoria=require('../models/Categoria')
 async function listarInsumos(req, res){
     try {
-        const insumo = await Insumo.findAll();
+        const insumo = await Insumo.findAll({
+            attributes: [
+              "id_insumo",
+              "nombre",
+              "precio",
+              "cantidad",
+              "fk_categoria",
+              "estado"
+            ],
+            include: [
+              {
+                model: Categoria,
+                attributes: ["categoria"],
+              },
+            ],
+          });
+
         const clientesConVentas = await Promise.all(insumo.map(async (insumo) => {
             const ventasAsociadas = await Compras_detalle.findOne({
                 where: {
                     fk_insumo: insumo.id_insumo, 
                 },
             });
-            const detalleFichaTecnica = await DetalleFichaTecnica.findOne({
+            const detalleFichaTecnica = await DetalleOrden.findOne({
                 where: { fk_insumo: insumo.id_insumo },
             });
             return {
@@ -59,6 +75,7 @@ async function crearInsumo(req, res){
         nombre:dataInsumo.nombre,
         precio:0,
         cantidad:0,
+        fk_categoria:dataInsumo.fk_categoria,
         estado:1
             
         })

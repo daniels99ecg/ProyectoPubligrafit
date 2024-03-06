@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-03-2024 a las 03:14:36
+-- Tiempo de generación: 06-03-2024 a las 16:45:47
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -81,16 +81,6 @@ CREATE TABLE `compras` (
   `total` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `compras`
---
-
-INSERT INTO `compras` (`id_compra`, `fk_proveedor`, `cantidad`, `fecha`, `total`) VALUES
-(89, 1, 0, '2024-01-04', 834425),
-(90, 2, 0, '2024-01-04', 954975),
-(100, 3, 0, '2024-02-23', 1190),
-(101, 4, 0, '2024-02-24', 595);
-
 -- --------------------------------------------------------
 
 --
@@ -107,24 +97,13 @@ CREATE TABLE `detalle_compras` (
   `subtotal` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `detalle_compras`
---
-
-INSERT INTO `detalle_compras` (`id_detalle_compra`, `fk_compra`, `fk_insumo`, `cantidad`, `precio`, `iva`, `subtotal`) VALUES
-(93, 89, 1, 3, 100, 0, 300),
-(94, 90, 2, 5, 500, 0, 2500),
-(95, 90, 3, 10, 80000, 0, 800000),
-(105, 100, 1, 5, 200, 0, 1000),
-(106, 101, 14, 5, 100, 0, 500);
-
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `detalle_fichas_tecnicas`
+-- Estructura de tabla para la tabla `detalle_ordenes`
 --
 
-CREATE TABLE `detalle_fichas_tecnicas` (
+CREATE TABLE `detalle_ordenes` (
   `id_detalle_ft` int(11) NOT NULL,
   `fk_insumo` int(11) DEFAULT NULL,
   `fk_ficha_tecnica` int(11) DEFAULT NULL,
@@ -133,18 +112,11 @@ CREATE TABLE `detalle_fichas_tecnicas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `detalle_fichas_tecnicas`
+-- Volcado de datos para la tabla `detalle_ordenes`
 --
 
-INSERT INTO `detalle_fichas_tecnicas` (`id_detalle_ft`, `fk_insumo`, `fk_ficha_tecnica`, `cantidad`, `precio`) VALUES
-(5, 1, 155, 5, 50),
-(38, 1, 198, 1, 100),
-(49, 1, 201, 5, 60),
-(50, 2, 201, 4, 100),
-(51, 3, 201, 6, 80000),
-(52, 4, 201, 10, 15000),
-(53, 1, 180, 10, 50),
-(56, 2, 203, 1, 100);
+INSERT INTO `detalle_ordenes` (`id_detalle_ft`, `fk_insumo`, `fk_ficha_tecnica`, `cantidad`, `precio`) VALUES
+(57, 17, 204, 1, 100);
 
 -- --------------------------------------------------------
 
@@ -155,7 +127,7 @@ INSERT INTO `detalle_fichas_tecnicas` (`id_detalle_ft`, `fk_insumo`, `fk_ficha_t
 CREATE TABLE `detalle_ventas` (
   `id_detalle_venta` int(6) NOT NULL,
   `fk_venta` int(6) NOT NULL,
-  `fk_producto` int(4) NOT NULL,
+  `fk_ordenes` int(4) NOT NULL,
   `cantidad` int(5) NOT NULL,
   `precio` float(10,0) NOT NULL,
   `subtotal` float(10,0) NOT NULL
@@ -165,38 +137,8 @@ CREATE TABLE `detalle_ventas` (
 -- Volcado de datos para la tabla `detalle_ventas`
 --
 
-INSERT INTO `detalle_ventas` (`id_detalle_venta`, `fk_venta`, `fk_producto`, `cantidad`, `precio`, `subtotal`) VALUES
-(18, 19, 72, 1, 15000, 15000),
-(19, 20, 72, 11, 15000, 165000),
-(20, 21, 72, 1, 15000, 15000),
-(21, 22, 72, 6, 15000, 90000);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `fichas_tecnicas`
---
-
-CREATE TABLE `fichas_tecnicas` (
-  `id_ft` int(4) NOT NULL,
-  `nombre_ficha` varchar(50) NOT NULL,
-  `imagen_producto_final` varchar(255) NOT NULL,
-  `costo_final_producto` float NOT NULL,
-  `detalle` varchar(500) NOT NULL,
-  `mano_obra` int(11) NOT NULL,
-  `estado` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `fichas_tecnicas`
---
-
-INSERT INTO `fichas_tecnicas` (`id_ft`, `nombre_ficha`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `mano_obra`, `estado`) VALUES
-(155, 'Prueba1', 'vtkyAQp6k.jpeg', 200, 'Descripción de la ficha técnica', 5000, 1),
-(180, 'Cuaderno', 'vtkyAQp6k.jpeg', 5100, 'Esto es una prueba de ', 4000, 1),
-(198, 'estoes2', 'vtkyAQp6k.jpeg', 5100, 'Blabla', 600, 1),
-(201, 'Valla', 'FdKsdSrDS.jpeg', 4630700, 'Esto es una prueba', 400, 1),
-(203, 'danieprueba', '5snKxA8XE.png', 2600, 'Pruebas y mas', 5000, 1);
+INSERT INTO `detalle_ventas` (`id_detalle_venta`, `fk_venta`, `fk_ordenes`, `cantidad`, `precio`, `subtotal`) VALUES
+(25, 26, 204, 5, 50000, 56000);
 
 -- --------------------------------------------------------
 
@@ -209,6 +151,7 @@ CREATE TABLE `insumos` (
   `nombre` varchar(50) NOT NULL,
   `precio` float NOT NULL,
   `cantidad` int(5) NOT NULL,
+  `fk_categoria` int(11) NOT NULL,
   `estado` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -216,12 +159,32 @@ CREATE TABLE `insumos` (
 -- Volcado de datos para la tabla `insumos`
 --
 
-INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `estado`) VALUES
-(1, 'Papel Bond', 150, 10, 1),
-(2, 'Sellastrip', 100, 95, 1),
-(3, 'Guillotinas', 80000, 94, 1),
-(4, 'Plumígrafos', 15000, 90, 1),
-(14, 'prueba', 100, 94, 1);
+INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `fk_categoria`, `estado`) VALUES
+(17, 'Pepel iris', 100, 1000, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ordenes`
+--
+
+CREATE TABLE `ordenes` (
+  `id_ft` int(4) NOT NULL,
+  `nombre_ficha` varchar(50) NOT NULL,
+  `imagen_producto_final` varchar(255) NOT NULL,
+  `costo_final_producto` float NOT NULL,
+  `detalle` varchar(500) NOT NULL,
+  `mano_obra` int(11) NOT NULL,
+  `operacion` varchar(15) NOT NULL,
+  `estado` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ordenes`
+--
+
+INSERT INTO `ordenes` (`id_ft`, `nombre_ficha`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `mano_obra`, `operacion`, `estado`) VALUES
+(204, 'Cuaderno', 'NVaeNecTb.jpeg', 5100, 'Blabla', 5000, 'Pendiente', 1);
 
 -- --------------------------------------------------------
 
@@ -248,28 +211,6 @@ INSERT INTO `permisos` (`id_permiso`, `nombre_permiso`) VALUES
 ('005Ficha', 'FichaTecnica'),
 ('007produc', 'Producto'),
 ('008Cliente', 'Cliente');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `productos`
---
-
-CREATE TABLE `productos` (
-  `id_producto` int(4) NOT NULL,
-  `fk_categoria` int(4) NOT NULL,
-  `precio` float NOT NULL,
-  `cantidad` int(5) NOT NULL,
-  `estado` tinyint(1) DEFAULT NULL,
-  `fk_ft` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `productos`
---
-
-INSERT INTO `productos` (`id_producto`, `fk_categoria`, `precio`, `cantidad`, `estado`, `fk_ft`) VALUES
-(72, 1, 15000, 31, 1, 155);
 
 -- --------------------------------------------------------
 
@@ -382,18 +323,16 @@ CREATE TABLE `ventas` (
   `fk_id_cliente` int(11) NOT NULL,
   `metodo_pago` varchar(20) NOT NULL,
   `fecha` date NOT NULL,
-  `total` float(10,0) NOT NULL
+  `total` float(10,0) NOT NULL,
+  `vendedor` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `ventas`
 --
 
-INSERT INTO `ventas` (`id_venta`, `fk_id_cliente`, `metodo_pago`, `fecha`, `total`) VALUES
-(19, 1, 'Efectivo', '2024-02-05', 17850),
-(20, 1, 'Efectivo', '2024-02-06', 196350),
-(21, 1, 'Efectivo', '2024-02-07', 17850),
-(22, 1, 'Efectivo', '2024-02-23', 107100);
+INSERT INTO `ventas` (`id_venta`, `fk_id_cliente`, `metodo_pago`, `fecha`, `total`, `vendedor`) VALUES
+(26, 1, 'efec', '0000-00-00', 5000, 'Dani');
 
 --
 -- Índices para tablas volcadas
@@ -427,9 +366,9 @@ ALTER TABLE `detalle_compras`
   ADD KEY `fk_insumo` (`fk_insumo`);
 
 --
--- Indices de la tabla `detalle_fichas_tecnicas`
+-- Indices de la tabla `detalle_ordenes`
 --
-ALTER TABLE `detalle_fichas_tecnicas`
+ALTER TABLE `detalle_ordenes`
   ADD PRIMARY KEY (`id_detalle_ft`),
   ADD KEY `fk_ficha_tecnica` (`fk_ficha_tecnica`),
   ADD KEY `fk_insumo` (`fk_insumo`);
@@ -440,33 +379,26 @@ ALTER TABLE `detalle_fichas_tecnicas`
 ALTER TABLE `detalle_ventas`
   ADD PRIMARY KEY (`id_detalle_venta`),
   ADD KEY `fk_venta` (`fk_venta`),
-  ADD KEY `fk_producto` (`fk_producto`);
-
---
--- Indices de la tabla `fichas_tecnicas`
---
-ALTER TABLE `fichas_tecnicas`
-  ADD PRIMARY KEY (`id_ft`);
+  ADD KEY `fk_producto` (`fk_ordenes`);
 
 --
 -- Indices de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  ADD PRIMARY KEY (`id_insumo`);
+  ADD PRIMARY KEY (`id_insumo`),
+  ADD KEY `fk_categoria` (`fk_categoria`);
+
+--
+-- Indices de la tabla `ordenes`
+--
+ALTER TABLE `ordenes`
+  ADD PRIMARY KEY (`id_ft`);
 
 --
 -- Indices de la tabla `permisos`
 --
 ALTER TABLE `permisos`
   ADD PRIMARY KEY (`id_permiso`);
-
---
--- Indices de la tabla `productos`
---
-ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id_producto`),
-  ADD KEY `fk_categoria` (`fk_categoria`),
-  ADD KEY `fk_ft` (`fk_ft`);
 
 --
 -- Indices de la tabla `proveedores`
@@ -531,34 +463,28 @@ ALTER TABLE `detalle_compras`
   MODIFY `id_detalle_compra` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
--- AUTO_INCREMENT de la tabla `detalle_fichas_tecnicas`
+-- AUTO_INCREMENT de la tabla `detalle_ordenes`
 --
-ALTER TABLE `detalle_fichas_tecnicas`
-  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+ALTER TABLE `detalle_ordenes`
+  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- AUTO_INCREMENT de la tabla `fichas_tecnicas`
---
-ALTER TABLE `fichas_tecnicas`
-  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=204;
+  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT de la tabla `productos`
+-- AUTO_INCREMENT de la tabla `ordenes`
 --
-ALTER TABLE `productos`
-  MODIFY `id_producto` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+ALTER TABLE `ordenes`
+  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -588,7 +514,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Restricciones para tablas volcadas
@@ -608,25 +534,24 @@ ALTER TABLE `detalle_compras`
   ADD CONSTRAINT `fk_insumo` FOREIGN KEY (`fk_insumo`) REFERENCES `insumos` (`id_insumo`);
 
 --
--- Filtros para la tabla `detalle_fichas_tecnicas`
+-- Filtros para la tabla `detalle_ordenes`
 --
-ALTER TABLE `detalle_fichas_tecnicas`
-  ADD CONSTRAINT `detalle_fichas_tecnicas_ibfk_1` FOREIGN KEY (`fk_insumo`) REFERENCES `insumos` (`id_insumo`),
-  ADD CONSTRAINT `fk_ficha_tecnica` FOREIGN KEY (`fk_ficha_tecnica`) REFERENCES `fichas_tecnicas` (`id_ft`);
+ALTER TABLE `detalle_ordenes`
+  ADD CONSTRAINT `detalle_ordenes_ibfk_1` FOREIGN KEY (`fk_insumo`) REFERENCES `insumos` (`id_insumo`),
+  ADD CONSTRAINT `fk_ficha_tecnica` FOREIGN KEY (`fk_ficha_tecnica`) REFERENCES `ordenes` (`id_ft`);
 
 --
 -- Filtros para la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  ADD CONSTRAINT `fk_producto` FOREIGN KEY (`fk_producto`) REFERENCES `productos` (`id_producto`),
+  ADD CONSTRAINT `detalle_ventas_ibfk_1` FOREIGN KEY (`fk_ordenes`) REFERENCES `ordenes` (`id_ft`),
   ADD CONSTRAINT `fk_venta` FOREIGN KEY (`fk_venta`) REFERENCES `ventas` (`id_venta`);
 
 --
--- Filtros para la tabla `productos`
+-- Filtros para la tabla `insumos`
 --
-ALTER TABLE `productos`
-  ADD CONSTRAINT `fk_categoria` FOREIGN KEY (`fk_categoria`) REFERENCES `categorias` (`id_categoria`),
-  ADD CONSTRAINT `fk_ft` FOREIGN KEY (`fk_ft`) REFERENCES `fichas_tecnicas` (`id_ft`);
+ALTER TABLE `insumos`
+  ADD CONSTRAINT `insumos_ibfk_1` FOREIGN KEY (`fk_categoria`) REFERENCES `categorias` (`id_categoria`);
 
 --
 -- Filtros para la tabla `rol_x_permisos`

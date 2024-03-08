@@ -10,7 +10,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { BsInfoCircleFill } from "react-icons/bs";
 import CompraInfo from "../Compras/CompraInfo"
 import { FaFileInvoiceDollar } from "react-icons/fa6";
-import ComprobanteCliente from "./VentaComprobante";
 import { useMediaQuery } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -224,24 +223,7 @@ const handleCloseInfoVenta = () => {
               </Tooltip>
             ),
           },,
-          {
-            field: 'factura',
-            headerName: 'Acciones',
-            headerClassName: 'encabezado',
-            flex: 0,
-            renderCell: (params) => (
-              <Tooltip title="Factura" arrow>
-                <span>
-                <button
-                  onClick={() => handleOpenComprobanteModal(params.row)}
-                  className="btn btn-link"
-                >
-                   <FaFileInvoiceDollar style={{ fontSize: '24px', color: '#1A5276' }} /> 
-                </button>
-                </span>
-                </Tooltip>
-            )
-          }
+         
             
         ]}
         autoHeight
@@ -306,13 +288,8 @@ const handleCloseInfoVenta = () => {
             open={showInfoVenta}
           />,
           document.body
-        )}{comprobanteModal && (
-          <ComprobanteCliente
-          compra={selectVenta}
-            handleCloseModal={() => setComprobanteModal(false)}
-            open={comprobanteModal}
-          />
         )}
+      
 
 
 

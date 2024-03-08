@@ -27,7 +27,8 @@ function FichaCreatePruebas({fichaId}) {
   const [cantidadAlterar, setCantidadAlterar] = useState("");
   const [manoObra, setManoObra] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-
+  
+  const [pruebas, setPruebas] = useState([]);
 
   // const [metodoPagoTouched, setMetodoPagoTouched] = useState(false);
   const [totalTouched, setTotalTouched] = useState(false);
@@ -205,11 +206,28 @@ function FichaCreatePruebas({fichaId}) {
 
   useEffect(() => {
     if (listarFichaTecnica.detalles.length > 0) {
+      setDetalles(listarFichaTecnica.detalles);
       setTableData(listarFichaTecnica.detalles);
     }
   }, [listarFichaTecnica]);
+  
+  useEffect(() => {
+    const nuevosDetalles = listarFichaTecnica.detalles;
+  
+    const allDetails = [
+      ...nuevosDetalles.map((detalle) => ({
+        ...detalle,
+        nombre: detalle.insumo.nombre,
+      })),
+      ...tableData,
+    ].filter((detalle) => detalle.nombre && detalle.nombre.trim() !== "");
+  
+    setPruebas(allDetails);
+  }, [listarFichaTecnica, tableData]);
+  
 
 
+  
   const agregarNuevoInsumo = (nuevoInsumo) => {
     // Verificar si el insumo ya existe en la tabla
     const insumoExistenteIndex = tableData.findIndex(item => item.fk_insumo === nuevoInsumo.id_insumo);
@@ -259,13 +277,7 @@ function FichaCreatePruebas({fichaId}) {
     });
   };
 
-  const allDetails = [
-    ...detalles.map((detalle) => ({
-      ...detalle,
-      nombre: detalle.insumo.nombre,
-    })),
-    ...tableData,
-  ].filter((detalle) => detalle.nombre && detalle.nombre.trim() !== "");
+  
 
  
 
@@ -296,7 +308,7 @@ function FichaCreatePruebas({fichaId}) {
                   console.log(values)
                   const datosParaEnviar = {
                     ...values,
-                    detalles: allDetails, // Asegúrate de que esto refleje los insumos actuales, incluidos los nuevos insumos
+                    detalles: pruebas, // Asegúrate de que esto refleje los insumos actuales, incluidos los nuevos insumos
                   };
                 
                   console.log(datosParaEnviar);
@@ -397,7 +409,7 @@ function FichaCreatePruebas({fichaId}) {
                                             </tr>
                                           </thead>
                                           <tbody className="small text-left fs-6">
-                                            {allDetails.map((row, index) => (
+                                            {pruebas.map((row, index) => (
                                               <tr key={index}>
                                                 <td>{row.nombre}</td>
                                                 <td>
@@ -466,7 +478,7 @@ function FichaCreatePruebas({fichaId}) {
                                   </div>
                                   
                                   {/* Paginación de Bootstrap */}
-                                  {allDetails.length > 0 && (
+                                  {tableData.length > 0 && (
                                     <div className="d-flex mt-2">
                                       <Pagination>
                                         <Pagination.Prev

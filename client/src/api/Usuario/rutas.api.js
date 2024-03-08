@@ -47,6 +47,7 @@ export const loginIngreso = async (email, contrasena) => {
     throw error; // Maneja el error adecuadamente en tu componente React
   }
 };
+
 export const cambiarContrasena = async (email, contrasena) => {
   try {
     const response = await axios.post(`${baseURL}usuario/cambiarcontrasena/`, {

@@ -115,7 +115,7 @@ function Dashboard() {
                           size={30}
                           color="green"
                           /> 
-                      {totalCompras.toLocaleString('es-CO')}
+                      {totalCompras.toLocaleString('es-CO')} 
                       <br />
                       <strong>Compras</strong>
                     </h4>

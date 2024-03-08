@@ -20,6 +20,8 @@ function CreateInsumo() {
  
 
    },[])
+   const options = ['1 Litro', '2 Litros'];
+
   return (
     <>
       
@@ -38,6 +40,7 @@ function CreateInsumo() {
                       id_insumo: '',
                       nombre: '',
                       fk_categoria:'',
+                      presentacion:""
                      
                     }}
                     validate={async(values)=>{
@@ -118,6 +121,20 @@ function CreateInsumo() {
                           <label htmlFor="cantidad">Cantidad</label>
                           <Field type="text" name='cantidad' className="form-control" />
                         </div> */}
+
+
+<div className="col-md-12">
+      <Autocomplete
+        disablePortal
+        id="fixed-tags-demo"
+        options={options}
+        onChange={(event, newValue) => {
+          handleChange({ target: { name: 'presentacion', value: newValue || '' } });
+        }}
+        sx={{ width: '100%' }}
+        renderInput={(params) => <TextField {...params} label="Presentación" sx={{ width: '100%' }} />}
+      />
+    </div>
 
                         <div className='col-auto'>
                           <button className='btn btn-primary' type='submit' disabled={!isValid}>Registrar</button>

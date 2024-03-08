@@ -51,7 +51,7 @@ function CreateVenta({ handleCloseVentaModal }) {
       .test("notZero", "El total no puede ser cero", (value) => value !== 0),
     productos: Yup.array().of(
       Yup.object().shape({
-        fk_producto: Yup.string().required("Campo requerido"),
+        fk_ordenes: Yup.string().required("Campo requerido"),
         cantidad: Yup.number().required("Campo requerido"),
         precio: Yup.number().required("Campo requerido"),
         subtotal: Yup.number().required("Campo requerido"),
@@ -84,7 +84,7 @@ function CreateVenta({ handleCloseVentaModal }) {
   };
 
   const findProductoEnStock = (productoId) => {
-    const producto = listar.find((item) => item.id_producto === productoId);
+    const producto = listar.find((item) => item.id_ft === productoId);
     return producto ? producto.cantidad : 0;
   };
 
@@ -109,7 +109,7 @@ function CreateVenta({ handleCloseVentaModal }) {
       const cantidadAgregada = parseInt(cantidadAlterar, 10);
       if (!isNaN(cantidadAgregada) && cantidadAgregada !== 0) {
         const productoEnTabla = tableData.find(
-          (item) => item.fk_producto === productoSelect.id_producto
+          (item) => item.fk_ordenes === productoSelect.id_ft
         );
 
         if (productoEnTabla) {
@@ -118,7 +118,7 @@ function CreateVenta({ handleCloseVentaModal }) {
 
           // Validar si la nueva cantidad supera el stock disponible
           const productoEnStock = findProductoEnStock(
-            productoEnTabla.fk_producto
+            productoEnTabla.fk_ordenes
           );
           if (nuevaCantidad > productoEnStock) {
             Swal.fire({
@@ -170,7 +170,7 @@ function CreateVenta({ handleCloseVentaModal }) {
 
           // Actualizar la cantidad en tiempo real en la tabla
           const nuevaTabla = tableData.map((item) =>
-            item.fk_producto === productoSelect.id_producto
+            item.fk_ordenes === productoSelect.id_ft
               ? actualizarSubtotal({ ...item, cantidad: nuevaCantidad })
               : item
           );
@@ -270,7 +270,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                     total: total,
                     vendedor:user.nombre,
                     productos: tableData.map((item) => ({
-                      fk_producto: item.fk_producto,
+                      fk_ordenes: item.fk_ordenes,
                       cantidad: item.cantidad,
                       precio: item.precio,
                       subtotal: item.subtotal,
@@ -368,7 +368,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                       <Autocomplete
                                         disablePortal
                                         id="fixed-tags-demo"
-                                        options={listar.filter((option) => option.estado)}
+                                        options={listar.filter((option) => option.estado && option.operacion !== "Pendiente")}
                                         getOptionLabel={(option) =>
                                           `${option.nombre_ficha}`
                                         }
@@ -379,13 +379,13 @@ function CreateVenta({ handleCloseVentaModal }) {
                                             const productoAgregadoTabla =
                                               tableData.some(
                                                 (item) =>
-                                                  item.fk_producto ===
-                                                  newValue.id_producto
+                                                  item.fk_ordenes ===
+                                                  newValue.id_ft
                                               );
 
                                             if (!productoAgregadoTabla) {
                                               const precioProducto = newValue
-                                                ? newValue.precio
+                                                ? newValue.costo_final_producto
                                                 : 0;
                                               const cantidadPredeterminada =
                                                 newValue.cantidad !== 0 ? 1 : 0;
@@ -403,8 +403,8 @@ function CreateVenta({ handleCloseVentaModal }) {
                                                   (prevTableData) => [
                                                     ...prevTableData,
                                                     {
-                                                      fk_producto:
-                                                        newValue.id_producto,
+                                                      fk_ordenes:
+                                                        newValue.id_ft,
                                                       cantidad:
                                                         cantidadPredeterminada,
                                                       precio: precioProducto,
@@ -420,8 +420,8 @@ function CreateVenta({ handleCloseVentaModal }) {
                                                 setFieldValue("productos", [
                                                   ...values.productos,
                                                   {
-                                                    fk_producto:
-                                                      newValue.id_producto,
+                                                    fk_ordenes:
+                                                      newValue.id_ft,
                                                     cantidad:
                                                       cantidadPredeterminada,
                                                     precio: precioProducto,
@@ -448,7 +448,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                         renderInput={(params) => (
                                           <TextField
                                             {...params}
-                                            label="Producto"
+                                            label="Órdenes"
                                             sx={{ width: "70%" }}
                                           />
                                         )}

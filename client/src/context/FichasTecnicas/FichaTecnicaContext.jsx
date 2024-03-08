@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarFichasTecnicas, postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica} from "../../api/Ficha/Rutas.ficha"
+import {getListarFichasTecnicas, postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica, putOperacion} from "../../api/Ficha/Rutas.ficha"
 import Swal from 'sweetalert2'
 export const FichaTecnicaContext = createContext()
 
@@ -269,9 +269,37 @@ const validacionFichaTecnica = async (values)=>{
     }
   }
 
+
+
+  const actualizarOperacion = async (id_ft, nuevaOperacion) => {
+    try {
+      // Realizar la solicitud para actualizar la operación
+      await putOperacion(id_ft, nuevaOperacion);
+  
+      // Si la solicitud se realiza correctamente, actualizar el estado local
+      const updatedList = listar.map((item) => {
+        if (item.id_ft === id_ft) {
+          // Actualizar la operación del elemento correspondiente
+          return { ...item, operacion: nuevaOperacion };
+        }
+        return item;
+      });
+  
+      // Actualizar el estado con la nueva lista que incluye la operación actualizada
+      setListar(updatedList);
+    } catch (error) {
+      console.error(error);
+      // Maneja el error de manera adecuada
+    }
+  };
+  
+  
+
+
+
 return(
     <FichaTecnicaContext.Provider
-    value={{listar,ShowFichasTecnicas,searchTerm,setSearchTerm,listarFichaTecnica, validarFichaActualizar,fichaTecnicaActualizar,activarFichaTecnica, eliminarFichasTecnicas, desactivarFichaTecnica, validacionFichaTecnica ,filtrarDesactivados}}>
+    value={{listar,ShowFichasTecnicas,searchTerm,setSearchTerm,listarFichaTecnica, validarFichaActualizar,fichaTecnicaActualizar,activarFichaTecnica, eliminarFichasTecnicas, desactivarFichaTecnica, validacionFichaTecnica ,filtrarDesactivados,actualizarOperacion}}>
     {children}
     </FichaTecnicaContext.Provider>
 )

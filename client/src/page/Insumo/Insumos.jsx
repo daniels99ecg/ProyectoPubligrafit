@@ -240,6 +240,8 @@ const handleCloseUpdateModal = () => {
               { field: 'id_insumo', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
               { field: 'pruebas', headerName: 'Categoria', headerClassName: 'encabezado', flex: 1 },
               { field: 'nombre', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
+              { field: 'presentacion', headerName: 'Presentación', headerClassName: 'encabezado', flex: 1 },
+
               { field: 'precio', headerName: 'Precio', headerClassName: 'encabezado', flex: 1,
               valueFormatter: (params) => formatCurrency(params.value),
             },

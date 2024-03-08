@@ -17,8 +17,11 @@ import FichaUpdate from './FichaUpdatePruebas'
 
 const baseURL = import.meta.env.VITE_REACT_API_URL;
 
+
+
+
 function ListarFichasTecnicas() {
-  const{listar,ShowFichasTecnicas,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm}=useFichaTecnica()
+  const{listar,ShowFichasTecnicas,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm, actualizarOperacion}=useFichaTecnica()
   const navigate=useNavigate()
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [showInfoVenta, setShowInfoVenta] = useState(false);
@@ -83,6 +86,12 @@ function formatCurrency(amount) {
 function formatNumber(value) {
   return new Intl.NumberFormat('es-AR').format(value);
 }
+
+const options = [
+  { value: 'option1', label: 'Opción 1' },
+  { value: 'option2', label: 'Opción 2' },
+  { value: 'option3', label: 'Opción 3' },
+];
   return (
     <>
     <Nav/>
@@ -262,7 +271,26 @@ function formatNumber(value) {
               
               valueFormatter: (params) => formatCurrency(params.value),
             },              
-            { field: 'operacion', headerName: 'Operación', headerClassName: 'encabezado', flex: 1 },
+            { field: 'operacion', 
+            headerName: 'Operación', 
+            headerClassName: 'encabezado', 
+            flex: 1, 
+            renderCell: (params) => (
+              <select 
+      value={params.value} 
+      onChange={(e) => {
+        const nuevaOperacion = e.target.value;
+        const id_ft = params.row.id_ft; // Obtener el id_ft del elemento actual
+        actualizarOperacion(id_ft, nuevaOperacion); // Llamar a la función para actualizar la operación
+      }}
+    >
+      <option value={params.value}>{params.value}</option>
+      <option value="Pendiente">Pendiente</option>
+      <option value="Realizada">Realizada</option>
+      {/* Otras opciones de operación */}
+    </select>
+            ),
+          },
 
               {
                 field: 'imagen_producto_final', headerName: 'Imagen', headerClassName: 'encabezado', flex: 0,

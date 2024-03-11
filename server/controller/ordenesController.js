@@ -102,6 +102,7 @@ async function crearFichaTecnica(req, res) {
               costo_final_producto:dataFicha.costo_final_producto,
               detalle: dataFicha.detalle,
               mano_obra:dataFicha.mano_obra,
+              operacion:"Pendiente",
               estado: 1,
               
               // nombre_ficha:dataFicha.nombre_ficha,
@@ -265,6 +266,32 @@ async function desactivarFichaTecnica(req, res) {
     }
   }
 
+
+
+
+  async function operacionOrden(req, res) {
+    try {
+        const id_ft = req.params.id_ft;
+        const nuevaOperacion = req.body.operacion; // Suponiendo que envías la nueva operación desde el cliente
+
+        const fichaTecnica = await Orden.findByPk(id_ft);
+        
+        if (!fichaTecnica) {
+            return res.status(404).json({ error: 'Ficha técnica no encontrada' });
+        }
+
+        // Actualizar la operación de acuerdo a la opción seleccionada
+        await fichaTecnica.update({ operacion: nuevaOperacion });
+
+        res.status(200).json({ message: 'Operación actualizada exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar operación' });
+    }
+}
+
+
+
 module.exports ={
     listarFichasTecnicas,
     listarFichaTecnica,
@@ -272,5 +299,6 @@ module.exports ={
     actualizarFichaTecnica,
     eliminarFichaTecnica,
     activarFichaTecnica,
-    desactivarFichaTecnica
+    desactivarFichaTecnica,
+    operacionOrden
 }

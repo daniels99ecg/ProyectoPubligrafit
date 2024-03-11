@@ -10,6 +10,8 @@ import TextField from '@mui/material/TextField';
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 import React from 'react';
+import { useProducto } from '../../context/Productos/ProductoContext';
+import Autocomplete from '@mui/material/Autocomplete';
 
 
 
@@ -33,16 +35,18 @@ function primeraMayuscula(input) {
 
 function UpdateInsumo({clienteId}){
 
+
     const params = useParams()
     const navigate = useNavigate()
     const {insumoActualizar, listarInsumo, validarInsumoActualizar}=useInsumo()
+    const {validacionProducto, cargarCategoria, Listar}=useProducto()
 
-
-        useEffect (() => {
+ useEffect (() => {
     insumoActualizar(clienteId)
+    cargarCategoria()
+ }, [clienteId])
 
-        }, [clienteId])
-
+ const options = ['1 Litro', '2 Litros'];
     return(
 
         <>
@@ -96,7 +100,30 @@ function UpdateInsumo({clienteId}){
                 readOnly 
                  />
 
-                <div className="col-md-12">
+<div className="col-md-6 ">
+                         
+
+<Autocomplete 
+  disablePortal
+  id="fixed-tags-demo"
+  options={Listar}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.categoria}
+  value={values.categoria   || null} 
+  onChange={(event, newValue) => {
+    handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : null } } );
+}}
+  freeSolo
+   renderInput={(params) => (
+    <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>
+  )}  
+/>
+
+
+                            </div>
+
+
+
+                <div className="col-md-6">
                 <label htmlFor="nombre"></label>
                 <Field 
                 type="text" 
@@ -124,31 +151,20 @@ function UpdateInsumo({clienteId}){
                 {errors.nombre && <div className='invalid-feedback'>{errors.nombre}</div>}
                 </div>
 
-                {/* <div className="col-md-6">
-                <label htmlFor="precio"></label>
-                <Field
-                type="text" 
-                name='precio' 
-                onChange={handleChange}
-                label ='Precio'
-                value={values.precio} 
-                className="form-control" 
-                as={TextField} 
-                 />
-                </div>
+                <div className="col-md-12">
+      <Autocomplete
+        disablePortal
+        id="fixed-tags-demo"
+        options={options}
+        value={values.presentacion}
+        onChange={(event, newValue) => {
+          handleChange({ target: { name: 'presentacion', value: newValue || '' } });
+        }}
+        sx={{ width: '100%' }}
+        renderInput={(params) => <TextField {...params} label="Presentación" sx={{ width: '100%' }} />}
+      />
+    </div>
 
-                <div className="col-md-6"> 
-                <label htmlFor="cantidad"></label>
-                <Field
-                type="text" 
-                name='cantidad' 
-                onChange={handleChange}
-                label ='Cantidad'
-                value={values.cantidad} 
-                className="form-control" 
-                as={TextField} 
-                 />
-                </div>    */}
 
                 <div className='col-auto'>
                 <button className='btn btn-primary' type='submit' disabled={!isValid}>Actualizar</button>

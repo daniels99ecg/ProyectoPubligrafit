@@ -232,7 +232,7 @@
   
       // Verificar si el usuario existe
       if (!usuarioConRolYPermisos || usuarioConRolYPermisos.length === 0) {
-        return res.status(401).json({ error: 'Authentication failed' });
+        return res.status(203).json({ error: 'Authentication failed' });
       }
   
       const usuario = usuarioConRolYPermisos[0];

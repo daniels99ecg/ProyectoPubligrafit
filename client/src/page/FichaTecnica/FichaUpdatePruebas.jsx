@@ -48,25 +48,6 @@ function FichaCreatePruebas({fichaId}) {
 
 
 
-
-  const ventaSchema = Yup.object().shape({
-    // id_cliente: Yup.object().shape({
-    //   fk_id_cliente: Yup.string().required("Campo requerido"),
-    // }),
-    // metodo_pago: Yup.string().required("Campo requerido").nullable(),
-    // total: Yup.number()
-    //   .required("Campo requerido")
-    //   .test("notZero", "El total no puede ser cero", (value) => value !== 0),
-    // productos: Yup.array().of(
-    //   Yup.object().shape({
-    //     fk_producto: Yup.string().required("Campo requerido"),
-    //     cantidad: Yup.number().required("Campo requerido"),
-    //     precio: Yup.number().required("Campo requerido"),
-    //     subtotal: Yup.number().required("Campo requerido"),
-    //   })
-    // ),
-  });
-
   // Obtener Fecha Actual
   const fechaActual = () => {
     const hoy = new Date();
@@ -163,7 +144,7 @@ function FichaCreatePruebas({fichaId}) {
 
   useEffect(() => {
     const sumaSubtotales = tableData.reduce(
-      (total, insumo) => total + insumo.subtotal,
+      (total, insumo) => total + insumo.subtotal+(parseInt(manoObra) || 0),
       0
     );
     setSubtotalTotal(sumaSubtotales);
@@ -185,19 +166,28 @@ function FichaCreatePruebas({fichaId}) {
     setTablaVacia(tablaVacia);
   }, [tableData]);
   
-  useEffect(() => {
-    const sumaSubtotales = tableData.reduce(
+  // useEffect(() => {
+  //   const sumaSubtotales = tableData.reduce(
 
-      (total, insumo) => total + insumo.subtotal +(parseInt(manoObra) || 0), //Suma de los insumos mas la mano de obra
-      0
-    );
-    setSubtotalTotal(sumaSubtotales);
+  //     (total, insumo) => total + insumo.subtotal +(parseInt(manoObra) || 0), //Suma de los insumos mas la mano de obra
+  //     0
+  //   );
+  //   setSubtotalTotal(sumaSubtotales);
 
-    const iva = sumaSubtotales * 0.19;
-    const totalVenta = sumaSubtotales + iva;
+  //   const iva = sumaSubtotales * 0.19;
+  //   const totalVenta = sumaSubtotales + iva;
 
-    setTotal(totalVenta);
-  }, [tableData]);
+  //   setTotal(totalVenta);
+  // }, [tableData]);
+
+  
+
+  const sumaSubtotalesProductos = pruebas.reduce(
+    (total, producto) => total + (producto.precio * producto.cantidad) +(parseInt(manoObra) || 0),
+    0
+  );
+
+
 
 
   useEffect(() => {
@@ -212,7 +202,7 @@ function FichaCreatePruebas({fichaId}) {
   }, [listarFichaTecnica]);
   
   useEffect(() => {
-    const nuevosDetalles = listarFichaTecnica.detalles;
+    const nuevosDetalles = detalles;
   
     const allDetails = [
       ...nuevosDetalles.map((detalle) => ({
@@ -223,7 +213,7 @@ function FichaCreatePruebas({fichaId}) {
     ].filter((detalle) => detalle.nombre && detalle.nombre.trim() !== "");
   
     setPruebas(allDetails);
-  }, [listarFichaTecnica, tableData]);
+  }, [listarFichaTecnica, tableData, detalles]);
   
 
 
@@ -277,7 +267,7 @@ function FichaCreatePruebas({fichaId}) {
     });
   };
 
-  
+
 
  
 
@@ -308,6 +298,7 @@ function FichaCreatePruebas({fichaId}) {
                   console.log(values)
                   const datosParaEnviar = {
                     ...values,
+                    costo_final_producto:sumaSubtotalesProductos,
                     detalles: pruebas, // Asegúrate de que esto refleje los insumos actuales, incluidos los nuevos insumos
                   };
                 
@@ -581,7 +572,11 @@ function FichaCreatePruebas({fichaId}) {
                             as={TextField}
                             value={values.mano_obra}
                             label="Mano de Obra"
-                            onChange={handleChange}
+                            onChange={(e) => {
+                              handleChange(e); // Actualiza el valor en Formik
+                              setManoObra(e.target.value); // Actualiza el estado local
+
+                            }}
                           /> 
                           <br />
            
@@ -603,15 +598,15 @@ function FichaCreatePruebas({fichaId}) {
                                   <div className="form-group mb-2">
                                     <Field
                                       type="text"
-                                      name="total"
+                                      name="costo_final_producto"
                                       id="total"
-                                      disabled
                                       as={TextField}
                                       label="Total"
-                                      value={formatearPrecios(values.costo_final_producto)}
+                                      value={formatearValores(sumaSubtotalesProductos)}
                                       onChange={(e) => {
-                                        setTotalTouched(true);
+                                      
                                         handleChange(e);
+                                      
                                       }}
                                       InputProps={{
                                         endAdornment: (

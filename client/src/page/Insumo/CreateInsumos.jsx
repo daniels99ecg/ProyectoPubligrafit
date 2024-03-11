@@ -7,13 +7,14 @@ import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 import React from 'react';
 import { useProducto } from '../../context/Productos/ProductoContext';
-import {  useEffect } from 'react'
+import {  useEffect,useState } from 'react'
 import Autocomplete from '@mui/material/Autocomplete';
 
 function CreateInsumo() {
   const {validacionInsumo}=useInsumo()
 
   const {validacionProducto, cargarCategoria, Listar}=useProducto()
+  const [nombreRol, setNombreRol]=useState("")
   useEffect(()=>{
     
     cargarCategoria()
@@ -39,7 +40,7 @@ function CreateInsumo() {
                     initialValues={{
                       id_insumo: '',
                       nombre: '',
-                      fk_categoria:'',
+                      nombreCategoria:'',
                       presentacion:""
                      
                     }}
@@ -59,25 +60,31 @@ function CreateInsumo() {
                       
 
                     onSubmit={async (values) => {
-                        validacionInsumo(values)
+                        validacionInsumo({...values, nombreCategoria:nombreRol })
+                        console.log(values)
                     }}
                   >
                     {({ handleChange, values , errors, isValid}) => (
                       <Form className='row g-3'>
 
 <div className="col-md-6 ">
-                           <Autocomplete 
-                              disablePortal
-                              id="fixed-tags-demo"
-                              options={Listar}  // Filtrar roles con estado true
-                              getOptionLabel={(option) => option.categoria}
-                              onChange={(event, newValue) => {
-                                handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : '' } });
-                              }}
-                              value={Listar && values && Listar.find((categoria) => categoria.id_categoria === values.fk_categoria) || null}
-                              sx={{ width: '100%' }}
-                              renderInput={(params) => <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>}
-                            />
+                         
+
+<Autocomplete 
+  disablePortal
+  id="fixed-tags-demo"
+  options={Listar}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.categoria}
+  value={values.nombreCategoria || null} 
+  onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
+    setNombreRol(newInputValue);
+  }}
+  freeSolo
+   renderInput={(params) => (
+    <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>
+  )}  
+/>
+
 
                             </div>
 

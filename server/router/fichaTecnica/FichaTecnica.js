@@ -12,6 +12,7 @@ Router.put("/update/:id", OrdenesController.actualizarFichaTecnica);
 Router.delete("/delete/:id", OrdenesController.eliminarFichaTecnica); 
 Router.put("/disable/:id_ft", OrdenesController.desactivarFichaTecnica); 
 Router.put("/activate/:id_ft", OrdenesController.activarFichaTecnica);
+Router.put("/operacion/:id_ft", OrdenesController.operacionOrden);
 
 module.exports=Router;
 

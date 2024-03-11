@@ -220,14 +220,7 @@ const validacionInsumo = async (values)=>{
         console.log(error)
       }
     }
-    const [listarInsumo, setListarInsumo] = useState(
-      {
-          id_insumo: '',
-          nombre: '',
-          // precio: '',
-          // cantidad: '' 
 
-      })
     const validarInsumoActualizar= async (id_insumo, values)=>{
     try {
       let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
@@ -343,7 +336,16 @@ const validacionInsumo = async (values)=>{
             }
           }
 
-
+          const [listarInsumo, setListarInsumo] = useState(
+            {
+                id_insumo: '',
+                nombre: '',
+                categoria:{categoria:""},
+                presentacion:""
+                // precio: '',
+                // cantidad: '' 
+      
+            })
 
   async function insumoActualizar (id_insumo){
 
@@ -356,7 +358,9 @@ const validacionInsumo = async (values)=>{
             id_insumo: response.id_insumo,
             nombre: response.nombre,
             precio: response.precio,
-            cantidad: response.cantidad
+            cantidad: response.cantidad,
+            categoria:{categoria:response.categoria.categoria},
+            presentacion:response.presentacion
         })
     } catch (error) {
         console.log(error)

@@ -24,6 +24,10 @@ const Insumo=sequelize.define("insumos",{
         type:DataTypes.INTEGER,
         allowNull:false
     },
+    presentacion:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
     estado:{
         type:DataTypes.BOOLEAN,
     },

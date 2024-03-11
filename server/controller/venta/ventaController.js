@@ -127,7 +127,7 @@ async function createVentaConDetalle(req, res) {
       let ventaValida = true;
 
       for (const producto of productos) {
-        const productoActual = await Producto.findByPk(producto.fk_producto);
+        const productoActual = await Orden.findByPk(producto.fk_ordenes);
 
         if (!productoActual || productoActual.cantidad < producto.cantidad) {
           ventaValida = false;
@@ -159,14 +159,14 @@ async function createVentaConDetalle(req, res) {
             { transaction: t }
           );
 
-          await Orden.update(
-            {
-              cantidad: sequelize.literal(
-                `CASE WHEN cantidad >= ${producto.cantidad} THEN cantidad - ${producto.cantidad} ELSE cantidad END`
-              ),
-            },
-            { where: { id_producto: producto.fk_producto }, transaction: t }
-          );
+          // await Orden.update(
+          //   {
+          //     cantidad: sequelize.literal(
+          //       `CASE WHEN cantidad >= ${producto.cantidad} THEN cantidad - ${producto.cantidad} ELSE cantidad END`
+          //     ),
+          //   },
+          //   { where: { id_producto: producto.fk_producto }, transaction: t }
+          // );
         }
 
         res.status(201).json(venta);

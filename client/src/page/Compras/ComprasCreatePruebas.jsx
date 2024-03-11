@@ -178,96 +178,108 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
 
 //Edicion para cambiar el precio
 
-  const handleEdicionPrecio = (e) => {
-    if (e.key === "Enter") {
-      // Restablecer el campo a vacío al presionar Enter
-      e.preventDefault();
+  // const handleEdicionPrecio = (e) => {
+  //   if (e.key === "Enter") {
+  //     // Restablecer el campo a vacío al presionar Enter
+  //     e.preventDefault();
 
-      // Verificar si la entrada cumple con el patrón deseado
-      const regexPattern = /^(-\d{1,4}|[1-9]\d{0,3})?$/;
-      if (!regexPattern.test(precioAlterar)) {
-        // Mostrar mensaje de error si la entrada no cumple con el patrón
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Campo inválido",
-        });
-        return;
-      }
+  //     // Verificar si la entrada cumple con el patrón deseado
+  //     const regexPattern = /^(-\d{1,4}|[1-9]\d{0,3})?$/;
+  //     if (!regexPattern.test(precioAlterar)) {
+  //       // Mostrar mensaje de error si la entrada no cumple con el patrón
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Error",
+  //         text: "Campo inválido",
+  //       });
+  //       return;
+  //     }
 
-      // Agregar la cantidad a la tabla
-      const cantidadAgregada = parseInt(precioAlterar, 10);
-      if (!isNaN(cantidadAgregada) && cantidadAgregada !== 0) {
-        const productoEnTabla = tableData.find(
-          (item) => item.fk_insumo === productoSelect.id_insumo
-        );
+  //     // Agregar la cantidad a la tabla
+  //     const cantidadAgregada = parseInt(precioAlterar, 10);
+  //     if (!isNaN(cantidadAgregada) && cantidadAgregada !== 0) {
+  //       const productoEnTabla = tableData.find(
+  //         (item) => item.fk_insumo === productoSelect.id_insumo
+  //       );
 
-        if (productoEnTabla) {
-          const cantidadActual = productoEnTabla.precio;
-          const nuevaCantidad = cantidadActual + cantidadAgregada;
+  //       if (productoEnTabla) {
+  //         const cantidadActual = productoEnTabla.precio;
+  //         const nuevaCantidad = cantidadActual + cantidadAgregada;
 
-          // Validar si la nueva cantidad supera el stock disponible
-          const productoEnStock = findProductoEnStock(
-            productoEnTabla.fk_insumo
-          );
+  //         // Validar si la nueva cantidad supera el stock disponible
+  //         const productoEnStock = findProductoEnStock(
+  //           productoEnTabla.fk_insumo
+  //         );
           
 
-          // Verificar que la nueva cantidad no sea menor que la cantidad original del producto
-          const cantidadOriginal = productoEnTabla.cantidad_original; // Ajustar el nombre según la estructura de tus datos
+  //         // Verificar que la nueva cantidad no sea menor que la cantidad original del producto
+  //         const cantidadOriginal = productoEnTabla.cantidad_original; // Ajustar el nombre según la estructura de tus datos
 
-          // Establecer la cantidad mínima en la cantidad original o 1
-          const cantidadMinima = Math.max(cantidadOriginal, 1);
+  //         // Establecer la cantidad mínima en la cantidad original o 1
+  //         const cantidadMinima = Math.max(cantidadOriginal, 1);
 
-          // Verificar que la nueva cantidad no sea menor que la cantidad mínima
-          if (nuevaCantidad < cantidadMinima) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad no puede ser menor a la original del producto.",
-            });
-            return;
-          }
+  //         // Verificar que la nueva cantidad no sea menor que la cantidad mínima
+  //         if (nuevaCantidad < cantidadMinima) {
+  //           Swal.fire({
+  //             icon: "warning",
+  //             title: "Advertencia",
+  //             text: "La cantidad no puede ser menor a la original del producto.",
+  //           });
+  //           return;
+  //         }
 
-          // Verificar que la cantidad a disminuir no sea mayor que la cantidad actual
-          if (
-            cantidadAgregada < 0 &&
-            Math.abs(cantidadAgregada) > cantidadActual
-          ) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad a disminuir no puede ser mayor a la actual del producto.",
-            });
-            return;
-          }
+  //         // Verificar que la cantidad a disminuir no sea mayor que la cantidad actual
+  //         if (
+  //           cantidadAgregada < 0 &&
+  //           Math.abs(cantidadAgregada) > cantidadActual
+  //         ) {
+  //           Swal.fire({
+  //             icon: "warning",
+  //             title: "Advertencia",
+  //             text: "La cantidad a disminuir no puede ser mayor a la actual del producto.",
+  //           });
+  //           return;
+  //         }
 
-          // Verificar que la nueva cantidad no sea cero o menos
-          if (nuevaCantidad <= 0) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad no puede ser menor a 1.",
-            });
-            return;
-          }
+  //         // Verificar que la nueva cantidad no sea cero o menos
+  //         if (nuevaCantidad <= 0) {
+  //           Swal.fire({
+  //             icon: "warning",
+  //             title: "Advertencia",
+  //             text: "La cantidad no puede ser menor a 1.",
+  //           });
+  //           return;
+  //         }
 
-          // Actualizar la cantidad en tiempo real en la tabla
-          const nuevaTabla = tableData.map((item) =>
-            item.fk_insumo === productoSelect.id_insumo
-              ? actualizarSubtotal({ ...item, precio: nuevaCantidad })
-              : item
-          );
+  //         // Actualizar la cantidad en tiempo real en la tabla
+  //         const nuevaTabla = tableData.map((item) =>
+  //           item.fk_insumo === productoSelect.id_insumo
+  //             ? actualizarSubtotal({ ...item, precio: nuevaCantidad })
+  //             : item
+  //         );
 
-          setTableData(nuevaTabla);
-        }
-      }
-    }
-  };
+  //         setTableData(nuevaTabla);
+  //       }
+  //     }
+  //   }
+  // };
 
   const handleCantidadChange = (e) => {
     const newValue = e.target.value;
     setPrecio(newValue);
+
+    
   };
+  const handlePrecioChange = (e, index) => {
+    const newPrice = parseFloat(e.target.value);
+    if (!isNaN(newPrice) && newPrice >= 0) {
+      const updatedTableData = tableData.map((item, i) =>
+        i === index ? { ...item, precio: newPrice } : item
+      );
+      setTableData(updatedTableData);
+    }
+  };
+  
 
   function formatearValores(global) {
     const [int, decimal] = parseFloat(global).toFixed(2).split(".");
@@ -392,15 +404,17 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                               if (result.isConfirmed) {
                                 // Establecer el valor del proveedor seleccionado en el campo fk_proveedor
                               
-                                postCrearCompras({...values, nombre_proveedor:nombreRol})
+                                postCrearCompras({...values, nombreProvedor:nombreRol})
                                   .then(() => {
                                     Swal.fire({
                                       icon: "success",
                                       title: "Registro exitoso!",
                                       text: "Tu archivo ha sido registrado",
                                     }).then(() => {
+                                      
                                       handleCloseVentaModal();
                                       resetForm();
+                                      window.location.reload()
                                     });
                                   })
                                   .catch((error) => {
@@ -550,16 +564,17 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                       name="alterar"
                                       id="alterar"
                                       label="Cantidad"
-                                      style={{width:"40%"}}
+                                      style={{width:"60%"}}
                                       className="form-control"
                                       value={cantidadAlterar}
                                       onChange={(e) => {
                                         const newValue = e.target.value.trim();
                                         setCantidadAlterar(newValue);
                                       }}
+                                  
                                       onKeyPress={handleEdicionCantidad}
                                     />
-                                    <TextField
+                                    {/* <TextField
                                       type="text"
                                       name="alterna"
                                       id="alterador"
@@ -571,8 +586,9 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                         const newValue = e.target.value.trim();
                                         setPrecioAlterar(newValue);
                                       }}
+                                 
                                       onKeyPress={handleEdicionPrecio}
-                                    />
+                                    /> */}
                                   </div>
 
                                   {/* Tabla Detalles */}
@@ -624,14 +640,14 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                               <tr key={index}>
                                                 <td>{row.nombre}</td>
                                                 <td>
-                                                {formatearPrecios(row.precio)} 
+                                                {/* {formatearPrecios(row.precio)}  */}
                                                   
-                                                  {/* <input
+                                                  <input
                                                       type="text"
-                                                      style={{ width: "30%" }}
-                                                      value={precio}
-                                                      onChange={handleCantidadChange}
-                                                    />  */}
+                                                      style={{width:60, height:25}}
+                                                      value={row.precio}
+                                                      onChange={(e) => handlePrecioChange(e, index)}
+                                                    />  
                                                     </td>
                                                 <td>
                                                   {row.cantidad === 1
@@ -782,9 +798,9 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                           <Autocomplete 
   disablePortal
   id="proveedor"
-  options={listarP.filter((proveedor) => proveedor.estado).map(proveedor => proveedor.nombre)}  // Filtrar roles con estado true
-  getOptionLabel={(option) => option}
-  value={values.nombre} 
+  options={listarP}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.nombre}
+  value={values.nombre  || null} 
   onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
     setNombreRol(newInputValue);
   }}

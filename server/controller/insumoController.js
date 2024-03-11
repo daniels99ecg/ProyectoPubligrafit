@@ -2,6 +2,8 @@ const Insumo=require("../models/Insumo")
 const DetalleOrden=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
 const Compras_detalle=require('../models/Detalle_Compra/Detalle_Compra')
 const Categoria=require('../models/Categoria')
+const { Op } = require('sequelize');
+
 async function listarInsumos(req, res){
     try {
         const insumo = await Insumo.findAll({
@@ -11,6 +13,7 @@ async function listarInsumos(req, res){
               "precio",
               "cantidad",
               "fk_categoria",
+              "presentacion",
               "estado"
             ],
             include: [
@@ -50,7 +53,20 @@ async function listarInsumos(req, res){
 async function listarInsumo(req, res){
     try {
         const id=req.params.id;
-        const insumo = await Insumo.findByPk(id);
+
+        const insumo = await Insumo.findOne({
+           where:{
+            id_insumo:id
+           },
+           include:[
+            {
+                model:Categoria,
+                attributes:["categoria"]
+            }
+           ]
+        
+        });
+
         res.json(insumo);
     } catch (error) {
         console.error(error);
@@ -70,12 +86,25 @@ async function crearInsumo(req, res){
             // Si el ID de usuario ya existe, muestra una alerta
             return res.status(400).json({ error: 'el nombre del insumo ya existe' });
           }
+
+
+                 // Verificar si la categoría ya existe o crearla
+                let categoria = await Categoria.findOne({
+                    where: { categoria: dataInsumo.nombreCategoria }
+                });
+
+                if (!categoria) {
+                    // Si la categoría no existe, la crea
+                    categoria = await Categoria.create({ categoria: dataInsumo.nombreCategoria });
+                }
+
         const insumo = await Insumo.create({
         id_insumo:dataInsumo.id_insumo,
         nombre:dataInsumo.nombre,
         precio:0,
         cantidad:0,
-        fk_categoria:dataInsumo.fk_categoria,
+        fk_categoria:categoria.id_categoria,
+        presentacion:dataInsumo.presentacion,
         estado:1
             
         })
@@ -93,7 +122,7 @@ async function actualizarInsumo(req, res) {
         const insumo =req.body;
 
              const existingRol = await Insumo.findOne({
-              where: { nombre: insumo.nombre }
+              where: { nombre: insumo.nombre, id_insumo:{[Op.ne]: id} }
             });
         
             if (existingRol) {
@@ -110,6 +139,8 @@ async function actualizarInsumo(req, res) {
                 nombre:insumo.nombre,
                 precio:insumo.precio,
                 cantidad:insumo.cantidad,
+                fk_categoria:insumo.fk_categoria,
+                presentacion:insumo.presentacion
                 
             },
             {

@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Autocomplete from "@mui/material/Autocomplete";
 import Tooltip from "@mui/material/Tooltip";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef  } from "react";
 import { MenuItem, TextField } from "@mui/material";
 import { useInsumo } from "../../context/Insumos/InsumoContext";
 import * as Yup from "yup";
@@ -26,8 +26,12 @@ function FichaCreatePruebas({fichaId}) {
   const [productoSelect, setProductoSelect] = useState(null);
   const [cantidadAlterar, setCantidadAlterar] = useState("");
   const [manoObra, setManoObra] = useState("");
+
+  // useEffect para actualizar el estado local solo al montar el componente
+ 
+
   const [selectedImage, setSelectedImage] = useState(null);
-  
+
   const [pruebas, setPruebas] = useState([]);
 
   // const [metodoPagoTouched, setMetodoPagoTouched] = useState(false);
@@ -142,23 +146,21 @@ function FichaCreatePruebas({fichaId}) {
     actualizarSubtotales();
   }, [tableData]);
 
-  useEffect(() => {
-    const sumaSubtotales = tableData.reduce(
-      (total, insumo) => total + insumo.subtotal+(parseInt(manoObra) || 0),
-      0
-    );
-    setSubtotalTotal(sumaSubtotales);
+  // useEffect(() => {
+  //   const sumaSubtotales = tableData.reduce(
+  //     (total, insumo) => total + insumo.subtotal+(parseInt(manoObra) || 0),
+  //     0
+  //   );
+  //   setSubtotalTotal(sumaSubtotales);
 
-    const iva = sumaSubtotales * 0.19;
-    const totalVenta = sumaSubtotales + iva;
+  //   const iva = sumaSubtotales * 0.19;
+  //   const totalVenta = sumaSubtotales + iva;
 
-    setTotal(totalVenta);
-  }, [tableData]);
+  //   setTotal(totalVenta);
+  // }, [tableData]);
 
   useEffect(() => {
     ShowInsumos();
-   
-   
   }, []);
 
   useEffect(() => {
@@ -266,10 +268,16 @@ function FichaCreatePruebas({fichaId}) {
       return nuevosDetalles;
     });
   };
+  
+  const fieldRef = useRef(null);
 
 
+    setTimeout(() => {
+      if (fieldRef.current) {
+        fieldRef.current.click();
+      }
+    }, 100); // Ajusta el tiempo según sea necesario
 
- 
 
 
   return (
@@ -565,20 +573,34 @@ function FichaCreatePruebas({fichaId}) {
             />
 
              <br />  
-                          <Field
-                            type='text'
+             <label htmlFor="mano_obra">Mano de Obra</label>
+
+                          <input  
+                            type='number'
                             name='mano_obra'
                             className='form-control'
-                            as={TextField}
+
                             value={values.mano_obra}
-                            label="Mano de Obra"
-                            onChange={(e) => {
+                           
+                            ref={fieldRef}
+                            onClick={(e) => {
                               handleChange(e); // Actualiza el valor en Formik
                               setManoObra(e.target.value); // Actualiza el estado local
 
                             }}
+                            style={{
+        width: '100%',
+        border: '1px solid rgba(0, 0, 0, 0.23)', // Establece el estilo del borde
+        borderRadius: '4px', // Ajusta el radio del borde
+        padding: '10px 14px', // Ajusta el relleno
+        backgroundColor: '#fff', // Ajusta el color de fondo
+        '&:focus': {
+            outline: 'none', // Elimina el contorno al enfocar
+            borderColor: '#1976d2', // Cambia el color del borde al enfocar
+        },
+    }}
                           /> 
-                          <br />
+                         
            
 </div>
                       
@@ -604,7 +626,7 @@ function FichaCreatePruebas({fichaId}) {
                                       label="Total"
                                       value={formatearValores(sumaSubtotalesProductos)}
                                       onChange={(e) => {
-                                      
+                                        setTotalTouched(true);
                                         handleChange(e);
                                       
                                       }}

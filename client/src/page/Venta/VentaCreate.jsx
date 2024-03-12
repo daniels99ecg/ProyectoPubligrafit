@@ -508,7 +508,7 @@ function CreateVenta({ handleCloseVentaModal }) {
                                             <tr>
                                               <th>Producto</th>
                                               <th>Precio</th>
-                                              <th>Cantidad</th>
+                                              {/* <th>Cantidad</th> */}
                                               <th></th>
                                               <th>Subtotal</th>
                                               <th>Acciones</th>
@@ -521,11 +521,11 @@ function CreateVenta({ handleCloseVentaModal }) {
                                                 <td>
                                                   {formatearPrecios(row.precio)}
                                                 </td>
-                                                <td>
+                                                {/* <td>
                                                   {row.cantidad === 1
                                                     ? `${row.cantidad} Und`
                                                     : `${row.cantidad} Unds`}
-                                                </td>
+                                                </td> */}
                                                 <td></td>
                                                 <td>
                                                   {formatearPrecios(

@@ -3,6 +3,8 @@ const Venta = require("../../models/Venta");
 const DetalleVenta = require("../../models/DetalleVenta");
 const Cliente = require("../../models/Cliente");
 const Orden = require("../../models/Ficha_Tecnica/FichaTecnica");
+const DetalleOrden = require("../../models/Ficha_Tecnica/DetalleFichaTecnica");
+const Insumo = require("../../models/Insumo");
 
 // 
 async function listarVentas(req, res) {
@@ -159,15 +161,23 @@ async function createVentaConDetalle(req, res) {
             { transaction: t }
           );
 
-          // await Orden.update(
-          //   {
-          //     cantidad: sequelize.literal(
-          //       `CASE WHEN cantidad >= ${producto.cantidad} THEN cantidad - ${producto.cantidad} ELSE cantidad END`
-          //     ),
-          //   },
-          //   { where: { id_producto: producto.fk_producto }, transaction: t }
-          // );
-        }
+          
+            // Obtener detalles de orden para el producto actual
+            const detallesOrden = await DetalleOrden.findAll({ where: { fk_ficha_tecnica: producto.fk_ordenes } });
+
+            // Descontar insumos del detalle de orden
+            for (const detalle of detallesOrden) {
+              const insumo = await Insumo.findByPk(detalle.fk_insumo);
+  
+              if (insumo) {
+                const nuevaCantidad = insumo.cantidad - detalle.cantidad;
+                await Insumo.update(
+                  { cantidad: nuevaCantidad },
+                  { where: { id_insumo: insumo.id_insumo }, transaction: t }
+                );
+              }
+            }
+          }
 
         res.status(201).json(venta);
       } else {

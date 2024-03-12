@@ -25,7 +25,7 @@ function Nav() {
             <i><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
 </i>
 
-            </a><a href="/dashboard" className="brand-logo">
+            </a><a href="/Home" className="brand-logo">
           
 
             <img src="../img/PubliGrafit2.png" style={{width:40, background:"white", borderRadius:20, marginRight:10}}/>
@@ -99,9 +99,9 @@ function Nav() {
                       </svg>
                   Insumos</a>
               )}
-                            {userPermissions.includes('FichaTecnica') && (
+                            {userPermissions.includes('Ordenes') && (
 
-                  <a href="/fichatecnica" className="dashboard-nav-dropdown-item">
+                  <a href="/ordenes" className="dashboard-nav-dropdown-item">
                   <svg xmlns="http://www.w3.org/2000/svg" width="45" height="20" fill="currentColor" className="bi bi-clipboard2-fill" viewBox="0 0 16 16" >
                     <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z"></path>
                     <path d="M3.5 1h.585A1.498 1.498 0 0 0 4 1.5V2a1.5 1.5 0 0 0 1.5 1.5h5A1.5 1.5 0 0 0 12 2v-.5c0-.175-.03-.344-.085-.5h.585A1.5 1.5 0 0 1 14 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-12A1.5 1.5 0 0 1 3.5 1Z"></path>

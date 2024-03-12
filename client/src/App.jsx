@@ -13,11 +13,9 @@ import Enviaremail from './page/Login/enviaremail'
 import Dashboard from './page/Dashboard/dashboard'
 import Profile from './page/Perfil/perfil';
 
-import ShowProducto from './page/Producto/Productos'
 import ShowFichasTecnicas from './page/FichaTecnica/FichasTecnicas'
 import ShowInsumos from './page/Insumo/Insumos'
 
-import UpdateFichaTecnica from './page/FichaTecnica/FichaUpdatePruebas'
 import {InsumoContextProvider} from './context/Insumos/InsumoContext'
 import { ProductoContextProvider } from './context/Productos/ProductoContext'
 import { FichaTecnicaContextProvider } from './context/FichasTecnicas/FichaTecnicaContext'
@@ -31,9 +29,14 @@ import { VentaContextProvider } from './context/Ventas/VentaContext'
 import { ProveedorContextProvider } from './context/Proveedor/ProveedorContext'
 import ShowVenta from './page/Venta/Venta'
 
+import Home_page from './page/Home_page/Home_page'
+
+
+
 function NotFound() {
   return <div className='text-center'>404 Pagina No Disponible</div>;
 }
+
 
 function App() {
 
@@ -54,16 +57,21 @@ function App() {
      <Route path='/enviaremail' element={<Enviaremail/>}/>
 
      <Route
-        path="/dashboard"
-        element={<ProtectedRoute element={<Dashboard />} />}
-      />
+    path="/Home" element={<ProtectedRoute element={<Home_page />}/>
+    }
+  />
+
+     <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} requiredPermissions={['Dashboard']}/>
+    }
+  />
       {/* Usuarios */}
       
-      <Route path='/usuario' element={<ProtectedRoute element={<User/>}/> } />
+      <Route 
+      path='/usuario' element={<ProtectedRoute element={<User/>} requiredPermissions={['Usuario']}/>} />
      
 
       {/* Rol */}
-      <Route path='/rol' element={<ProtectedRoute element={<Rol/>}/> } />
+      <Route path='/rol' element={<ProtectedRoute element={<Rol/>} requiredPermissions={['Rol']}/> } />
  
 
       {/*Perfil*/}
@@ -71,29 +79,26 @@ function App() {
 
       {/* Cliente */}
 
-      <Route path='/cliente' element={<ProtectedRoute element={<ShowCliente />}/>}/>
+      <Route path='/cliente' element={<ProtectedRoute element={<ShowCliente />} requiredPermissions={['Cliente']}/>}/>
 
       {/*Venta*/}
 
-      <Route path='/venta' element={<ProtectedRoute element={<ShowVenta />}/>}/>
+      <Route path='/venta' element={<ProtectedRoute element={<ShowVenta />} requiredPermissions={['Venta']}/>}/>
 
       {/*Producto*/}
 
-      <Route path='/producto' element={<ProtectedRoute element={<ShowProducto />}/>} />
-
       {/*Ficha Tecnica*/}
 
-      <Route path='/fichaTecnica' element={<ProtectedRoute element={<ShowFichasTecnicas />}/>} />
+      <Route path='/ordenes' element={<ProtectedRoute element={<ShowFichasTecnicas />} requiredPermissions={['Ordenes']}/>} />
 
       {/*Insumo*/}
 
-      <Route path='/insumo' element={<ProtectedRoute element={<ShowInsumos />}/>} />
+      <Route path='/insumo' element={<ProtectedRoute element={<ShowInsumos />} requiredPermissions={['Insumo']}/>} />
 
-      <Route path='/editF/:id_ft' element={<ProtectedRoute element={<UpdateFichaTecnica />}/>} />
 
       {/*Compras*/}
 
-      <Route path='/compras' element={<ProtectedRoute element={<Compras />}/>} />
+      <Route path='/compras' element={<ProtectedRoute element={<Compras />} requiredPermissions={['Compra']}/>} />
   
       <Route path='*' element={<NotFound />} />
 

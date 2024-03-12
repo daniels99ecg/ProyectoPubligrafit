@@ -65,6 +65,11 @@ function Dashboard() {
   const ventasPercentage = totalVentas / (totalVentas + totalCompras) * 100;
   const comprasPercentage = totalCompras / (totalVentas + totalCompras) * 100;
 
+  const formattedTotalCompras = totalCompras !== null ? totalCompras.toLocaleString() : 0;
+
+  const formattedTotalVentas = totalVentas !== null ? totalVentas.toLocaleString() : 0;
+
+
   const handleChangeTabDay = (event, newValue) => {
     setTabIndexDay(newValue);
   };
@@ -94,7 +99,7 @@ function Dashboard() {
                           size={30}
                           color="green"
                           /> 
-                      {totalVentas.toLocaleString('es-CO')}
+                      {formattedTotalVentas.toLocaleString('es-CO')}
                       <br />
                    <strong>Ventas</strong>   
                     </h4>
@@ -115,7 +120,7 @@ function Dashboard() {
                           size={30}
                           color="green"
                           /> 
-                      {totalCompras.toLocaleString('es-CO')} 
+                      {formattedTotalCompras.toLocaleString('es-CO')} 
                       <br />
                       <strong>Compras</strong>
                     </h4>
@@ -137,7 +142,7 @@ function Dashboard() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
         <div style={{ marginRight: '20px' }}>
           <span style={{ color: '#02b2af', fontWeight: 'bold' }}>Ventas: </span>
-          <span>{ventasPercentage.toFixed(1)}%</span>
+          <span>{ventasPercentage.toFixed(1) || 0}%</span>
         </div>
         <div>
           <span style={{ color: '#2e96ff', fontWeight: 'bold' }}>Compras: </span>

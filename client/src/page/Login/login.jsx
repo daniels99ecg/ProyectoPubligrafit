@@ -23,7 +23,7 @@ function Recuperar(){
         
         localStorage.setItem('user', JSON.stringify(response.user));
 
-        navigate('/dashboard',{ state: { user: response.user } });
+        navigate('/Home',{ state: { user: response.user } });
         window.location.reload();
       } else {
         setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');

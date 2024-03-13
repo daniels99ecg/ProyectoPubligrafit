@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-03-2024 a las 21:02:33
+-- Tiempo de generación: 13-03-2024 a las 15:32:00
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -65,7 +65,8 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`id_cliente`, `documento`, `nombre`, `apellido`, `telefono`, `direccion`, `email`, `tipo_documento`, `estado`) VALUES
-(1, '21939559', 'MARIA', 'GOEZ', '3187549154', 'Cra 56a # 61-24', 'jaimegarcia00@hotmail.com', 'CC', 1);
+(1, '21939559', 'MARIA', 'GOEZ', '3187549154', 'Cra 56a # 61-24', 'jaimegarcia00@hotmail.com', 'CC', 1),
+(3, '1036134760', 'Daniel Emilio', 'Cruz Garcia', '3145527066', 'Medellin', 'danielsenju1999@gmail.com', 'CC', 1);
 
 -- --------------------------------------------------------
 
@@ -86,7 +87,7 @@ CREATE TABLE `compras` (
 --
 
 INSERT INTO `compras` (`id_compra`, `fk_proveedor`, `cantidad`, `fecha`, `total`) VALUES
-(102, 5, 0, '2024-03-06', 119);
+(113, 11, 0, '2024-03-11', 1190);
 
 -- --------------------------------------------------------
 
@@ -109,7 +110,7 @@ CREATE TABLE `detalle_compras` (
 --
 
 INSERT INTO `detalle_compras` (`id_detalle_compra`, `fk_compra`, `fk_insumo`, `cantidad`, `precio`, `iva`, `subtotal`) VALUES
-(107, 102, 17, 1, 100, 0, 100);
+(119, 113, 18, 5, 200, 0, 1000);
 
 -- --------------------------------------------------------
 
@@ -130,11 +131,10 @@ CREATE TABLE `detalle_ordenes` (
 --
 
 INSERT INTO `detalle_ordenes` (`id_detalle_ft`, `fk_insumo`, `fk_ficha_tecnica`, `cantidad`, `precio`) VALUES
-(57, 17, 204, 1, 100),
-(58, 18, 205, 11, 250),
-(59, 17, 205, 5, 100),
-(61, 17, 206, 1, 100),
-(62, 19, 206, 6, 100);
+(118, 18, 205, 5, 250),
+(119, 17, 205, 5, 100),
+(124, 17, 204, 5, 100),
+(125, 17, 207, 5, 150);
 
 -- --------------------------------------------------------
 
@@ -156,8 +156,10 @@ CREATE TABLE `detalle_ventas` (
 --
 
 INSERT INTO `detalle_ventas` (`id_detalle_venta`, `fk_venta`, `fk_ordenes`, `cantidad`, `precio`, `subtotal`) VALUES
-(25, 26, 204, 5, 50000, 56000),
-(26, 27, 204, 1, 5100, 5100);
+(34, 35, 204, 1, 5500, 5500),
+(35, 36, 205, 1, 101750, 101750),
+(36, 37, 207, 1, 5750, 5750),
+(37, 38, 207, 1, 5750, 5750);
 
 -- --------------------------------------------------------
 
@@ -180,9 +182,9 @@ CREATE TABLE `insumos` (
 --
 
 INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `fk_categoria`, `presentacion`, `estado`) VALUES
-(17, 'Pepel iris', 100, 1001, 2, 'Prueba1', 1),
-(18, 'Papel Bond', 250, 100, 2, 'Prueba2', 1),
-(19, 'tinta', 100, 50, 3, 'Tinta roja', 1);
+(17, 'Pepel iris', 150, 40, 2, 'Prueba1', 1),
+(18, 'Papel Bond', 150, 5, 2, 'Prueba2', 1),
+(19, 'tintas', 100, 10, 4, '2 Litros', 1);
 
 -- --------------------------------------------------------
 
@@ -198,6 +200,7 @@ CREATE TABLE `ordenes` (
   `detalle` varchar(500) NOT NULL,
   `mano_obra` int(11) NOT NULL,
   `operacion` varchar(15) NOT NULL,
+  `fecha` date NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -205,10 +208,10 @@ CREATE TABLE `ordenes` (
 -- Volcado de datos para la tabla `ordenes`
 --
 
-INSERT INTO `ordenes` (`id_ft`, `nombre_ficha`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `mano_obra`, `operacion`, `estado`) VALUES
-(204, 'Cuaderno', 'NVaeNecTb.jpeg', 5100, 'Blabla', 5000, 'Realizada', 1),
-(205, 'pruebas', 'KbqMLLrgM.png', 103250, 'Esto es una prueba', 50000, 'Realizada', 1),
-(206, 'Fenix', 'WnPD0yR1D.png', 5100, 'df', 5000, 'Pendiente', 1);
+INSERT INTO `ordenes` (`id_ft`, `nombre_ficha`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `mano_obra`, `operacion`, `fecha`, `estado`) VALUES
+(204, 'Cuaderno', 'NVaeNecTb.jpeg', 5500, 'Blabla', 5000, 'Realizada', '2024-03-12', 1),
+(205, 'pruebas', 'KbqMLLrgM.png', 101750, 'Esto es una prueba', 50000, 'Realizada', '2024-03-12', 1),
+(207, 'Pruebas3', 'mPaEU7VHW.png', 5750, '', 5000, 'Pendiente', '2024-03-12', 1);
 
 -- --------------------------------------------------------
 
@@ -232,7 +235,7 @@ INSERT INTO `permisos` (`id_permiso`, `nombre_permiso`) VALUES
 ('0006Venta', 'Venta'),
 ('0009Dash', 'Dashboard'),
 ('002Usuario', 'Usuario'),
-('005Ficha', 'FichaTecnica'),
+('005Ficha', 'Ordenes'),
 ('007produc', 'Producto'),
 ('008Cliente', 'Cliente');
 
@@ -256,9 +259,7 @@ CREATE TABLE `proveedores` (
 INSERT INTO `proveedores` (`id_proveedores`, `nombre`, `telefono`, `estado`) VALUES
 (1, 'Exito', '1234567890', 1),
 (2, 'Alguien', '4444444', 1),
-(3, 'Alguien', '0', 1),
-(4, 'Exito', '0', 1),
-(5, 'Exito', '0', 1);
+(11, 'Prueba', '0', 1);
 
 -- --------------------------------------------------------
 
@@ -357,8 +358,10 @@ CREATE TABLE `ventas` (
 --
 
 INSERT INTO `ventas` (`id_venta`, `fk_id_cliente`, `metodo_pago`, `fecha`, `total`, `vendedor`) VALUES
-(26, 1, 'efec', '0000-00-00', 5000, 'Dani'),
-(27, 1, 'Efectivo', '2024-03-06', 6069, 'DANIEL EMILIO');
+(35, 1, 'Efectivo', '2024-03-11', 6545, 'DANIEL EMILIO'),
+(36, 1, 'Efectivo', '2024-03-11', 121082, 'DANIEL EMILIO'),
+(37, 1, 'Efectivo', '2024-03-11', 6842, 'DANIEL EMILIO'),
+(38, 3, 'Efectivo', '2024-03-11', 6842, 'DANIEL EMILIO');
 
 --
 -- Índices para tablas volcadas
@@ -468,55 +471,55 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_categoria` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `id_compra` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `id_compra` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_compras`
 --
 ALTER TABLE `detalle_compras`
-  MODIFY `id_detalle_compra` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id_detalle_compra` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_ordenes`
 --
 ALTER TABLE `detalle_ordenes`
-  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_detalle_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `ordenes`
 --
 ALTER TABLE `ordenes`
-  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
+  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=208;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_proveedores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `rols`
@@ -540,7 +543,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_venta` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Restricciones para tablas volcadas

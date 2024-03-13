@@ -460,6 +460,208 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                       <div className="content">
                         <div className="container-fluid">
                           <div className="row mb-3 p-3 align-items-start">
+
+ {/* Componente 2 */}
+ <div className="col-md-4 col-sm-12 d-flex">
+                              <div className="card shadow flex-fill">
+                                <div className="card-body p-3">
+                                  <div className="nav-item-divider venta-division"></div>
+                                  <div>
+                                    <h4 className="text-center fs-md-4 fs-sm-3"
+                                      style={{
+                                        fontFamily: "Candara",
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                        marginTop: '-25px'
+                                      }}
+                                    >
+                                      Rocco Gráficas
+                                    </h4>
+                                    <div>
+                                      <h5
+                                        style={{
+                                          fontSize: "80%",
+                                          color: "#999999",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Nit: 15.318.366-1
+                                      </h5>
+                                    </div>
+                                    <div>
+                                      <h5
+                                        style={{
+                                          fontSize: "80%",
+                                          color: "#999999",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Calle 42 No. 68-38 Medellín - Ant
+                                      </h5>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div className="form-group mb-2">
+  
+                          <Autocomplete 
+  disablePortal
+  id="proveedor"
+  options={listarP}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.nombre}
+  value={values.nombre  || null} 
+  onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
+    setNombreRol(newInputValue);
+  }}
+  freeSolo
+   renderInput={(params) => (
+    <TextField {...params} label="Proveedor" sx={{ width: '100%' }}/>
+  )}  
+/>
+
+
+  {/* <ErrorMessage
+    name="id_cliente.fk_id_cliente"
+    component="div"
+    className="error-message"
+  /> */}
+</div>
+                                  {/* <div className="form-group mb-2">
+                                    <Field
+                                      name="metodo_pago"
+                                      id="metodo_pago"
+                                      as={TextField}
+                                      className="form-control"
+                                      fullWidth
+                                      select
+                                      value={values.metodo_pago}
+                                      onChange={(e) => {
+                                        setMetodoPagoTouched(true); // Marcar como interactuado
+                                        handleChange(e);
+                                      }}
+                                      error={
+                                        metodoPagoTouched &&
+                                        Boolean(errors.metodo_pago)
+                                      }
+                                      InputProps={{
+                                        endAdornment: (
+                                          <div style={{ display: "flex" }}>
+                                            {metodoPagoTouched &&
+                                              !errors.metodo_pago && (
+                                                <CheckCircleIcon
+                                                  style={{ color: "green" }}
+                                                />
+                                              )}
+                                            {metodoPagoTouched &&
+                                              errors.metodo_pago && (
+                                                <ErrorIcon
+                                                  style={{ color: "red" }}
+                                                />
+                                              )}
+                                          </div>
+                                        ),
+                                      }}
+                                    >
+                                      <MenuItem value="Efectivo">
+                                        Efectivo
+                                      </MenuItem>
+                                      {/* <MenuItem value="Transferencia">
+                                        Transferencia
+                                      </MenuItem> */}
+                                    {/* </Field>
+                                    <ErrorMessage
+                                      name="metodo_pago"
+                                      component="div"
+                                      className="error-message"
+                                    />
+                                  </div> */} 
+                                  <div className="form-group mb-2">
+                                    <Field
+                                      type="hidden"
+                                      name="fecha"
+                                      id="fecha"
+                                      className="form-control"
+                                      value={fechaActual()}
+                                      min={fechaActual()}
+                                      max={fechaActual()}
+                                      onChange={handleChange}
+                                    />
+                                  </div>
+
+                                  <div className="form-group mb-2">
+                                    <Field
+                                      type="text"
+                                      name="total"
+                                      id="total"
+                                      disabled
+                                      as={TextField}
+                                      label="Total"
+                                      value={formatearValores(total)}
+                                      onChange={(e) => {
+                                        setTotalTouched(true);
+                                        handleChange(e);
+                                      }}
+                                      InputProps={{
+                                        endAdornment: (
+                                          <div style={{ display: "flex" }}>
+                                            {totalTouched && !errors.total && (
+                                              <CheckCircleIcon
+                                                style={{
+                                                  color: "green",
+                                                  marginLeft: "10px",
+                                                }}
+                                              />
+                                            )}
+                                            {totalTouched && errors.total && (
+                                              <ErrorIcon
+                                                style={{
+                                                  color: "red",
+                                                  marginLeft: "10px",
+                                                }}
+                                              />
+                                            )}
+                                          </div>
+                                        ),
+                                      }}
+                                    />
+                                    <ErrorMessage
+                                      name="total"
+                                      component="div"
+                                      className="error-message"
+                                    />
+                                  </div>
+
+                                  <div className="row mt-2">
+                                    <div className="col-12">
+                                      <div className="text-right">
+                                        <strong>Subtotal:</strong> <strong>$</strong>&nbsp;
+                                        <span id="comprobante_subtotal">
+                                          {formatearPrecios(subtotalTotal)}
+                                        </span>
+                                      </div>
+                                      <div className="form-group mb-2 d-flex">
+                                        <button
+                                          className="btn btn-primary buttons-doubles"
+                                          type="submit"
+                                        >
+                                          Registrar
+                                        </button>
+                                        <br />
+                                        <br />
+                                        <button
+                                          className="btn btn-danger buttons-doubles"
+                                          onClick={handleCloseVentaModal}
+                                        >
+                                          Cancelar
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {/* Fin componente 2 */}
+
+
                             {/* Componente 1*/}
                             <div className="col-md-8 col-sm-12 d-flex">
                               <div className="row flex-fill">
@@ -473,7 +675,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                         id="fixed-tags-demo"
                                         options={listar.filter((option) => option.estado)}
                                         getOptionLabel={(option) =>
-                                          `${option.nombre}`
+                                          `${option.nombre} - ${option.presentacion}` 
                                         }
                                         onChange={(event, newValue) => {
                                           if (newValue) {
@@ -555,6 +757,15 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                             sx={{ width: "70%" }}
                                           />
                                         )}
+                                        filterOptions={(options, params) => {
+                                          return options.filter(option => {
+                                              if (!params.inputValue) {
+                                                  return true;
+                                              }
+                                              return option.nombre.toLowerCase().includes(params.inputValue.toLowerCase()) ||
+                                                  option.categoria.categoria.toLowerCase().includes(params.inputValue.toLowerCase());
+                                          });
+                                      }}
                                       />
                                     </label>
                                   </div>
@@ -753,205 +964,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                             </div>
                             {/* Fin componente 1 */}
 
-                            {/* Componente 2 */}
-                            <div className="col-md-4 col-sm-12 d-flex">
-                              <div className="card shadow flex-fill">
-                                <div className="card-body p-3">
-                                  <div className="nav-item-divider venta-division"></div>
-                                  <div>
-                                    <h4 className="text-center fs-md-4 fs-sm-3"
-                                      style={{
-                                        fontFamily: "Candara",
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                        marginTop: '-25px'
-                                      }}
-                                    >
-                                      Rocco Gráficas
-                                    </h4>
-                                    <div>
-                                      <h5
-                                        style={{
-                                          fontSize: "80%",
-                                          color: "#999999",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        Nit: 15.318.366-1
-                                      </h5>
-                                    </div>
-                                    <div>
-                                      <h5
-                                        style={{
-                                          fontSize: "80%",
-                                          color: "#999999",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        Calle 42 No. 68-38 Medellín - Ant
-                                      </h5>
-                                    </div>
-                                  </div>
-                                  <hr />
-                                  <div className="form-group mb-2">
-  
-                          <Autocomplete 
-  disablePortal
-  id="proveedor"
-  options={listarP}  // Filtrar roles con estado true
-  getOptionLabel={(option) => option.nombre}
-  value={values.nombre  || null} 
-  onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
-    setNombreRol(newInputValue);
-  }}
-  freeSolo
-   renderInput={(params) => (
-    <TextField {...params} label="Proveedor" sx={{ width: '100%' }}/>
-  )}  
-/>
-
-
-  {/* <ErrorMessage
-    name="id_cliente.fk_id_cliente"
-    component="div"
-    className="error-message"
-  /> */}
-</div>
-                                  {/* <div className="form-group mb-2">
-                                    <Field
-                                      name="metodo_pago"
-                                      id="metodo_pago"
-                                      as={TextField}
-                                      className="form-control"
-                                      fullWidth
-                                      select
-                                      value={values.metodo_pago}
-                                      onChange={(e) => {
-                                        setMetodoPagoTouched(true); // Marcar como interactuado
-                                        handleChange(e);
-                                      }}
-                                      error={
-                                        metodoPagoTouched &&
-                                        Boolean(errors.metodo_pago)
-                                      }
-                                      InputProps={{
-                                        endAdornment: (
-                                          <div style={{ display: "flex" }}>
-                                            {metodoPagoTouched &&
-                                              !errors.metodo_pago && (
-                                                <CheckCircleIcon
-                                                  style={{ color: "green" }}
-                                                />
-                                              )}
-                                            {metodoPagoTouched &&
-                                              errors.metodo_pago && (
-                                                <ErrorIcon
-                                                  style={{ color: "red" }}
-                                                />
-                                              )}
-                                          </div>
-                                        ),
-                                      }}
-                                    >
-                                      <MenuItem value="Efectivo">
-                                        Efectivo
-                                      </MenuItem>
-                                      {/* <MenuItem value="Transferencia">
-                                        Transferencia
-                                      </MenuItem> */}
-                                    {/* </Field>
-                                    <ErrorMessage
-                                      name="metodo_pago"
-                                      component="div"
-                                      className="error-message"
-                                    />
-                                  </div> */} 
-                                  <div className="form-group mb-2">
-                                    <Field
-                                      type="hidden"
-                                      name="fecha"
-                                      id="fecha"
-                                      className="form-control"
-                                      value={fechaActual()}
-                                      min={fechaActual()}
-                                      max={fechaActual()}
-                                      onChange={handleChange}
-                                    />
-                                  </div>
-
-                                  <div className="form-group mb-2">
-                                    <Field
-                                      type="text"
-                                      name="total"
-                                      id="total"
-                                      disabled
-                                      as={TextField}
-                                      label="Total"
-                                      value={formatearValores(total)}
-                                      onChange={(e) => {
-                                        setTotalTouched(true);
-                                        handleChange(e);
-                                      }}
-                                      InputProps={{
-                                        endAdornment: (
-                                          <div style={{ display: "flex" }}>
-                                            {totalTouched && !errors.total && (
-                                              <CheckCircleIcon
-                                                style={{
-                                                  color: "green",
-                                                  marginLeft: "10px",
-                                                }}
-                                              />
-                                            )}
-                                            {totalTouched && errors.total && (
-                                              <ErrorIcon
-                                                style={{
-                                                  color: "red",
-                                                  marginLeft: "10px",
-                                                }}
-                                              />
-                                            )}
-                                          </div>
-                                        ),
-                                      }}
-                                    />
-                                    <ErrorMessage
-                                      name="total"
-                                      component="div"
-                                      className="error-message"
-                                    />
-                                  </div>
-
-                                  <div className="row mt-2">
-                                    <div className="col-12">
-                                      <div className="text-right">
-                                        <strong>Subtotal:</strong> <strong>$</strong>&nbsp;
-                                        <span id="comprobante_subtotal">
-                                          {formatearPrecios(subtotalTotal)}
-                                        </span>
-                                      </div>
-                                      <div className="form-group mb-2 d-flex">
-                                        <button
-                                          className="btn btn-primary buttons-doubles"
-                                          type="submit"
-                                        >
-                                          Registrar
-                                        </button>
-                                        <br />
-                                        <br />
-                                        <button
-                                          className="btn btn-danger buttons-doubles"
-                                          onClick={handleCloseVentaModal}
-                                        >
-                                          Cancelar
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            {/* Fin componente 2 */}
+                           
                           </div>
                         </div>
                       </div>

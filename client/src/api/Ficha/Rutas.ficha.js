@@ -20,6 +20,10 @@ export const  getListarFichasTecnicas=async ()=>{
     return await axios.get(`${baseURL}fichaTecnica`)
 }
 
+export const  getListarFichasTecnicasRealizada=async ()=>{
+    return await axios.get(`${baseURL}fichaTecnica/realizada`)
+}
+
 export const  getListarFichaTecnica=async (id_ft)=>{
     return await axios.get(`${baseURL}fichaTecnica/fichaOne/${id_ft}`)
 }
@@ -45,14 +49,30 @@ export const putOperacion = async (id_ft, operacion) => {
         const response = axios.put(`${baseURL}fichaTecnica/operacion/${id_ft}`,{
              operacion: operacion
         });
-    
-    
         return response.data; // O algo similar
-    
       } catch (error) {
         throw error; // Maneja el error adecuadamente en tu componente React
       }
 }
 
+export const getListarOrdendelDia = async () => {
+    return await axios.get(`${baseURL}fichaTecnica/ordendia`) 
+    
+  };
 
+  export const getListarOrdenDia = async () => {
+    return await axios.get(`${baseURL}fichaTecnica/ordendeldia`) 
+    
+  };
+
+  export const getListarOrdenMes = async () => {
+    return await axios.get(`${baseURL}fichaTecnica/ordenmes`) 
+    
+  };
+  
+  
+  export const getListarOrdendelDiasemana = async () => {
+    return await axios.get(`${baseURL}fichaTecnica/ordensemana`) 
+    
+  };
 

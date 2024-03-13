@@ -99,15 +99,8 @@ function Nav() {
                       </svg>
                   Insumos</a>
               )}
-                            {userPermissions.includes('Ordenes') && (
-
-                  <a href="/ordenes" className="dashboard-nav-dropdown-item">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="45" height="20" fill="currentColor" className="bi bi-clipboard2-fill" viewBox="0 0 16 16" >
-                    <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z"></path>
-                    <path d="M3.5 1h.585A1.498 1.498 0 0 0 4 1.5V2a1.5 1.5 0 0 0 1.5 1.5h5A1.5 1.5 0 0 0 12 2v-.5c0-.175-.03-.344-.085-.5h.585A1.5 1.5 0 0 1 14 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-12A1.5 1.5 0 0 1 3.5 1Z"></path>
-                  </svg>
-                    Órdenes</a>
-                            )}</div>
+                          
+                            </div>
             </div>
             
 <div className='dashboard-nav-dropdown'>
@@ -118,6 +111,17 @@ function Nav() {
   <path fillRule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zm-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"></path>
 </svg>Venta </a>
               <div className='dashboard-nav-dropdown-menu'>
+
+
+              {userPermissions.includes('Ordenes') && (
+
+<a href="/ordenes" className="dashboard-nav-dropdown-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="45" height="20" fill="currentColor" className="bi bi-clipboard2-fill" viewBox="0 0 16 16" >
+  <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z"></path>
+  <path d="M3.5 1h.585A1.498 1.498 0 0 0 4 1.5V2a1.5 1.5 0 0 0 1.5 1.5h5A1.5 1.5 0 0 0 12 2v-.5c0-.175-.03-.344-.085-.5h.585A1.5 1.5 0 0 1 14 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-12A1.5 1.5 0 0 1 3.5 1Z"></path>
+</svg>
+  Órdenes</a>
+          )}
               {userPermissions.includes('Venta') && (
 
 <a href="/venta" className="dashboard-nav-dropdown-item">

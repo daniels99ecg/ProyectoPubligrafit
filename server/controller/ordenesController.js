@@ -9,30 +9,49 @@ const fs = require('fs')
 const { request } = require("express");
 
 async function listarFichasTecnicas(req, res){
-    try {
-        const orden = await Orden.findAll();
-       
-      res.json(orden);
-        // res.json(fichaTecnica);
-        
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error:'Error al obtener produtos'});
-        
-    }
+  try {
+      const ordenes = await Orden.findAll({
+          where: {
+              operacion: 'Pendiente'
+          }
+      });
+
+      res.json(ordenes);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al obtener órdenes' });
+  }
 }
 
+async function listarFichasTecnicasRealizada(req, res){
+  try {
+      const ordenes = await Orden.findAll({
+          where: {
+              operacion: 'Realizada'
+          }
+      });
+
+      res.json(ordenes);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al obtener órdenes' });
+  }
+}
+
+
 async function listarFichaTecnica(req, res) {
-  const  {id_ft}  = req.params;
+  const { id_ft } = req.params;
 
   try {
     const ficha = await Orden.findOne({
-      where: {id_ft: id_ft},
+      where: { id_ft: id_ft },
     });
 
     if (!ficha) {
       return res.status(404).json({ error: "ficha no encontrada" });
     }
+
+
 
     const detalleFicha = await DetalleOrden.findAll({
       where: { fk_ficha_tecnica: ficha.id_ft },
@@ -41,7 +60,6 @@ async function listarFichaTecnica(req, res) {
         "fk_insumo",
         "cantidad",
         "precio",
-       
       ],
       include: [
         {
@@ -62,6 +80,7 @@ async function listarFichaTecnica(req, res) {
     res.status(500).json({ error: "Error al obtener la ficha" });
   }
 }
+
 
 
 async function crearFichaTecnica(req, res) {
@@ -103,6 +122,7 @@ async function crearFichaTecnica(req, res) {
               detalle: dataFicha.detalle,
               mano_obra:dataFicha.mano_obra,
               operacion:"Pendiente",
+              fecha: dataFicha.fecha,
               estado: 1,
               
               // nombre_ficha:dataFicha.nombre_ficha,
@@ -282,6 +302,25 @@ async function desactivarFichaTecnica(req, res) {
 
         // Actualizar la operación de acuerdo a la opción seleccionada
         await fichaTecnica.update({ operacion: nuevaOperacion });
+        
+        // Verificar si la orden está "Realizada"
+        if (fichaTecnica.operacion === "Realizada") {
+            // Obtener detalles de orden para el producto actual
+            const detallesOrden = await DetalleOrden.findAll({ where: { fk_ficha_tecnica: fichaTecnica.id_ft } });
+
+            // Descontar insumos del detalle de orden
+            for (const detalle of detallesOrden) {
+                const insumo = await Insumo.findByPk(detalle.fk_insumo);
+
+                if (insumo) {
+                    const nuevaCantidad = insumo.cantidad - detalle.cantidad;
+                    await Insumo.update(
+                        { cantidad: nuevaCantidad },
+                        { where: { id_insumo: insumo.id_insumo } }
+                    );
+                }
+            }
+        }
 
         res.status(200).json({ message: 'Operación actualizada exitosamente' });
     } catch (error) {
@@ -289,6 +328,167 @@ async function desactivarFichaTecnica(req, res) {
         res.status(500).json({ error: 'Error al actualizar operación' });
     }
 }
+
+const { Op , fn, col} = require("sequelize");
+
+
+async function listarVentasPorFechas(req, res) {
+  try {
+    // Agregar condición de búsqueda para obtener solo las órdenes con operación "Realizada"
+    const totalVentas = await Orden.sum('costo_final_producto', {
+      where: {
+        operacion: 'Realizada'
+      }
+    });
+    
+    res.json(totalVentas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener el total de la orden" });
+  }
+}
+
+
+async function listarVentasPorFechasDia(req, res) {
+  try {
+    // Obtén la fecha actual en la zona horaria GMT-5 (Colombia)
+    const fechaActualColombia = new Date().toLocaleString('en-US', { timeZone: 'America/Bogota' });
+    const fechaActual = new Date(fechaActualColombia);
+
+    // Ajusta la fecha para obtener el primer día de la semana (domingo) y establece la hora al comienzo del día
+    const inicioSemana = new Date(fechaActual);
+    inicioSemana.setDate(fechaActual.getDate() - fechaActual.getDay());
+    inicioSemana.setHours(0, 0, 0, 0);
+
+    // Ajusta la fecha para obtener el último día de la semana (sábado) y establece la hora al final del día
+    const finSemana = new Date(inicioSemana);
+    finSemana.setDate(inicioSemana.getDate() + 6);
+    finSemana.setHours(23, 59, 59, 999);
+
+    // Consulta las ventas dentro del rango de la semana
+    const totalVentasSemana = await Orden.sum('costo_final_producto', {
+      where: {
+        operacion: 'Realizada',
+        fecha: {
+          [Op.between]: [inicioSemana, finSemana],
+        },
+      },
+    });
+
+    res.json(totalVentasSemana);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener el total de ventas de la semana" });
+  } 
+}
+
+async function listarComprasPorFechasDia(req, res) {
+  try {
+      // Consulta todas las compras agrupadas por mes
+      const ventasPorMes = await Orden.findAll({
+        where:{
+          operacion: 'Realizada'
+        },
+          attributes: [
+              [fn('MONTH', col('fecha')), 'mes'],
+              [fn('SUM', col('costo_final_producto')), 'totalVentasMes']
+          ],
+          group: [fn('MONTH', col('fecha'))],
+      });
+
+      // Mapea los resultados para agregar los nombres de los meses y completar los faltantes
+      const ventasPorMesConNombre = agregarMesesFaltantes(ventasPorMes);
+
+      res.json(ventasPorMesConNombre);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error al obtener los totales de ventas por mes" });
+  }
+}
+
+// Función para obtener el nombre del mes dado su número
+function obtenerNombreMes(numeroMes) {
+  const meses = [
+      "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+      "Jul", "Agos", "Sept", "Octu", "Novi", "Dici"
+  ];
+  return meses[numeroMes - 1];
+}
+
+// Función para agregar meses faltantes
+function agregarMesesFaltantes(ventasPorMes) {
+  const mesesFaltantes = [];
+  for (let i = 1; i <= 12; i++) {
+      const ventaEnMes = ventasPorMes.find(venta => venta.getDataValue('mes') === i);
+      if (ventaEnMes) {
+          mesesFaltantes.push({ mes: obtenerNombreMes(i), totalVentasMes: ventaEnMes.getDataValue('totalVentasMes') });
+      } else {
+          mesesFaltantes.push({ mes: obtenerNombreMes(i), totalVentasMes: 0 });
+      }
+  }
+  return mesesFaltantes;
+}
+  
+
+async function listarComprasPorFechasDias(req, res) {
+  try {
+    // Obtén la fecha de inicio de la semana actual (domingo)
+    const fechaActual = new Date();
+    const primerDiaSemana = new Date(fechaActual);
+    primerDiaSemana.setDate(primerDiaSemana.getDate() - fechaActual.getDay()); // Resta los días de la semana actual
+
+    // Obtén la fecha de fin de la semana actual (sábado)
+    const ultimoDiaSemana = new Date(fechaActual);
+    ultimoDiaSemana.setDate(ultimoDiaSemana.getDate() + (6 - fechaActual.getDay())); // Agrega los días restantes hasta sábado
+
+    // Consulta las compras dentro del rango de la semana actual
+    const ventasPorDiaSemana = await Orden.findAll({
+      attributes: [
+        [fn('DAYOFWEEK', col('fecha')), 'diaSemana'],
+        [fn('SUM', col('costo_final_producto')), 'totalVentasDia']
+      ],
+      where: {
+        operacion: 'Realizada',
+        fecha: {
+          [Op.between]: [primerDiaSemana, ultimoDiaSemana],
+        },
+      },
+      group: [fn('DAYOFWEEK', col('fecha'))],
+    });
+
+    // Mapea los resultados para agregar los nombres de los días de la semana y completar los faltantes
+    const ventasPorDiaSemanaConNombre = agregarDiasFaltantess(ventasPorDiaSemana);
+
+    res.json(ventasPorDiaSemanaConNombre);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener los totales de ventas por día de la semana" });
+  }
+}
+
+
+// Función para obtener el nombre del día de la semana dado su número
+function obtenerNombreDiaSemanas(numeroDia) {
+  const diasSemana = [
+      "Domin", "Lun", "Mart", "Miérc", "Juev", "Vier", "Sáb"
+  ];
+  return diasSemana[numeroDia - 1];
+}
+
+// Función para agregar días de la semana faltantes
+function agregarDiasFaltantess(ventasPorDiaSemana) {
+  const diasFaltantes = [];
+  for (let i = 1; i <= 7; i++) {
+      const ventaEnDia = ventasPorDiaSemana.find(venta => venta.getDataValue('diaSemana') === i);
+      if (ventaEnDia) {
+          diasFaltantes.push({ diaSemana: obtenerNombreDiaSemanas(i), totalVentasDia: ventaEnDia.getDataValue('totalVentasDia') });
+      } else {
+          diasFaltantes.push({ diaSemana: obtenerNombreDiaSemanas(i), totalVentasDia: 0 });
+      }
+  }
+  return diasFaltantes;
+}
+
 
 
 
@@ -300,5 +500,10 @@ module.exports ={
     eliminarFichaTecnica,
     activarFichaTecnica,
     desactivarFichaTecnica,
-    operacionOrden
+    operacionOrden,
+    listarFichasTecnicasRealizada,
+    listarVentasPorFechas,
+    listarVentasPorFechasDia,
+  listarComprasPorFechasDia,
+  listarComprasPorFechasDias
 }

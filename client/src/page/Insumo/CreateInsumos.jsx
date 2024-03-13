@@ -67,28 +67,8 @@ function CreateInsumo() {
                     {({ handleChange, values , errors, isValid}) => (
                       <Form className='row g-3'>
 
-<div className="col-md-6 ">
-                         
 
-<Autocomplete 
-  disablePortal
-  id="fixed-tags-demo"
-  options={Listar}  // Filtrar roles con estado true
-  getOptionLabel={(option) => option.categoria}
-  value={values.nombreCategoria || null} 
-  onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
-    setNombreRol(newInputValue);
-  }}
-  freeSolo
-   renderInput={(params) => (
-    <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>
-  )}  
-/>
-
-
-                            </div>
-
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                           <label htmlFor="nombre"></label>
                           <Field 
                           type="text" 
@@ -129,8 +109,28 @@ function CreateInsumo() {
                           <Field type="text" name='cantidad' className="form-control" />
                         </div> */}
 
+<div className="col-md-6 ">
+                         
 
-<div className="col-md-12">
+<Autocomplete 
+  disablePortal
+  id="fixed-tags-demo"
+  options={Listar}  // Filtrar roles con estado true
+  getOptionLabel={(option) => option.categoria}
+  value={values.nombreCategoria || null} 
+  onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
+    setNombreRol(newInputValue);
+  }}
+  freeSolo
+   renderInput={(params) => (
+    <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>
+  )}  
+/>
+
+
+                            </div>
+
+<div className="col-md-6">
       <Autocomplete
         disablePortal
         id="fixed-tags-demo"

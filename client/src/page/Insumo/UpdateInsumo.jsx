@@ -100,30 +100,11 @@ function UpdateInsumo({clienteId}){
                 readOnly 
                  />
 
-<div className="col-md-6 ">
-                         
-
-<Autocomplete 
-  disablePortal
-  id="fixed-tags-demo"
-  options={Listar}  // Filtrar roles con estado true
-  getOptionLabel={(option) => option.categoria}
-  value={values.categoria   || null} 
-  onChange={(event, newValue) => {
-    handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : null } } );
-}}
-  freeSolo
-   renderInput={(params) => (
-    <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>
-  )}  
-/>
-
-
-                            </div>
 
 
 
-                <div className="col-md-6">
+
+                <div className="col-md-12">
                 <label htmlFor="nombre"></label>
                 <Field 
                 type="text" 
@@ -151,7 +132,30 @@ function UpdateInsumo({clienteId}){
                 {errors.nombre && <div className='invalid-feedback'>{errors.nombre}</div>}
                 </div>
 
-                <div className="col-md-12">
+
+                <div className="col-md-6 ">
+                         
+
+                         <Autocomplete 
+                           disablePortal
+                           id="fixed-tags-demo"
+                           options={Listar}  // Filtrar roles con estado true
+                           getOptionLabel={(option) => option.categoria}
+                           value={values.categoria   || null} 
+                           onChange={(event, newValue) => {
+                             handleChange({ target: { name: 'fk_categoria', value: newValue ? newValue.id_categoria : null } } );
+                         }}
+                           freeSolo
+                            renderInput={(params) => (
+                             <TextField {...params} label="Categoria" sx={{ width: '100%' }}/>
+                           )}  
+                         />
+                         
+                         
+                                                     </div>
+
+
+                <div className="col-md-6">
       <Autocomplete
         disablePortal
         id="fixed-tags-demo"

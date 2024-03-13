@@ -26,11 +26,14 @@ const Orden=sequelize.define("ordenes",{
     mano_obra:{
         type:DataTypes.INTEGER,
     },
-    estado:DataTypes.BOOLEAN,
     operacion:{
         type:DataTypes.STRING
-    }
-
+    },
+    fecha:{
+        type: DataTypes.DATE,
+       
+    },
+    estado:DataTypes.BOOLEAN,
 },{
     timestamps:false,
     

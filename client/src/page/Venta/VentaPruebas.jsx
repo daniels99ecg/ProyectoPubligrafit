@@ -13,7 +13,7 @@ import { getListarFichaTecnica } from "../../api/Ficha/Rutas.ficha";
 import { useMediaQuery } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import FichaUpdate from './FichaUpdatePruebas'
+
 
 const baseURL = import.meta.env.VITE_REACT_API_URL;
 
@@ -21,7 +21,7 @@ const baseURL = import.meta.env.VITE_REACT_API_URL;
 
 
 function ListarFichasTecnicas() {
-  const{listar,ShowFichasTecnicas,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm, actualizarOperacion}=useFichaTecnica()
+  const{listar,ShowFichasTecnicasRealizada,filtrarDesactivados, eliminarFichasTecnicas,activarFichaTecnica,desactivarFichaTecnica,searchTerm,setSearchTerm, actualizarOperacion}=useFichaTecnica()
   const navigate=useNavigate()
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [showInfoVenta, setShowInfoVenta] = useState(false);
@@ -32,7 +32,7 @@ function ListarFichasTecnicas() {
 
   useEffect(() => {
    
-    ShowFichasTecnicas();
+    ShowFichasTecnicasRealizada();
   }, [searchTerm]);
 
   const handleOpenVentaModal = () => {
@@ -44,7 +44,7 @@ const handleSubmitForm = async () => {
 
 const handleCloseVentaModal = () => {
   setOpenCreateModal(false);
-  ShowFichasTecnicas()
+  ShowFichasTecnicasRealizada()
 
 };
 
@@ -72,7 +72,7 @@ const handleOpenUpdateModal = (id_ft) => {
 
 const handleCloseUpdateModal = () => {
   setOpenUpdateModal(false);
-  ShowFichasTecnicas()
+  ShowFichasTecnicasRealizada()
 };
  
 function formatCurrency(amount) {
@@ -104,11 +104,11 @@ const options = [
             <div className='card'>
                 <div className='card-body'>
                 <div className="card-header">
-                        <h1>Gestionar Órdenes</h1>
+                <h1>Listado de ventas</h1>
                       </div>
                 <br />
         <div className="row">
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
           <button
         className="btn btn-primary"
         onClick={handleOpenVentaModal}
@@ -116,7 +116,7 @@ const options = [
       >
         Nuevo Registro
       </button>
-                </div>
+                </div> */}
           {/* Botón de búsqueda */}
           <div className="col-md-3 " style={{ marginLeft: 'auto' }}>
             <input
@@ -130,144 +130,32 @@ const options = [
         <br />
         {isSmallScreen ? (
                   // Render cards when the screen is small
+                  
                   <div>
+                    
                     {/* Map over your data and render cards here */}
                     {filtrarDesactivados.map((item) => (
                       
                       <Card key={item.id_ft}>
+                        
                       <CardContent>
+                        
                       <ul className="list-group list-group-flush">
                       <li className="list-group-item">Tipo ID: {item.id_ft}</li>
                      
                       <li className="list-group-item">Nombre: {item.nombre_ficha}</li>
                       <li className="list-group-item">Costo Final: {item.costo_final_producto}</li>
-                      <li className="list-group-item">
-                      <select 
-      value={item.value} 
-      onChange={(e) => {
-        const nuevaOperacion = e.target.value;
-        const id_ft = item.id_ft; // Obtener el id_ft del elemento actual
-        actualizarOperacion(id_ft, nuevaOperacion); // Llamar a la función para actualizar la operación
-      }}
-    >
-      <option value={item.operacion}>{item.operacion}</option>
-   
-      <option value="Realizada">Realizada</option>
-      {/* Otras opciones de operación */}
-    </select>
-</li>
-
                       <li className="list-group-item"><img
-  src={`${baseURL}${item.imagen_producto_final}`}
-  alt="Imagen del producto"
-  style={{ width: '30%' }}
-/></li>
+                        src={`${baseURL}${item.imagen_producto_final}`}
+                        alt="Imagen del producto"
+                        style={{ width: '30%' }}
+                      /></li>
                         </ul>
-                      
-                        <div className="row">
-          <div className="col-md-6"></div>
-                        <div className="switch-button">
-                     <input
-                       type="checkbox"
-                        id={`switch-label-${item.id_ft}`}
-                        checked={item.estado}
-                        onChange={(e) => {
-                        e.preventDefault(); // Evitar la navegación por defecto
-                    if (item.estado) {
-                      desactivarFichaTecnica(item.id_ft);
-                  } else {
-                    activarFichaTecnica(item.id_ft);
-                }
-          }}
-        className="switch-button__checkbox"
-      />
-      <label
-        htmlFor={`switch-label-${item.id_ft}`}
-        className="switch-button__label"
-      ></label>
-                  </div>
-                  </div>
-                  <div className="col-md-6">
-
-                        <button
-                      className="btn btn-outline-secondary me-1"
-                      onClick={() =>{ handleOpenUpdateModal(item.id_ft) 
-                     
-                    }}
-                      disabled={!item.estado}
-                      style={{
-                        backgroundColor: '#0d6efd',
-                        borderColor: '#0d6efd',
-                        color: 'black',
-                      }}
-                      data-id={`edit-button-${item.id_ft}`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-arrow-clockwise"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
-                        ></path>
-                        <path
-                          d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
-                        ></path>
-                      </svg>
-                    </button>
-                    {item.tieneVentas ? (
-            <button
-              className="btn btn-danger"
-              disabled
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="bi bi-trash"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
-                ></path>
-                <path
-                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
-                ></path>
-              </svg>
-            </button>
-           ) : (
-
-                        <button
-                      className="btn btn-danger"
-                      onClick={() => eliminarFichasTecnicas(item.id_ft)}
-                      disabled={!item.estado}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-trash"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
-                        ></path>
-                        <path
-                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
-                        ></path>
-                      </svg>
-                    </button>
-)}
-                    
-</div>
+                        
                       </CardContent>
+                      
                     </Card>
+                    
                     ))}
                   
                   </div>
@@ -292,22 +180,9 @@ const options = [
             { field: 'operacion', 
             headerName: 'Operación', 
             headerClassName: 'encabezado', 
+            cellClassName: 'green-text',  
             flex: 1, 
-            renderCell: (params) => (
-              <select 
-      value={params.value} 
-      onChange={(e) => {
-        const nuevaOperacion = e.target.value;
-        const id_ft = params.row.id_ft; // Obtener el id_ft del elemento actual
-        actualizarOperacion(id_ft, nuevaOperacion); // Llamar a la función para actualizar la operación
-      }}
-    >
-      <option value={params.value}>{params.value}</option>
-   
-      <option value="Realizada">Realizada</option>
-      {/* Otras opciones de operación */}
-    </select>
-            ),
+            
           },
 
               {
@@ -380,117 +255,117 @@ const options = [
                   </Tooltip>
                 ),
               },
-              {
-                field: 'estado',
-                headerName: 'Estado',
-                headerClassName: 'encabezado',
-                flex: 1,
-                renderCell: (params) => (
-                  <div className="switch-button">
-                     <input
-                       type="checkbox"
-                        id={`switch-label-${params.row.id_ft}`}
-                        checked={params.row.estado}
-                        onChange={(e) => {
-                        e.preventDefault(); // Evitar la navegación por defecto
-                    if (params.row.estado) {
-                      desactivarFichaTecnica(params.row.id_ft);
-                  } else {
-                      activarFichaTecnica(params.row.id_ft);
-                }
-          }}
-        className="switch-button__checkbox"
-      />
-      <label
-        htmlFor={`switch-label-${params.row.id_ft}`}
-        className="switch-button__label"
-      ></label>
-                  </div>
-                ),
-              },
-              {
-                field: 'acciones',
-                headerName: 'Acciones',
-                headerClassName: 'encabezado',
-                flex: 1,
-                renderCell: (params) => (
-                  <div>
-                    <button
-                      className="btn btn-outline-secondary me-1"
-                      onClick={() =>handleOpenUpdateModal(params.row.id_ft)}
-                      disabled={!params.row.estado}
-                      style={{
-                        backgroundColor: '#0d6efd',
-                        borderColor: '#0d6efd',
-                        color: 'black',
-                      }}
-                      data-id={`edit-button-${params.row.id_ft}`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-arrow-clockwise"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
-                        ></path>
-                        <path
-                          d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
-                        ></path>
-                      </svg>
-                    </button>
-                    {params.row.tieneVentas ? (
-                                // Si el cliente tiene ventas, el botón de eliminar está deshabilitado
-                                <button
-                                  className="btn btn-danger"
-                                  disabled
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    className="bi bi-trash"
-                                    viewBox="0 0 16 16"
-                                  >
-                                    <path
-                                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
-                                    ></path>
-                                    <path
-                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
-                                    ></path>
-                                  </svg>
-                                </button>
-                              ) : (
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => eliminarFichasTecnicas(params.row.id_ft)}
-                      disabled={!params.row.estado}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-trash"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
-                        ></path>
-                        <path
-                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
-                        ></path>
-                      </svg>
-                    </button>
-                    )}
-                  </div>
-                ),
-              },
+      //         {
+      //           field: 'estado',
+      //           headerName: 'Estado',
+      //           headerClassName: 'encabezado',
+      //           flex: 1,
+      //           renderCell: (params) => (
+      //             <div className="switch-button">
+      //                <input
+      //                  type="checkbox"
+      //                   id={`switch-label-${params.row.id_ft}`}
+      //                   checked={params.row.estado}
+      //                   onChange={(e) => {
+      //                   e.preventDefault(); // Evitar la navegación por defecto
+      //               if (params.row.estado) {
+      //                 desactivarFichaTecnica(params.row.id_ft);
+      //             } else {
+      //                 activarFichaTecnica(params.row.id_ft);
+      //           }
+      //     }}
+      //   className="switch-button__checkbox"
+      // />
+      // <label
+      //   htmlFor={`switch-label-${params.row.id_ft}`}
+      //   className="switch-button__label"
+      // ></label>
+      //             </div>
+      //           ),
+      //         },
+      //         {
+      //           field: 'acciones',
+      //           headerName: 'Acciones',
+      //           headerClassName: 'encabezado',
+      //           flex: 1,
+      //           renderCell: (params) => (
+      //             <div>
+      //               <button
+      //                 className="btn btn-outline-secondary me-1"
+      //                 onClick={() =>handleOpenUpdateModal(params.row.id_ft)}
+      //                 disabled={!params.row.estado}
+      //                 style={{
+      //                   backgroundColor: '#0d6efd',
+      //                   borderColor: '#0d6efd',
+      //                   color: 'black',
+      //                 }}
+      //                 data-id={`edit-button-${params.row.id_ft}`}
+      //               >
+      //                 <svg
+      //                   xmlns="http://www.w3.org/2000/svg"
+      //                   width="16"
+      //                   height="16"
+      //                   fill="currentColor"
+      //                   className="bi bi-arrow-clockwise"
+      //                   viewBox="0 0 16 16"
+      //                 >
+      //                   <path
+      //                     fillRule="evenodd"
+      //                     d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+      //                   ></path>
+      //                   <path
+      //                     d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+      //                   ></path>
+      //                 </svg>
+      //               </button>
+      //               {params.row.tieneVentas || params.row.operacion=="Realizada" ? (
+      //                           // Si el cliente tiene ventas, el botón de eliminar está deshabilitado
+      //                           <button
+      //                             className="btn btn-danger"
+      //                             disabled
+      //                           >
+      //                             <svg
+      //                               xmlns="http://www.w3.org/2000/svg"
+      //                               width="16"
+      //                               height="16"
+      //                               fill="currentColor"
+      //                               className="bi bi-trash"
+      //                               viewBox="0 0 16 16"
+      //                             >
+      //                               <path
+      //                                 d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
+      //                               ></path>
+      //                               <path
+      //                                 d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
+      //                               ></path>
+      //                             </svg>
+      //                           </button>
+      //                         ) : (
+      //               <button
+      //                 className="btn btn-danger"
+      //                 onClick={() => eliminarFichasTecnicas(params.row.id_ft)}
+      //                 disabled={!params.row.estado}
+      //               >
+      //                 <svg
+      //                   xmlns="http://www.w3.org/2000/svg"
+      //                   width="16"
+      //                   height="16"
+      //                   fill="currentColor"
+      //                   className="bi bi-trash"
+      //                   viewBox="0 0 16 16"
+      //                 >
+      //                   <path
+      //                     d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
+      //                   ></path>
+      //                   <path
+      //                     d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
+      //                   ></path>
+      //                 </svg>
+      //               </button>
+      //               )}
+      //             </div>
+      //           ),
+      //         },
             ]}
             autoHeight
             initialState={{

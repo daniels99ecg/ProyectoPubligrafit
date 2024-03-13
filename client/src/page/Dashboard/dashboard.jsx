@@ -7,6 +7,7 @@ import { LineChart } from '@mui/x-charts/LineChart'; // Importa LineChart
 
 import { getListarVentasDia, getListarVentasdelDia, getListarVentadelDia, getListarVentadelDiasemana } from '../../api/Rutas.Venta.api';
 import { getListarCompraDia, getListarCompradelDia, getListarCompraseman } from '../../api/Compras/rutas.api';
+import {getListarOrdendelDia, getListarOrdenDia, getListarOrdenMes,getListarOrdendelDiasemana} from '../../api/Ficha/Rutas.ficha'
 import { MdAttachMoney } from "react-icons/md";
 function Dashboard() {
   const [totalVentas, setTotalVentas] = useState(0);
@@ -34,10 +35,10 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseVentasDia = await getListarVentasDia();
+        const responseVentasDia = await getListarOrdendelDia();
         setTotalVentas(responseVentasDia.data);
 
-        const responseVentasDelDia = await getListarVentasdelDia();
+        const responseVentasDelDia = await getListarOrdenDia();
         setTotalVentasDia(responseVentasDelDia.data);
 
         const responseCompras = await getListarCompraDia();
@@ -46,13 +47,13 @@ function Dashboard() {
         const responseComprasDelDia = await getListarCompradelDia();
         setTotalComprasDia(responseComprasDelDia.data);
 
-        const responseVentasDelMes = await getListarVentadelDia();
+        const responseVentasDelMes = await getListarOrdenMes();
         setTotalVentaDia(responseVentasDelMes.data);
 
         const responseComprasSemana = await getListarCompraseman();
         setTotalComprasDiasemas(responseComprasSemana.data);
 
-        const responseVentasSemana = await getListarVentadelDiasemana();
+        const responseVentasSemana = await getListarOrdendelDiasemana();
         setTotalVentasDiasemas(responseVentasSemana.data);
       } catch (error) {
         console.error('Error al obtener datos:', error);

@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarFichasTecnicas, postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica, putOperacion} from "../../api/Ficha/Rutas.ficha"
+import {getListarFichasTecnicas, getListarFichasTecnicasRealizada,postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica, putOperacion} from "../../api/Ficha/Rutas.ficha"
 import Swal from 'sweetalert2'
 export const FichaTecnicaContext = createContext()
 
@@ -18,6 +18,8 @@ export const FichaTecnicaContextProvider = ({children})=>{
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
     
+
+
     async function ShowFichasTecnicas() {
     const response = await getListarFichasTecnicas();
 
@@ -30,6 +32,21 @@ export const FichaTecnicaContextProvider = ({children})=>{
       );
       setListar(filterList);
 }
+
+
+async function ShowFichasTecnicasRealizada() {
+  const response = await getListarFichasTecnicasRealizada();
+
+  const filterList = response.data.filter((item) => 
+
+      item.id_ft.toString().includes(searchTerm) ||
+      item.costo_final_producto.toString().includes(searchTerm) ||
+      item.nombre_ficha.toLowerCase().includes(searchTerm.toLowerCase()) 
+     
+    );
+    setListar(filterList);
+}
+
 const desactivarFichaTecnica = async (id_ft) => {
     try {
       const response = await putDesactivarFichaTecnica(id_ft);
@@ -77,6 +94,7 @@ const desactivarFichaTecnica = async (id_ft) => {
     return a.estado ? -1 : 1;
   });
 
+  
 const validacionFichaTecnica = async (values)=>{
     try {
         let Caracteres = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
@@ -174,6 +192,10 @@ const validacionFichaTecnica = async (values)=>{
     console.error(error);
       }
     }
+
+
+
+
     const eliminarFichasTecnicas = async (id_ft) => {
       try {
         Swal.fire({
@@ -273,25 +295,48 @@ const validacionFichaTecnica = async (values)=>{
 
   const actualizarOperacion = async (id_ft, nuevaOperacion) => {
     try {
-      // Realizar la solicitud para actualizar la operación
-      await putOperacion(id_ft, nuevaOperacion);
-  
-      // Si la solicitud se realiza correctamente, actualizar el estado local
-      const updatedList = listar.map((item) => {
-        if (item.id_ft === id_ft) {
-          // Actualizar la operación del elemento correspondiente
-          return { ...item, operacion: nuevaOperacion };
+      // Mostrar una alerta antes de actualizar la operación
+      await Swal.fire({
+        title: '¿Estás seguro?',
+        text: '¿Quieres actualizar esta operación?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, actualizar',
+        cancelButtonText: 'Cancelar'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          // Realizar la solicitud para actualizar la operación
+          await putOperacion(id_ft, nuevaOperacion);
+          
+          // Si la solicitud se realiza correctamente, actualizar el estado local
+          const updatedList = listar.map((item) => {
+            if (item.id_ft === id_ft) {
+              // Actualizar la operación del elemento correspondiente
+              return { ...item, operacion: nuevaOperacion };
+            }
+            return item;
+          });
+          
+          // Actualizar el estado con la nueva lista que incluye la operación actualizada
+          // setListar(updatedList);
+          setListar(listar.filter(listar=>listar.id_ft!==id_ft))
+          
+          // Mostrar un mensaje de éxito
+          Swal.fire({
+            title: '¡Operación actualizada!',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          window.location.reload()
         }
-        return item;
       });
-  
-      // Actualizar el estado con la nueva lista que incluye la operación actualizada
-      setListar(updatedList);
     } catch (error) {
       console.error(error);
       // Maneja el error de manera adecuada
     }
-  };
+};
+
   
   
 
@@ -299,7 +344,7 @@ const validacionFichaTecnica = async (values)=>{
 
 return(
     <FichaTecnicaContext.Provider
-    value={{listar,ShowFichasTecnicas,searchTerm,setSearchTerm,listarFichaTecnica, validarFichaActualizar,fichaTecnicaActualizar,activarFichaTecnica, eliminarFichasTecnicas, desactivarFichaTecnica, validacionFichaTecnica ,filtrarDesactivados,actualizarOperacion}}>
+    value={{listar,ShowFichasTecnicas, ShowFichasTecnicasRealizada,searchTerm,setSearchTerm,listarFichaTecnica, validarFichaActualizar,fichaTecnicaActualizar,activarFichaTecnica, eliminarFichasTecnicas, desactivarFichaTecnica, validacionFichaTecnica ,filtrarDesactivados,actualizarOperacion}}>
     {children}
     </FichaTecnicaContext.Provider>
 )

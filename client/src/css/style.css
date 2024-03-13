@@ -504,7 +504,9 @@ h1, .h1 {
   color: white;
 }
 
-
+.green-text {
+  color: green;
+}
 
 .card {
   border-radius: 15px; /* Ajusta el valor según tu preferencia */

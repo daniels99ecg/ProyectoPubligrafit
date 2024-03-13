@@ -27,7 +27,7 @@ import ShowCliente from './page/Cliente/Cliente'
 import { ClienteContextProvider } from './context/Clientes/ClienteContext'
 import { VentaContextProvider } from './context/Ventas/VentaContext'
 import { ProveedorContextProvider } from './context/Proveedor/ProveedorContext'
-import ShowVenta from './page/Venta/Venta'
+import ShowVenta from './page/Venta/VentaPruebas'
 
 import Home_page from './page/Home_page/Home_page'
 

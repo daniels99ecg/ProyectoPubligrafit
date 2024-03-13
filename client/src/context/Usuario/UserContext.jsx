@@ -266,111 +266,82 @@ const[ListarActualizar, setListarActualizar]=useState({
   }
 }
 
-const actualizarValidar= async(id_usuario, values)=>{
+const actualizarValidar = async (id_usuario, values) => {
   try {
-        
-    if(!values.email.includes("@") || !values.email.includes(".com")){
-        Swal.fire({
-            icon: 'error',
-            title: 'Correo no valido',
-            text: 'Por favor ingresar un correo valido!',
-            
-          })
-        }else{
-    
-          const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-              confirmButton: 'btn btn-success',
-              cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-          })
-          
-          Swal.fire({
-            title: 'Confirmar el envio del formulario?',
-            text: "¡No podrás revertir esto!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Aceptar!',
-            cancelButtonText: 'Cancelar!',
-            Buttons: true
-          }).then(async(result) => {
-            if (result.isConfirmed) {
-    try{
-              const response=await actualizarUsuario(id_usuario, values)
-              console.log(response)
-            
-              if (response.data && response.data.error) {
-                // Verificar errores específicos
-                if (response.data.error === 'el id de usuario ya existe') {
-                  console.log('Mostrar alerta de usuario existente');
-        
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'El Documento de usuario ya existe. Por favor.',
-                  });
-                } else if (response.data.error === 'El correo electrónico ya está registrado') {
-                  // Mostrar alerta específica para correo existente
-                  swalWithBootstrapButtons.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'El correo electrónico ya está registrado. Por favor, elige otro correo electrónico.',
-                  });
+    if (!values.email.includes("@") || !values.email.includes(".com")) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Correo no válido',
+        text: 'Por favor ingresa un correo válido!',
+      });
+    } else {
+      try {
+        const response = await actualizarUsuario(id_usuario, values);
+        console.log(response);
 
+        if (response.data && response.data.error) {
+          // Verificar errores específicos
+          if (response.data.error === 'el id de usuario ya existe') {
+            console.log('Mostrar alerta de usuario existente');
 
-                } else {
-                  console.log('Mostrar alerta de otro error');
-        
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.data.error,
-                  });
-                }
-              } else {
-                // Verificar si se creó el usuario correctamente
-                if (response.data && response.data.usuario) {
-                  // Si no hay errores, redirige a la página de usuario
-                  navigate("/usuario");
-                  window.location.reload()
-                  swalWithBootstrapButtons.fire(
-                    'Registro Enviado!',
-                    'Your file has been deleted.',
-                    'success'
-                  );
-                } else {
-                  navigate("/usuario");
-                  window.location.reload()
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'El Documento de usuario ya existe. Por favor.',
+            });
+          } else if (response.data.error === 'El correo electrónico ya está registrado') {
+            // Mostrar alerta específica para correo existente
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'El correo electrónico ya está registrado. Por favor, elige otro correo electrónico.',
+            });
+          } else {
+            console.log('Mostrar alerta de otro error');
 
-                  swalWithBootstrapButtons.fire(
-                    'Registro Enviado!',
-                    'Your file has been deleted.',
-                    'success'
-                  );
-                }
-              }
-            } catch (error) {
-              console.error(error);
-              swalWithBootstrapButtons.fire(
-                'Error',
-                'Ocurrió un error al crear el usuario.',
-                'error'
-              );
-            }
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            swalWithBootstrapButtons.fire(
-              'Se cancelo el envio',
-              'Your imaginary file is safe :)',
-              'error'
-            );
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: response.data.error,
+            });
           }
-        });
-      }              
-    } catch (error) {
-      console.log(error);
+        } else {
+          // Verificar si se actualizó el usuario correctamente
+          if (response.data && response.data.usuario) {
+            // Si no hay errores, redirige a la página de usuario
+          
+            Swal.fire({
+              icon: 'success',
+              title: 'Actualización Exitosa!',
+              text: 'Los cambios se guardaron correctamente.',
+            }).then(() => {
+              window.location.reload();
+            });
+          
+          } else {
+            Swal.fire({
+              icon: 'success',
+              title: 'Actualización Exitosa!',
+              text: 'Los cambios se guardaron correctamente.',
+            }).then(() => {
+              window.location.reload();
+            });
+          }
+          
+        }
+      } catch (error) {
+        console.error(error);
+        Swal.fire(
+          'Error',
+          'Ocurrió un error al actualizar el usuario.',
+          'error'
+        );
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
+}
 
     return( 
       <UserContext.Provider value={{listar, Listar,cargarUsuario,cargarUsuariolista,listar3,searchTerm,setSearchTerm, creacionValidacion,  cargarRol, desactivarCliente, activarCliente, eliminarUsuario, filtrarDesactivados, ListarActualizar,setListarActualizar,actualizarValidar,cargarUsuariosActualizar}}>

@@ -3,7 +3,7 @@ const sequelize=require("../database/db")
 const Orden=require("../models/Ficha_Tecnica/FichaTecnica")
 const Insumo=require("../models/Insumo")
 const DetalleOrden=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
-
+const Cliente = require("../models/Cliente");
 
 const fs = require('fs')
 const { request } = require("express");
@@ -45,6 +45,13 @@ async function listarFichaTecnica(req, res) {
   try {
     const ficha = await Orden.findOne({
       where: { id_ft: id_ft },
+      include: [
+     
+        {
+          model: Cliente,
+          attributes:["nombre"]
+        }
+      ],
     });
 
     if (!ficha) {
@@ -64,8 +71,8 @@ async function listarFichaTecnica(req, res) {
       include: [
         {
           model: Insumo,
-          attributes: ["nombre"],
-        },
+          attributes: ["id_insumo","nombre"],
+        }
       ],
     });
 
@@ -117,6 +124,8 @@ async function crearFichaTecnica(req, res) {
           const createdFicha = await Orden.create(
             {
               nombre_ficha:dataFicha.nombre_ficha,
+              fk_cliente: dataFicha.id_cliente.fk_cliente,
+
               imagen_producto_final:req.file.filename,
               costo_final_producto:dataFicha.costo_final_producto,
               detalle: dataFicha.detalle,
@@ -174,7 +183,7 @@ async function crearFichaTecnica(req, res) {
 
   async function actualizarFichaTecnica(req, res) {
     const id = req.params.id;
-    const { nombre_ficha, imagen_producto_final, costo_final_producto,detalle, mano_obra,detalles } = req.body; // Asumiendo que `detalles` es un array de detalles de la ficha técnica
+    const { nombre_ficha, fk_cliente,imagen_producto_final, costo_final_producto,detalle, mano_obra,detalles } = req.body; // Asumiendo que `detalles` es un array de detalles de la ficha técnica
   
     try {
       const fichaTecnicaExistente = await Orden.findByPk(id);
@@ -185,6 +194,7 @@ async function crearFichaTecnica(req, res) {
       // Actualiza la ficha técnica principal
       await fichaTecnicaExistente.update({
         nombre_ficha,
+        fk_cliente,
         imagen_producto_final,
         costo_final_producto,
         mano_obra,
@@ -285,9 +295,6 @@ async function desactivarFichaTecnica(req, res) {
         res.status(500).json({ error: 'Error al habilitar cliente' });
     }
   }
-
-
-
 
   async function operacionOrden(req, res) {
     try {

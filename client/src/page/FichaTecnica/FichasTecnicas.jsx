@@ -164,29 +164,7 @@ const options = [
 /></li>
                         </ul>
                       
-                        <div className="row">
-          <div className="col-md-6"></div>
-                        <div className="switch-button">
-                     <input
-                       type="checkbox"
-                        id={`switch-label-${item.id_ft}`}
-                        checked={item.estado}
-                        onChange={(e) => {
-                        e.preventDefault(); // Evitar la navegación por defecto
-                    if (item.estado) {
-                      desactivarFichaTecnica(item.id_ft);
-                  } else {
-                    activarFichaTecnica(item.id_ft);
-                }
-          }}
-        className="switch-button__checkbox"
-      />
-      <label
-        htmlFor={`switch-label-${item.id_ft}`}
-        className="switch-button__label"
-      ></label>
-                  </div>
-                  </div>
+                   
                   <div className="col-md-6">
 
                         <button
@@ -281,7 +259,7 @@ const options = [
               id: item.id_ft,
             }))}
             columns={[
-              { field: 'id_ft', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },
+              { field: 'id_ft', headerName: 'Órden', headerClassName: 'encabezado', flex: 1 },
               { field: 'fecha', headerName: 'Fecha', headerClassName: 'encabezado', flex: 1,},
 
               { field: 'nombre_ficha', headerName: 'Nombre', headerClassName: 'encabezado', flex: 1 },
@@ -380,34 +358,7 @@ const options = [
                   </Tooltip>
                 ),
               },
-              {
-                field: 'estado',
-                headerName: 'Estado',
-                headerClassName: 'encabezado',
-                flex: 1,
-                renderCell: (params) => (
-                  <div className="switch-button">
-                     <input
-                       type="checkbox"
-                        id={`switch-label-${params.row.id_ft}`}
-                        checked={params.row.estado}
-                        onChange={(e) => {
-                        e.preventDefault(); // Evitar la navegación por defecto
-                    if (params.row.estado) {
-                      desactivarFichaTecnica(params.row.id_ft);
-                  } else {
-                      activarFichaTecnica(params.row.id_ft);
-                }
-          }}
-        className="switch-button__checkbox"
-      />
-      <label
-        htmlFor={`switch-label-${params.row.id_ft}`}
-        className="switch-button__label"
-      ></label>
-                  </div>
-                ),
-              },
+              
               {
                 field: 'acciones',
                 headerName: 'Acciones',

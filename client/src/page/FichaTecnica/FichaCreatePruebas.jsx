@@ -13,6 +13,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import { TiDeleteOutline } from "react-icons/ti";
 import { TiShoppingCart } from "react-icons/ti";
 
+import { useCliente } from "../../context/Clientes/ClienteContext";
 
 
 function FichaCreatePruebas({ handleCloseVentaModal }) {
@@ -20,16 +21,24 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
   const [total, setTotal] = useState(0);
+  const [totalIva, setTotalIva]=useState(0)
+  const [granTotal, setGranTotal]=useState(0)
+
   const [tablaVacia, setTablaVacia] = useState(true);
   const [productoSelect, setProductoSelect] = useState(null);
   const [cantidadAlterar, setCantidadAlterar] = useState("");
   const [manoObra, setManoObra] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const { Listar, showClientes } = useCliente();
 
   // const [metodoPagoTouched, setMetodoPagoTouched] = useState(false);
   const [totalTouched, setTotalTouched] = useState(false);
   const [nombreFicha, setNombreFicha] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [clientes, setClientes] = useState('');
+
+  
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Número de elementos por página
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -211,22 +220,11 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
     actualizarSubtotales();
   }, [tableData]);
 
-  useEffect(() => {
-    const sumaSubtotales = tableData.reduce(
-      (total, insumo) => total + insumo.subtotal,
-      0
-    );
-    setSubtotalTotal(sumaSubtotales);
-
-    const iva = sumaSubtotales * 0.19;
-    const totalVenta = sumaSubtotales + iva;
-
-    setTotal(totalVenta);
-  }, [tableData]);
+ 
 
   useEffect(() => {
     ShowInsumos();
-   
+    showClientes();
    
   }, []);
 
@@ -242,11 +240,14 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
       0
     );
     setSubtotalTotal(sumaSubtotales);
+    setTotal(sumaSubtotales);
 
-    const iva = sumaSubtotales * 0.19;
-    const totalVenta = sumaSubtotales + iva;
+    const Iva=total*0.19
+    setTotalIva(Iva)
 
-    setTotal(totalVenta);
+    const GranTotal=total+Iva
+    setGranTotal(GranTotal)
+
   }, [tableData]);
 
   return (
@@ -268,10 +269,12 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
 
                 <Formik
                   initialValues={{
+                    id_cliente: { fk_cliente: clientes.id_cliente },
                     nombre_ficha: nombreFicha,
                     imagen_producto_final:selectedImage,
                     costo_final_producto: subtotalTotal,
-                    detalle:"",
+                    detalle:descripcion,
+                    fecha:fechaActual(),
                     mano_obra:manoObra,
                     insumo: tableData.map((item) => ({
                       fk_insumo: item.fk_insumo,
@@ -308,6 +311,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                   })
                                   .then((result) => {
                                       if (result.isConfirmed) {
+                                       
                                           postCreateFichaTecnica(values)
                                               .then(() => {
                                                   Swal.fire({
@@ -370,7 +374,66 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                               <div className="card shadow flex-fill">
                                 <div className="card-body p-3">
                                   
-                              
+                                <div className="form-group mb-2">
+                                    <Field
+                                      type="date"
+                                      name="fecha"
+                                      id="fecha"
+                                      className="form-control"
+                                      disabled
+                                      value={fechaActual()}
+                                      min={fechaActual()}
+                                      max={fechaActual()}
+                                      onChange={handleChange}
+                                    />
+                                  </div>
+
+<div className="form-group mb-2">
+  <Autocomplete
+    disablePortal
+    id="fixed-tags-demo"
+    options={Listar.filter((option) => option.estado)}
+    getOptionLabel={(option) =>
+      `${option.documento} - ${option.nombre} ${option.apellido}`
+    }
+    onChange={(event, newValue) => {
+      setClientes(newValue ? newValue : "");
+      // Aquí puedes realizar cualquier acción adicional necesaria cuando se selecciona un cliente
+    }}
+    value={clientes || null}
+    sx={{ width: "100%" }}
+    noOptionsText="Cliente no encontrado"
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        label="Cliente"
+        sx={{ width: "100%" }}
+        InputProps={{
+          ...params.InputProps,
+          endAdornment: (
+            <>
+              {(touched.id_cliente?.fk_cliente && values.clienteSeleccionado) && (
+                <CheckCircleIcon
+                  sx={{ color: "green", marginLeft: "10px" }}
+                />
+              )}
+              {(touched.id_cliente?.fk_cliente && !values.clienteSeleccionado) && (
+                <ErrorIcon
+                  sx={{ color: "red", marginLeft: "10px" }}
+                />
+              )}
+            </>
+          ),
+        }}
+      />
+    )}
+  />
+  <ErrorMessage
+    name="id_cliente.fk_cliente"
+    component="div"
+    className="error-message"
+  />
+</div>
                                   <div className="form-group mb-2">
                                   <Field
             type='text'
@@ -378,14 +441,33 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
             className='form-control'
             as={TextField}
             value={values.nombre_ficha}
-            label="Nombre Órden"
+            label="Nombre Producto"
             onChange={(e) => {
               handleChange(e);
               setNombreFicha(e.target.value); // Actualizar el estado local
             }}
           />
-<br />
-<br />
+       </div>  
+
+                                  <div className="form-group mb-2">
+
+<Field
+                            type='text'
+                            name='detalle'
+                            className='form-control'
+                            as={TextField}
+                            label="Descripción"
+                            
+                            value={values.detalle}
+                            onChange={(e) => {
+                              handleChange(e);
+                              setDescripcion(e.target.value); // Actualizar el estado local
+                            }}
+                          /> 
+                         </div> 
+                         <div className="form-group mb-2">
+
+
 <input
                 type='file'
                 name='imagen_producto_final'
@@ -395,88 +477,29 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                     setFieldValue('imagen_producto_final', event.target.files[0]);
                 }}
             />
+</div>
+<div className="form-group mb-2">
 
-             <br />  
 <Field
                             type='number'
                             name='costo_produccion'
                             className='form-control'
                             as={TextField}
                             value={manoObra}
-                            label="Mano de Obra"
+                            label="Incremento de Venta"
                             onChange={handleChangee}
                             error={!!error} // Marcar el campo como error si hay un mensaje de error
                             helperText={error} 
                             
                           /> 
-                          <br />
+                          </div>
+                       
            
-</div>
-                      
-                                  <div className="form-group mb-2">
-                                    <Field
-                                      type="hidden"
-                                      name="fecha"
-                                      id="fecha"
-                                      className="form-control"
-                                      value={fechaActual()}
-                                      min={fechaActual()}
-                                      max={fechaActual()}
-                                      onChange={handleChange}
-                                    />
-                                  </div>
-<br />
-                                  <div className="form-group mb-2">
-                                    <Field
-                                      type="text"
-                                      name="total"
-                                      id="total"
-                                      disabled
-                                      as={TextField}
-                                      label="Total"
-                                      value={formatearValores(subtotalTotal)}
-                                      onChange={(e) => {
-                                        setTotalTouched(true);
-                                        handleChange(e);
-                                      }}
-                                      InputProps={{
-                                        endAdornment: (
-                                          <div style={{ display: "flex" }}>
-                                            {totalTouched && !errors.total && (
-                                              <CheckCircleIcon
-                                                style={{
-                                                  color: "green",
-                                                  marginLeft: "10px",
-                                                }}
-                                              />
-                                            )}
-                                            {totalTouched && errors.total && (
-                                              <ErrorIcon
-                                                style={{
-                                                  color: "red",
-                                                  marginLeft: "10px",
-                                                }}
-                                              />
-                                            )}
-                                          </div>
-                                        ),
-                                      }}
-                                    />
-                                    <ErrorMessage
-                                      name="total"
-                                      component="div"
-                                      className="error-message"
-                                    />
-                                  </div>
+
                                           
                                   <div className="row mt-2">
                                     <div className="col-12">
-                                      <div className="text-right">
-                                        {/* <strong>Costo de producción:</strong> <strong>$</strong>&nbsp;
-                                        <span id="comprobante_subtotal">
-                                          {formatearPrecios(subtotalTotal)}
-                                        </span> */}
-                                      </div>
+                                    
                                       
                                       <div className="form-group mb-2 d-flex">
                                         <button
@@ -555,6 +578,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                                       subtotal:
                                                         cantidadPredeterminada *
                                                         precioProducto,
+                                                      id_insumo:newValue.id_insumo,  
                                                       nombre:
                                                         newValue.nombre,
                                                     },
@@ -572,6 +596,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                                     subtotal:
                                                       cantidadPredeterminada *
                                                       precioProducto,
+                                                    id_insumo:newValue.id_insumo,  
                                                     nombre:
                                                       newValue.nombre,
                                                   },
@@ -640,7 +665,7 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                           fontStyle: "italic",
                                         }}
                                       >
-                                        &nbsp;¡Sin productos en el carrito!
+                                        &nbsp;¡Sin insumo en el carrito!
                                       </div>
                                     )}
                                     {!tablaVacia && (
@@ -659,17 +684,19 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                         >
                                           <thead className="info text-left fs-6">
                                             <tr>
+                                              <th>ID</th>
                                               <th>Insumo</th>
                                               <th>Precio</th>
                                               <th>Cantidad</th>
                                               <th></th>
-                                              <th>Subtotal</th>
+                                              <th>Precio</th>
                                               <th>Acciones</th>
                                             </tr>
                                           </thead>
                                           <tbody className="small text-left fs-6">
                                             {currentItems.map((row, index) => (
                                               <tr key={index}>
+                                                <td>{row.id_insumo}</td>
                                                 <td>{row.nombre}</td>
                                                 <td>
                                                   {formatearPrecios(row.precio)}
@@ -685,11 +712,14 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                                     row.subtotal
                                                   )}
                                                 </td>
+                                                
                                                 <td>
+                                                  
                                                   <Tooltip
                                                     title="Eliminar"
                                                     arrow
                                                   >
+                                                    
                                                     <span>
                                                       <button
                                                         className="btn"
@@ -716,11 +746,48 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                                       </button>
                                                     </span>
                                                   </Tooltip>
+                                                  
                                                 </td>
+                                                
                                               </tr>
+                                          
                                             ))}
+                                            <tr>
+          
+            <td colSpan="0"><strong>Subtotal:</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>{formatearValores(subtotalTotal)}</strong></td>
+            <td></td>
+          
+        </tr>
+
+        <tr>
+           
+            <td><strong>IVA 19%:</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>{formatearValores(totalIva)}</strong></td>
+            <td></td>
+        </tr>
+
+        <tr>
+           
+           <td><strong>TOTAL:</strong></td>
+           <td></td>
+           <td></td>
+           <td></td>
+           <td></td>
+           <td><strong>{formatearValores(granTotal)}</strong></td>
+           <td></td>
+       </tr>
                                           </tbody>
                                         </table>
+                                       
                                       </div>
                                     )}
                                   </div>
@@ -774,15 +841,8 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                       </Pagination>
                                     </div>
                                   )}
-                                  <p>Boton de detalles</p>
-                                  <input
-                            type='text'
-                            name='detalle'
-                            className='form-control'
-                            placeholder="Detalle"
-                            onChange={handleChange}
-                            value={values.detalle}
-                          />  
+                                 
+                                 
                                 </div>
                               </div>
                             </div>

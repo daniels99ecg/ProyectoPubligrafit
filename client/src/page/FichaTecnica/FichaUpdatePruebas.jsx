@@ -15,6 +15,7 @@ import { TiShoppingCart } from "react-icons/ti";
 import { useParams } from 'react-router-dom'
 import { useFichaTecnica } from "../../context/FichasTecnicas/FichaTecnicaContext"
 
+import { useCliente } from "../../context/Clientes/ClienteContext";
 
 
 function FichaCreatePruebas({fichaId}) {
@@ -22,13 +23,18 @@ function FichaCreatePruebas({fichaId}) {
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
   const [total, setTotal] = useState(0);
+
+  const { Listar, showClientes } = useCliente();
+
+
   const [tablaVacia, setTablaVacia] = useState(true);
   const [productoSelect, setProductoSelect] = useState(null);
   const [cantidadAlterar, setCantidadAlterar] = useState("");
   const [manoObra, setManoObra] = useState("");
 
   // useEffect para actualizar el estado local solo al montar el componente
- 
+
+
 
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -161,6 +167,7 @@ function FichaCreatePruebas({fichaId}) {
 
   useEffect(() => {
     ShowInsumos();
+    showClientes();
   }, []);
 
   useEffect(() => {
@@ -184,11 +191,17 @@ function FichaCreatePruebas({fichaId}) {
 
   
 
+  
+
   const sumaSubtotalesProductos = pruebas.reduce(
     (total, producto) => total + (producto.precio * producto.cantidad) +(parseInt(manoObra) || 0),
     0
   );
+  const Iva=sumaSubtotalesProductos*0.19
+ 
 
+  const GranTotal=sumaSubtotalesProductos+Iva
+ 
 
 
 
@@ -278,7 +291,16 @@ function FichaCreatePruebas({fichaId}) {
       }
     }, 100); // Ajusta el tiempo según sea necesario
 
-
+    const handleInputChange = (e) => {
+      handleChange(e);
+      
+  };
+  
+  const handleInputClick = (e) => {
+    setManoObra(e.target.value);
+  };
+  
+  
 
   return (
     <>
@@ -335,7 +357,33 @@ function FichaCreatePruebas({fichaId}) {
                                 <div className="card-body p-3">
                                   
                               
+                               
+
                                   <div className="form-group mb-2">
+  <Autocomplete
+    disablePortal
+    id="fixed-tags-demo"
+    options={Listar}
+    getOptionLabel={(option) =>
+      `${option.documento} - ${option.nombre} ${option.apellido}`
+    }
+    value={Listar.find(option => option.id_cliente === values.fk_cliente) || null}
+    onChange={(event, newValue) => {
+      
+      handleChange({ target: { name: 'fk_cliente', value: newValue ? newValue.id_cliente : null } });
+
+    }}
+  
+    renderInput={(params) => <TextField {...params} label="Cliente" />}
+
+    
+  />
+
+</div>
+
+
+<div className="form-group mb-2">
+
                                   <Field
             type='text'
             name='nombre_ficha'
@@ -350,8 +398,22 @@ function FichaCreatePruebas({fichaId}) {
             //   // setNombreFicha(e.target.value); // Actualizar el estado local
             // }}
           />
-<br />
-<br />
+
+</div>
+<div className="form-group mb-2">
+
+<Field
+                            type='text'
+                            name='detalle'
+                            as={TextField}
+                            label="Descripción"
+                            className='form-control'
+                            onChange={handleChange}
+                            value={values.detalle}
+                          />  
+</div>
+<div className="form-group mb-2">
+
 <input
                 type='file'
                 name='imagen_producto_final'
@@ -362,22 +424,22 @@ function FichaCreatePruebas({fichaId}) {
                 }}
             />
 
-             <br />  
-             <label htmlFor="mano_obra">Mano de Obra</label>
+          </div>
+          <div className="form-group mb-2">
+
+             <label htmlFor="mano_obra">Incremento de Ventas</label>
 
                           <input  
                             type='number'
                             name='mano_obra'
                             className='form-control'
-
                             value={values.mano_obra}
-                           
                             ref={fieldRef}
-                            onClick={(e) => {
-                              handleChange(e); // Actualiza el valor en Formik
-                              setManoObra(e.target.value); // Actualiza el estado local
-
-                            }}
+                            onChange={(e) => {
+                              handleChange(e);
+                              setManoObra(e.target.value); // También puedes realizar esta acción aquí si es necesario
+                          }}
+                           
                             style={{
         width: '100%',
         border: '1px solid rgba(0, 0, 0, 0.23)', // Establece el estilo del borde
@@ -391,8 +453,8 @@ function FichaCreatePruebas({fichaId}) {
     }}
                           /> 
                          
-           
-</div>
+         </div>  
+
                       
                                   <div className="form-group mb-2">
                                     <Field
@@ -407,7 +469,7 @@ function FichaCreatePruebas({fichaId}) {
                                     />
                                   </div>
 <br />
-                                  <div className="form-group mb-2">
+                                  {/* <div className="form-group mb-2">
                                     <Field
                                       type="text"
                                       name="costo_final_producto"
@@ -448,7 +510,7 @@ function FichaCreatePruebas({fichaId}) {
                                       component="div"
                                       className="error-message"
                                     />
-                                  </div>
+                                  </div> */}
                                           
                                   <div className="row mt-2">
                                     <div className="col-12">
@@ -623,6 +685,41 @@ function FichaCreatePruebas({fichaId}) {
                                                 </td>
                                               </tr>
                                             ))}
+
+
+<tr>
+          
+          <td colSpan="0"><strong>Subtotal:</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><strong>{formatearValores(sumaSubtotalesProductos)}</strong></td>
+          <td></td>
+        
+      </tr>
+
+      <tr>
+         
+          <td><strong>IVA 19%:</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><strong>{formatearValores(Iva)}</strong></td>
+          <td></td>
+      </tr>
+
+      <tr>
+         
+         <td><strong>TOTAL:</strong></td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td><strong>{formatearValores(GranTotal)}</strong></td>
+         <td></td>
+     </tr>
                                           </tbody>
                                         </table>
                                       </div>
@@ -679,13 +776,7 @@ function FichaCreatePruebas({fichaId}) {
                                     </div>
                                   )}
                                   <p>Boton de detalles</p>
-                                  <input
-                            type='text'
-                            name='detalle'
-                            className='form-control'
-                            onChange={handleChange}
-                            value={values.detalle}
-                          />  
+                              
                                 </div>
                               </div>
                             </div>

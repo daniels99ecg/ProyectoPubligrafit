@@ -1,6 +1,6 @@
 const {DataTypes}=require("sequelize")
 const sequelize= require("../../database/db")
-
+const Cliente = require("../Cliente")
 const Orden=sequelize.define("ordenes",{
     id_ft:{
         type:DataTypes.INTEGER,
@@ -10,6 +10,10 @@ const Orden=sequelize.define("ordenes",{
     nombre_ficha:{
         type:DataTypes.STRING
         
+    },
+    fk_cliente:{
+        type: DataTypes.INTEGER,
+
     },
     imagen_producto_final:{
         type:DataTypes.STRING
@@ -39,5 +43,6 @@ const Orden=sequelize.define("ordenes",{
     
 }
 )
+Orden.belongsTo(Cliente, { foreignKey: 'fk_cliente' })
 
 module.exports=Orden;

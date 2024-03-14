@@ -263,6 +263,7 @@ const validacionFichaTecnica = async (values)=>{
     {
         id_ft: '',
         nombre_ficha:"",
+        fk_cliente:"",
         costo_final_producto: '',
         detalle:"",
         mano_obra:"",
@@ -280,6 +281,7 @@ const validacionFichaTecnica = async (values)=>{
         setListarFichaTecnica({
             id_ft: response.id_ft,
             nombre_ficha: response.nombre_ficha,
+            fk_cliente:response.fk_cliente,
             imagen_producto_final: response.imagen_producto_final,
             costo_final_producto: response.costo_final_producto,
             detalle: response.detalle,
@@ -328,7 +330,7 @@ const validacionFichaTecnica = async (values)=>{
             showConfirmButton: false,
             timer: 1500
           });
-          window.location.reload()
+         
         }
       });
     } catch (error) {

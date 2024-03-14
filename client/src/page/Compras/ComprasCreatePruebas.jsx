@@ -24,6 +24,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
   const [total, setTotal] = useState(0);
+  const [totalIva, setTotaliva] = useState(0);
   const [tablaVacia, setTablaVacia] = useState(true);
   const [productoSelect, setProductoSelect] = useState(null);
   const [cantidadAlterar, setCantidadAlterar] = useState("");
@@ -309,18 +310,18 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
     actualizarSubtotales();
   }, [tableData]);
 
-  useEffect(() => {
-    const sumaSubtotales = tableData.reduce(
-      (total, insumo) => total + insumo.subtotal,
-      0
-    );
-    setSubtotalTotal(sumaSubtotales);
+  // useEffect(() => {
+  //   const sumaSubtotales = tableData.reduce(
+  //     (total, insumo) => total + insumo.subtotal,
+  //     0
+  //   );
+  //   setSubtotalTotal(sumaSubtotales);
 
-    const iva = sumaSubtotales * 0.19;
-    const totalVenta = sumaSubtotales + iva;
+  //   const iva = sumaSubtotales * 0.19;
+  //   const totalVenta = sumaSubtotales + iva;
 
-    setTotal(totalVenta);
-  }, [tableData]);
+  //   setTotal(totalVenta);
+  // }, [tableData]);
 
   useEffect(() => {
     ShowInsumos();
@@ -342,6 +343,9 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
 
     const iva = sumaSubtotales * 0.19;
     const totalVenta = sumaSubtotales + iva;
+
+        
+      setTotaliva(iva)
 
     setTotal(totalVenta);
   }, [tableData]);
@@ -587,7 +591,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                     />
                                   </div>
 
-                                  <div className="form-group mb-2">
+                                  {/* <div className="form-group mb-2">
                                     <Field
                                       type="text"
                                       name="total"
@@ -628,16 +632,16 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                       component="div"
                                       className="error-message"
                                     />
-                                  </div>
+                                  </div> */}
 
                                   <div className="row mt-2">
                                     <div className="col-12">
-                                      <div className="text-right">
+                                      {/* <div className="text-right">
                                         <strong>Subtotal:</strong> <strong>$</strong>&nbsp;
                                         <span id="comprobante_subtotal">
                                           {formatearPrecios(subtotalTotal)}
                                         </span>
-                                      </div>
+                                      </div> */}
                                       <div className="form-group mb-2 d-flex">
                                         <button
                                           className="btn btn-primary buttons-doubles"
@@ -905,6 +909,39 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                                 </td>
                                               </tr>
                                             ))}
+                                              <tr>
+          
+          <td colSpan="0"><strong>Subtotal:</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      
+          <td><strong>{formatearValores(subtotalTotal)}</strong></td>
+          <td></td>
+        
+      </tr>
+
+      <tr>
+           
+           <td><strong>IVA 19%:</strong></td>
+           <td></td>
+           <td></td>
+           <td></td>
+           
+           <td><strong>{totalIva}</strong></td>
+           <td></td>
+       </tr>
+
+       <tr>
+          
+          <td><strong>TOTAL:</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+         
+          <td><strong>{formatearValores(total)}</strong></td>
+          <td></td>
+      </tr>
                                           </tbody>
                                         </table>
                                       </div>

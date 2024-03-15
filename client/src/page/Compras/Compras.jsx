@@ -120,9 +120,9 @@ const handleCloseInfoVenta = () => {
                   // Render cards when the screen is small
                   <div>
                     {/* Map over your data and render cards here */}
-                    {filtrarDesactivados.map((item) => (
+                    {filtrarDesactivados.map((item, index) => (
                       
-                      <Card key={item.id_venta}>
+                      <Card key={index}>
                       <CardContent>
                       <ul className="list-group list-group-flush">
                       <li className="list-group-item">Tipo ID: {item.id_compra}</li>
@@ -154,16 +154,6 @@ const handleCloseInfoVenta = () => {
                             </span>
                           </Tooltip>
 
-                          <Tooltip title="Factura" arrow>
-                            <span>
-                            <button
-                              onClick={() => handleOpenComprobanteModal(item)}
-                              className="btn btn-link"
-                            >
-                              <FaFileInvoiceDollar style={{ fontSize: '24px', color: '#1A5276' }} />
-                            </button>
-                            </span>
-                            </Tooltip>
                             </div>
                         
                       </CardContent>

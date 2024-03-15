@@ -928,7 +928,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
            <td></td>
            <td></td>
            
-           <td><strong>{totalIva}</strong></td>
+           <td><strong>{formatearValores(totalIva)}</strong></td>
            <td></td>
        </tr>
 

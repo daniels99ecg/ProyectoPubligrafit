@@ -12,9 +12,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import { TiDeleteOutline } from "react-icons/ti";
 import { TiShoppingCart } from "react-icons/ti";
-
 import { useCliente } from "../../context/Clientes/ClienteContext";
-
+import { useFichaTecnica } from '../../context/FichasTecnicas/FichaTecnicaContext';
 
 function FichaCreatePruebas({ handleCloseVentaModal }) {
   const { listar, ShowInsumos } = useInsumo();
@@ -23,7 +22,6 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
   const [total, setTotal] = useState(0);
   const [totalIva, setTotalIva]=useState(0)
   const [granTotal, setGranTotal]=useState(0)
-
   const [tablaVacia, setTablaVacia] = useState(true);
   const [productoSelect, setProductoSelect] = useState(null);
   const [cantidadAlterar, setCantidadAlterar] = useState("");
@@ -37,8 +35,28 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
   const [descripcion, setDescripcion] = useState('');
   const [clientes, setClientes] = useState('');
 
-  
-  
+
+  const{ShowFichasTecnicasParaId,listarPId}=useFichaTecnica()
+  const [ultimoRegistro, setUltimoRegistro] = useState({});
+  useEffect(() => {
+    const obtenerUltimoRegistro = async () => {
+        if (listarPId.length > 0) {
+            const ultimo = listarPId[listarPId.length - 1];
+            setUltimoRegistro(ultimo);
+        }
+    };
+
+    obtenerUltimoRegistro();
+}, [listarPId]);
+
+useEffect(() => {
+  const cargarDatosIniciales = async () => {
+      await ShowFichasTecnicasParaId();
+  };
+
+  cargarDatosIniciales();
+}, []); 
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Número de elementos por página
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -60,21 +78,27 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
 
   const ventaSchema = Yup.object().shape({
 
-    // id_cliente: Yup.object().shape({
-    //   fk_id_cliente: Yup.string().required("Campo requerido"),
-    // }),
+     id_cliente: Yup.object().shape({
+       fk_cliente: Yup.string().required("Campo requerido"),
+     }),
+     nombre_ficha: Yup.string().required("Campo requerido"),
+     detalle:Yup.string().required("Campo requerido"),
     // metodo_pago: Yup.string().required("Campo requerido").nullable(),
-    // total: Yup.number()
-    //   .required("Campo requerido")
-    //   .test("notZero", "El total no puede ser cero", (value) => value !== 0),
-    // productos: Yup.array().of(
-    //   Yup.object().shape({
-    //     fk_producto: Yup.string().required("Campo requerido"),
-    //     cantidad: Yup.number().required("Campo requerido"),
-    //     precio: Yup.number().required("Campo requerido"),
-    //     subtotal: Yup.number().required("Campo requerido"),
-    //   })
-    // ),
+    mano_obra: Yup.string()
+      .required("Campo requerido")
+      .test("notZero", "El total no puede ser cero", (value) => value !== 0),
+      imagen_producto_final: Yup.mixed().test('fileType', 'Formato de archivo no válido', (value) => {
+        if (!value) {
+          // Si no se ha seleccionado ningún archivo
+          return false;
+        }
+        // Obtener el tipo de archivo
+        const fileType = value.type;
+        // Definir los tipos de archivos permitidos
+        const allowedFormats = ['image/jpeg', 'image/png', 'image/gif']; // Puedes agregar más tipos de archivo según tus necesidades
+        // Verificar si el tipo de archivo está permitido
+        return allowedFormats.includes(fileType);
+      })
   });
 
   // Obtener Fecha Actual
@@ -258,14 +282,14 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
             <div
               className="card"
               style={{
-                maxWidth: "1200px",
+                maxWidth: "100%",
                 padding: "20px",
-                maxHeight: "620px",
+                maxHeight: "100%",
               }}
             >
               <div className="card-body">
                 <div className="card-header"></div>
-                <br />
+                
 
                 <Formik
                   initialValues={{
@@ -367,18 +391,31 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                     <Form onSubmit={handleSubmit} className="row g-3">
                       <div className="content">
                         <div className="container-fluid">
-                          <div className="row mb-3 p-3 align-items-start">
+                          <div className="row p-3 align-items-start" >
 
      {/* Componente 2 */}
-     <div className="col-md-4 col-sm-12 d-flex align-items-start">
+     <div className="col-md-4 col-sm-12 d-flex align-items-start" >
                               <div className="card shadow flex-fill">
-                                <div className="card-body p-3">
+                                <div className="card-body p-3" >
                                   
                                 <div className="form-group mb-2">
+                                  <Field
+                                  type="text"
+                                  value={ultimoRegistro.id_ft+1}
+                                  label="Orden #"
+                                  disabled
+                                  className="form-control"
+                                  as={TextField}
+                                  />
+                                  </div>
+                                  <div className="form-group mb-2">
+
                                     <Field
                                       type="date"
                                       name="fecha"
                                       id="fecha"
+                                      label="Fecha"
+                                      as={TextField}
                                       className="form-control"
                                       disabled
                                       value={fechaActual()}
@@ -436,17 +473,41 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
 </div>
                                   <div className="form-group mb-2">
                                   <Field
-            type='text'
-            name='nombre_ficha'
-            className='form-control'
-            as={TextField}
-            value={values.nombre_ficha}
-            label="Nombre Producto"
-            onChange={(e) => {
-              handleChange(e);
-              setNombreFicha(e.target.value); // Actualizar el estado local
-            }}
-          />
+    type='text'
+    name='nombre_ficha'
+    className='form-control'
+    as={TextField}
+    label="Nombre Producto"
+    onChange={(e) => {
+      handleChange(e);
+      setNombreFicha(e.target.value); // Actualizar el estado local
+    }}
+    InputProps={{
+      endAdornment: (
+        <div style={{ display: "flex" }}>
+          {
+            !errors.nombre_ficha && (
+              <CheckCircleIcon
+                style={{ color: "green" }}
+              />
+            )}
+          {
+            errors.nombre_ficha && (
+              <ErrorIcon
+                style={{ color: "red" }}
+              />
+            )}
+        </div>
+      ),
+    }}
+/>
+
+<ErrorMessage
+    name="nombre_ficha"
+    component="div"
+    className="error-message"
+/>
+
        </div>  
 
                                   <div className="form-group mb-2">
@@ -463,7 +524,31 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                               handleChange(e);
                               setDescripcion(e.target.value); // Actualizar el estado local
                             }}
+                            InputProps={{
+                              endAdornment: (
+                                <div style={{ display: "flex" }}>
+                                  {
+                                    !errors.detalle && (
+                                      <CheckCircleIcon
+                                        style={{ color: "green" }}
+                                      />
+                                    )}
+                                  {
+                                    errors.detalle && (
+                                      <ErrorIcon
+                                        style={{ color: "red" }}
+                                      />
+                                    )}
+                                </div>
+                              ),
+                            }}
                           /> 
+                          <ErrorMessage
+    name="nombre_ficha"
+    component="div"
+    className="error-message"
+/>
+
                          </div> 
                          <div className="form-group mb-2">
 
@@ -476,13 +561,19 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                     setSelectedImage(event.target.files[0]);
                     setFieldValue('imagen_producto_final', event.target.files[0]);
                 }}
+                
             />
+            <ErrorMessage
+    name="imagen_producto_final"
+    component="div"
+    className="error-message"
+/>
 </div>
 <div className="form-group mb-2">
 
 <Field
                             type='number'
-                            name='costo_produccion'
+                            name='mano_obra'
                             className='form-control'
                             as={TextField}
                             value={manoObra}
@@ -490,8 +581,30 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                             onChange={handleChangee}
                             error={!!error} // Marcar el campo como error si hay un mensaje de error
                             helperText={error} 
-                            
+                            InputProps={{
+                              endAdornment: (
+                                <div style={{ display: "flex" }}>
+                                  {
+                                    !errors.mano_obra && (
+                                      <CheckCircleIcon
+                                        style={{ color: "green" }}
+                                      />
+                                    )}
+                                  {
+                                    errors.mano_obra && (
+                                      <ErrorIcon
+                                        style={{ color: "red" }}
+                                      />
+                                    )}
+                                </div>
+                              ),
+                            }}
                           /> 
+                           <ErrorMessage
+                              name="mano_obra"
+                              component="div"
+                              className="error-message"
+                          />
                           </div>
                        
            
@@ -752,6 +865,9 @@ function FichaCreatePruebas({ handleCloseVentaModal }) {
                                               </tr>
                                           
                                             ))}
+                <tr>
+                  <td colSpan="7" style={{ borderTop: '1px solid black' }}></td>
+                </tr>
                                             <tr>
           
             <td colSpan="0"><strong>Subtotal:</strong></td>

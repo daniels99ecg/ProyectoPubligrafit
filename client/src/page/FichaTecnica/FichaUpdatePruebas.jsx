@@ -18,7 +18,7 @@ import { useFichaTecnica } from "../../context/FichasTecnicas/FichaTecnicaContex
 import { useCliente } from "../../context/Clientes/ClienteContext";
 
 
-function FichaCreatePruebas({fichaId}) {
+function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
   const { listar, ShowInsumos } = useInsumo();
   const [tableData, setTableData] = useState([]);
   const [subtotalTotal, setSubtotalTotal] = useState(0);
@@ -246,6 +246,7 @@ function FichaCreatePruebas({fichaId}) {
           ...insumoExistente,
           cantidad: insumoExistente.cantidad + 1,
           subtotal: (insumoExistente.cantidad + 1) * insumoExistente.precio,
+          
         },
         ...tableData.slice(insumoExistenteIndex + 1)
       ];
@@ -261,6 +262,7 @@ function FichaCreatePruebas({fichaId}) {
           precio: nuevoInsumo.precio,
           subtotal: nuevoInsumo.precio,
           nombre: nuevoInsumo.nombre,
+          esNuevo: true,
         }
       ]);
     }
@@ -526,13 +528,14 @@ function FichaCreatePruebas({fichaId}) {
                                           className="btn btn-primary buttons-doubles"
                                           type="submit"
                                         >
-                                          Registrar
+                                          Actualizar
                                         </button>
                                         <br />
                                         <br />
                                         <button
                                           className="btn btn-danger buttons-doubles"
                                           type="button"
+                                          onClick={handleCloseUpdateModal}
                                         >
                                           Cancelar
                                         </button>
@@ -635,13 +638,22 @@ function FichaCreatePruebas({fichaId}) {
                                                     : `${row.cantidad} Unds`}
                                                 </td> */}
                                                 <td>
-                                                <input
-                                                type="text"
-                                                value={row.cantidad}
-                                                style={{width:60, height:25}}
-                                                onChange={(e) => actualizarCantidad(e.target.value, index)}
-                                                InputProps={{ inputProps: { min: 1 } }}
-                                              />
+                                                {
+          row.esNuevo ? 
+          `${row.cantidad}` : // Puedes cambiar esto por cualquier cosa que prefieras mostrar
+          <input
+            type="number"
+            value={row.cantidad}
+            style={{width:60, height:25}}
+            onChange={(e) => {
+              const newValue = e.target.value.trim(); // Quitamos los espacios en blanco alrededor del valor
+              if (newValue === '' || !isNaN(newValue) && newValue >= 0) { // Verificamos si es una cadena vacía o un número
+                actualizarCantidad(newValue === '' ? '' : parseInt(newValue), index);
+              }
+            }}
+              min="1"
+          />
+        }
                                           </td>
                                                 <td></td>
                                                 <td>

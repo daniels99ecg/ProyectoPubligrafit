@@ -138,9 +138,10 @@ const options = [
                       <CardContent>
                       <ul className="list-group list-group-flush">
                       <li className="list-group-item">Tipo ID: {item.id_ft}</li>
-                     
                       <li className="list-group-item">Nombre: {item.nombre_ficha}</li>
                       <li className="list-group-item">Costo Final: {item.costo_final_producto}</li>
+                     
+
                       <li className="list-group-item">
                       <select 
       value={item.value} 
@@ -536,7 +537,7 @@ const options = [
               }}
             >
               <div style={{ width: '1200px', height: '200%' }}>
-                <FichaUpdate handleCloseUpdateModal={handleCloseUpdateModal} fichaId={selectedClienteId}/>
+                <FichaUpdate handleCloseUpdateModal={handleCloseUpdateModal}  fichaId={selectedClienteId}/>
               </div>
             </div>
           </>,

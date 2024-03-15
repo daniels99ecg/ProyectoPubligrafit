@@ -1,5 +1,5 @@
 const Cliente = require("../../models/Cliente")
-const Venta=require("../../models/Venta")
+const Orden=require("../../models/Ficha_Tecnica/FichaTecnica")
 const { Op } = require("sequelize")
 
 async function existenteCliente(documento) {
@@ -20,9 +20,9 @@ async function listarClientes(req, res) {
     try {
         const cliente = await Cliente.findAll();
         const clientesConVentas = await Promise.all(cliente.map(async (cliente) => {
-            const ventasAsociadas = await Venta.findOne({
+            const ventasAsociadas = await Orden.findOne({
                 where: {
-                    fk_id_cliente: cliente.id_cliente, 
+                    fk_cliente: cliente.id_cliente, 
                 },
             });
   

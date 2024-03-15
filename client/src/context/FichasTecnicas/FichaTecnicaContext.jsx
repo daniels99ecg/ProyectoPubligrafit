@@ -15,6 +15,8 @@ export const useFichaTecnica = () => {
 
 export const FichaTecnicaContextProvider = ({children})=>{
     const [listar, setListar] = useState([]);
+    const [listarPId, setListarPId] = useState([]);
+
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
     
@@ -33,6 +35,13 @@ export const FichaTecnicaContextProvider = ({children})=>{
       setListar(filterList);
 }
 
+
+async function ShowFichasTecnicasParaId() {
+  const response = await getListarFichasTecnicas();
+
+
+    setListarPId(response.data);
+}
 
 async function ShowFichasTecnicasRealizada() {
   const response = await getListarFichasTecnicasRealizada();
@@ -346,7 +355,7 @@ const validacionFichaTecnica = async (values)=>{
 
 return(
     <FichaTecnicaContext.Provider
-    value={{listar,ShowFichasTecnicas, ShowFichasTecnicasRealizada,searchTerm,setSearchTerm,listarFichaTecnica, validarFichaActualizar,fichaTecnicaActualizar,activarFichaTecnica, eliminarFichasTecnicas, desactivarFichaTecnica, validacionFichaTecnica ,filtrarDesactivados,actualizarOperacion}}>
+    value={{listar,ShowFichasTecnicas, ShowFichasTecnicasRealizada,ShowFichasTecnicasParaId,listarPId,searchTerm,setSearchTerm,listarFichaTecnica, validarFichaActualizar,fichaTecnicaActualizar,activarFichaTecnica, eliminarFichasTecnicas, desactivarFichaTecnica, validacionFichaTecnica ,filtrarDesactivados,actualizarOperacion}}>
     {children}
     </FichaTecnicaContext.Provider>
 )

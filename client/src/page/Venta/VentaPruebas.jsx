@@ -145,6 +145,7 @@ const options = [
                      
                       <li className="list-group-item">Nombre: {item.nombre_ficha}</li>
                       <li className="list-group-item">Costo Final: {item.costo_final_producto}</li>
+                      <li className="list-group-item" >Operación: <span style={{color:"green"}}>{item.operacion}</span></li>
                       <li className="list-group-item"><img
                         src={`${baseURL}${item.imagen_producto_final}`}
                         alt="Imagen del producto"

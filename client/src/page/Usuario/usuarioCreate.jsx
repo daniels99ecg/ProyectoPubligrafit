@@ -217,14 +217,18 @@ function UserCreate() {
           endAdornment: (
             <React.Fragment>
               {values.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) ? (
-                <CheckIcon style={{ color: 'green' }} />
+                <CheckIcon style={{ color: 'green' }} 
+               
+                />
               ) : (
                 <ErrorIcon style={{ color: 'red' }} />
               )}
             </React.Fragment>
           ),
         }}
-        sx={{ width: '100%' }}/>
+        sx={{ width: '100%' }}
+        autoComplete="username"
+        />
         {errors.email && (
           <div className='invalid-feedback'>{errors.email}</div>
         )}
@@ -250,7 +254,9 @@ function UserCreate() {
           </React.Fragment>
         ),
       }}
-      sx={{ width: '100%' }}/>
+      sx={{ width: '100%' }}
+      autoComplete="new-password" 
+      />
       {errors.contrasena && (
           <div className='invalid-feedback'>{errors.contrasena}</div>
         )}    

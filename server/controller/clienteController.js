@@ -1,6 +1,6 @@
-const Cliente = require("../../models/Cliente")
+const Cliente = require("../models/Cliente")
 const { Op } = require("sequelize")
-const Venta = require("../../models/Venta")
+const Orden = require("../models/Ficha_Tecnica/FichaTecnica")
 
 async function existenteCliente(documento) {
     if (!documento) {
@@ -20,7 +20,7 @@ async function listarClientes(req, res) {
     try {
         const clientes = await Cliente.findAll();
         const clientesConVentas = await Promise.all(clientes.map(async (cliente) => {
-            const ventasAsociadas = await Venta.findOne({
+            const ventasAsociadas = await Orden.findOne({
                 where: {
                     fk_id_cliente: cliente.id_cliente, 
                 },

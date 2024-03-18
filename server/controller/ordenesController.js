@@ -19,9 +19,6 @@ async function listarFichasTecnicasPortodo(req, res){
   }
 }
 
-
-
-
 async function listarFichasTecnicas(req, res){
   try {
       const ordenes = await Orden.findAll({
@@ -63,7 +60,6 @@ async function listarFichasTecnicasRealizada(req, res){
       res.status(500).json({ error: 'Error al obtener órdenes' });
   }
 }
-
 
 async function listarFichaTecnica(req, res) {
   const { id_ft } = req.params;
@@ -228,13 +224,27 @@ async function crearFichaTecnica(req, res) {
       if (req.file && req.file.filename) {
         actualizarObjeto.imagen_producto_final = req.file.filename;
       }
-  
-      // Actualiza la ficha técnica principal
       await fichaTecnicaExistente.update(actualizarObjeto);
+   // Actualizar los detalles de la ficha técnica
+      // Esto es un esquema básico, necesitarás ajustarlo a tu lógica de negocio específica
+      if (detalles && detalles.length > 0) {
+        // Eliminar detalles existentes, una opción es eliminarlos todos y volver a insertar
+        // Otra opción es actualizar los existentes y añadir los nuevos
+        await DetalleOrden.destroy({
+          where: { fk_ficha_tecnica: id }
+        });
   
-      // Actualizar los detalles de la ficha técnica...
-      // (El código para actualizar los detalles sigue igual)
-  
+        // Insertar los nuevos detalles
+        for (const detalle of detalles) {
+          await DetalleOrden.create({
+            fk_ficha_tecnica: id,
+            fk_insumo: detalle.fk_insumo,
+            cantidad: detalle.cantidad,
+            precio: detalle.precio,
+            // Agrega los campos necesarios según tu modelo
+          });
+        }
+      }
       res.status(200).json({ message: 'Ficha Técnica actualizada con éxito' });
     } catch (error) {
       console.error(error);

@@ -87,18 +87,18 @@ useEffect(() => {
     mano_obra: Yup.string()
       .required("Campo requerido")
       .test("notZero", "El total no puede ser cero", (value) => value !== 0),
-      imagen_producto_final: Yup.mixed().test('fileType', 'Formato de archivo no válido', (value) => {
-        if (!value) {
-          // Si no se ha seleccionado ningún archivo
-          return false;
-        }
-        // Obtener el tipo de archivo
-        const fileType = value.type;
-        // Definir los tipos de archivos permitidos
-        const allowedFormats = ['image/jpeg', 'image/png', 'image/gif']; // Puedes agregar más tipos de archivo según tus necesidades
-        // Verificar si el tipo de archivo está permitido
-        return allowedFormats.includes(fileType);
-      })
+      // imagen_producto_final: Yup.mixed().test('fileType', 'Formato de archivo no válido', (value) => {
+      //   if (!value) {
+      //     // Si no se ha seleccionado ningún archivo
+      //     return false;
+      //   }
+      //   // Obtener el tipo de archivo
+      //   const fileType = value.type;
+      //   // Definir los tipos de archivos permitidos
+      //   const allowedFormats = ['image/jpeg', 'image/png', 'image/gif']; // Puedes agregar más tipos de archivo según tus necesidades
+      //   // Verificar si el tipo de archivo está permitido
+      //   return allowedFormats.includes(fileType);
+      // })
   });
 
   // Obtener Fecha Actual
@@ -573,11 +573,11 @@ useEffect(() => {
                 }}
                 
             />
-            <ErrorMessage
+            {/* <ErrorMessage
     name="imagen_producto_final"
     component="div"
     className="error-message"
-/>
+/> */}
 </div>
 <div className="form-group mb-2">
 

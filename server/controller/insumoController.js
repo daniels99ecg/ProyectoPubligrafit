@@ -74,6 +74,22 @@ async function listarInsumo(req, res){
     }
 }
 
+
+async function listarCategoria(req, res) {
+    try {
+        const categoria = await Categoria.findAll();
+        res.json(categoria);
+      
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error:'Error al obtener la categoria'});
+        
+    }
+}
+
+
+
 async function crearInsumo(req, res){
     try {
         const dataInsumo=req.body 
@@ -211,6 +227,9 @@ async function desactivarInsumo(req, res) {
   }
 
 
+
+
+
 module.exports ={
     listarInsumos,
     listarInsumo,
@@ -218,6 +237,7 @@ module.exports ={
     actualizarInsumo,
     eliminarInsumo,
     desactivarInsumo,
-    activarInsumo
+    activarInsumo,
+    listarCategoria
 }
 

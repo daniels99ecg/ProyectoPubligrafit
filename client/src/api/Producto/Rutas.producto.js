@@ -35,5 +35,5 @@ export const putActivarProducto = async (id_producto) => {
 
 
 export const  getListarcategoria=async ()=>{
-    return await axios.get(`${baseURL}producto/categorias`)
+    return await axios.get(`${baseURL}insumo/categoria`)
 }

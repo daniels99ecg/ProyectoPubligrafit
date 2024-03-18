@@ -23,6 +23,13 @@ export const  getListarInsumo=async (id_isumo)=>{
     return await axios.get(`${baseURL}insumo/${id_isumo}`)
 }
 
+
+export const  getListarcategoria=async ()=>{
+  return await axios.get(`${baseURL}insumo/categoria`)
+}
+
+
+
 export const  putActualizarInsumos=async (id_isumo, taks)=>{
     try {
     const response= await axios.put(`${baseURL}insumo/update/${id_isumo}`,taks)

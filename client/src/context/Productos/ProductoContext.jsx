@@ -1,6 +1,9 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarProductos, postCreateProducto,getListarProducto, putActualizarProductos,eliminarProducto, putActivarProducto, putDesactivarProducto, getListarcategoria} from "../../api/Producto/Rutas.producto"
+import {getListarProductos, postCreateProducto,getListarProducto, putActualizarProductos,eliminarProducto, putActivarProducto, putDesactivarProducto} from "../../api/Producto/Rutas.producto"
+import { getListarcategoria} from "../../api/Insumo/Rutas.api"
+
+
 import Swal from 'sweetalert2'
 export const ProductoContext = createContext()
 

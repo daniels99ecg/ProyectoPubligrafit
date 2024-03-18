@@ -245,14 +245,7 @@ const validacionFichaTecnica = async (values)=>{
       
       }
       
-      else if((!Caracteres.test(values.detalle))){
-          Swal.fire({
-              icon: 'error',
-              title: 'Detalles',
-              text: 'Por favor ingresar datos!',
-              
-            })
-      }else{
+     else{
         await putActualizarFichasTecnicas(id_ft, values);
         Swal.fire({
           icon: 'success',

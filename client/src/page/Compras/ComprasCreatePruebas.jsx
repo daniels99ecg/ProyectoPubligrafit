@@ -123,17 +123,17 @@ const handleEdicionCantidad = (e) => {
       const cantidadActual = productoEnTabla.cantidad;
       const nuevaCantidad = cantidadActual + cantidadAgregada;
 
-      const productoEnStock = findProductoEnStock(
-        productoEnTabla.fk_insumo
-      );
-      if (nuevaCantidad > productoEnStock) {
-        Swal.fire({
-          icon: "warning",
-          title: "Advertencia",
-          text: `Cantidad superior al stock (disponible ${productoEnStock})`,
-        });
-        return;
-      }
+      // const productoEnStock = findProductoEnStock(
+      //   productoEnTabla.fk_insumo
+      // );
+      // if (nuevaCantidad > productoEnStock) {
+      //   Swal.fire({
+      //     icon: "warning",
+      //     title: "Advertencia",
+      //     text: `Cantidad superior al stock (disponible ${productoEnStock})`,
+      //   });
+      //   return;
+      // }
 
       const nuevaTabla = tableData.map((item) =>
         item.fk_insumo === productoSelect.id_insumo
@@ -160,28 +160,28 @@ const handleEdicionCantidad = (e) => {
         nombre: productoSelect.nombre,
       };
 
-      const productoEnStock = findProductoEnStock(
-        productoSelect.id_insumo
-      );
-      if (cantidadAgregada > productoEnStock) {
-        Swal.fire({
-          icon: "warning",
-          title: "Advertencia",
-          text: `Cantidad superior al stock... (disponible ${productoEnStock})`,
-        });
-        return;
-      }
+      // const productoEnStock = findProductoEnStock(
+      //   productoSelect.id_insumo
+      // );
+      // if (cantidadAgregada > productoEnStock) {
+      //   Swal.fire({
+      //     icon: "warning",
+      //     title: "Advertencia",
+      //     text: `Cantidad superior al stock... (disponible ${productoEnStock})`,
+      //   });
+      //   return;
+      // }
 
       setTableData([...tableData, nuevoProducto]);
       setCantidadAlterar("");
 
       // Calcular la cantidad restante
-      const cantidadRestante = productoEnStock - cantidadAgregada;
-      Swal.fire({
-        icon: "success",
-        title: "Producto agregado",
-        text: `Cantidad disponible: ${cantidadRestante}`,
-      });
+      // const cantidadRestante = productoEnStock - cantidadAgregada;
+      // Swal.fire({
+      //   icon: "success",
+      //   title: "Producto agregado",
+      //   text: `Cantidad disponible: ${cantidadRestante}`,
+      // });
     }
   }
 };

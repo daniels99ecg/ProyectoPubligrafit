@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-03-2024 a las 02:42:12
+-- Tiempo de generación: 18-03-2024 a las 16:11:07
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -135,7 +135,8 @@ INSERT INTO `detalle_ordenes` (`id_detalle_ft`, `fk_insumo`, `fk_ficha_tecnica`,
 (187, 17, 221, 1, 200),
 (188, 17, 218, 1, 200),
 (189, 19, 218, 2, 15000),
-(190, 18, 218, 5, 150);
+(190, 18, 218, 5, 150),
+(259, 41, 251, 1, 100);
 
 -- --------------------------------------------------------
 
@@ -158,10 +159,10 @@ CREATE TABLE `insumos` (
 --
 
 INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `fk_categoria`, `presentacion`, `estado`) VALUES
-(17, 'Pepel iris', 200, 25, 2, 'Prueba1', 1),
+(17, 'Pepel iris', 200, 20, 2, 'Prueba1', 1),
 (18, 'Papel Bond', 150, 100, 2, 'Prueba2', 1),
 (19, 'tintas', 15000, 6, 4, '2 Litros', 1),
-(41, 'pruebasuno', 100, 100, 1, '1 Litro', 1),
+(41, 'pruebasuno', 100, 30, 1, '1 Litro', 1),
 (42, 'Pruebastres', 100, 100, 1, '1 Litro', 1),
 (43, 'Pruebasdiez', 100, 100, 1, '1 Litro', 1);
 
@@ -191,7 +192,8 @@ CREATE TABLE `ordenes` (
 INSERT INTO `ordenes` (`id_ft`, `nombre_ficha`, `fk_cliente`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `mano_obra`, `operacion`, `fecha`, `estado`) VALUES
 (218, 'Cuaderno', 3, '3JEV4zlif.jpeg', 30950, 'Blabla', 5000, 'Realizada', '2024-03-14', 1),
 (219, 'Fenix', 1, '8d-NvwKiP.jpeg', 5150, 'Esto es una prueba', 5000, 'Realizada', '2024-03-14', 1),
-(221, 'Fenix2', 1, 'yPD9_M6mS.jpeg', 5200, 'Blabla', 5000, 'Realizada', '2024-03-14', 1);
+(221, 'Fenix2', 1, 'yPD9_M6mS.jpeg', 5200, 'Blabla', 5000, 'Realizada', '2024-03-14', 1),
+(251, 'Fenix6', 3, '', 5000, 'Pruebas de ingreso', 5000, 'Pendiente', '0000-00-00', 1);
 
 -- --------------------------------------------------------
 
@@ -436,7 +438,7 @@ ALTER TABLE `detalle_compras`
 -- AUTO_INCREMENT de la tabla `detalle_ordenes`
 --
 ALTER TABLE `detalle_ordenes`
-  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=191;
+  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=260;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
@@ -448,7 +450,7 @@ ALTER TABLE `insumos`
 -- AUTO_INCREMENT de la tabla `ordenes`
 --
 ALTER TABLE `ordenes`
-  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=222;
+  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=252;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`

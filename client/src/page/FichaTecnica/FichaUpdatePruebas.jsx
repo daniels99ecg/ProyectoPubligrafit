@@ -90,32 +90,96 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
 
   const handleEdicionCantidad = (e) => {
     if (e.key === "Enter") {
-      // Restablecer el campo a vacío al presionar Enter
       e.preventDefault();
   
-      // Verificar si la entrada cumple con el patrón deseado
-      const regexPattern = /^(-\d{1,4}|[1-9]\d{0,3})?$/;
+      const regexPattern = /^[0-9]*$/;
       if (!regexPattern.test(cantidadAlterar)) {
-        // Mostrar mensaje de error si la entrada no cumple con el patrón
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Campo inválido",
+          text: "Cantidad inválida",
         });
         return;
       }
   
-      // Agregar la cantidad a la tabla
       const cantidadAgregada = parseInt(cantidadAlterar, 10);
-      if (!isNaN(cantidadAgregada) && cantidadAgregada !== 0) {
-        // Actualizar la cantidad en tiempo real en la tabla
-        const nuevaTabla = tableData.map((item) => ({
-          ...item,
-          cantidad: item.cantidad + cantidadAgregada,
-          subtotal: (item.cantidad + cantidadAgregada) * item.precio // Actualizar también el subtotal
-        }));
+      if (isNaN(cantidadAgregada) || cantidadAgregada <= 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "La cantidad debe ser mayor que cero",
+        });
+        return;
+      }
+  
+      const productoEnTabla = tableData.find(
+        (item) => item.fk_insumo === productoSelect.id_insumo
+      );
+  
+      if (productoEnTabla) {
+        const cantidadActual = productoEnTabla.cantidad;
+        const nuevaCantidad = cantidadActual + cantidadAgregada;
+  
+        const productoEnStock = findProductoEnStock(
+          productoEnTabla.fk_insumo
+        );
+        if (nuevaCantidad > productoEnStock) {
+          Swal.fire({
+            icon: "warning",
+            title: "Advertencia",
+            text: `Cantidad superior al stock (disponible ${productoEnStock})`,
+          });
+          return;
+        }
+  
+        const nuevaTabla = tableData.map((item) =>
+          item.fk_insumo === productoSelect.id_insumo
+            ? actualizarSubtotal({ ...item, cantidad: nuevaCantidad })
+            : item
+        );
   
         setTableData(nuevaTabla);
+  
+        // Calcular la cantidad restante
+        const cantidadRestante = productoEnStock - nuevaCantidad;
+        Swal.fire({
+          icon: "success",
+          title: "Producto agregado",
+          text: `Cantidad disponible: ${cantidadRestante}`,
+        });
+      } else {
+        const nuevoProducto = {
+          fk_insumo: productoSelect.id_insumo,
+          cantidad: cantidadAgregada,
+          precio: productoSelect.precio,
+          subtotal: cantidadAgregada * productoSelect.precio,
+          id_insumo:productoSelect.id_insumo,
+          nombre: productoSelect.nombre,
+          esNuevo:true
+        };
+  
+        const productoEnStock = findProductoEnStock(
+          productoSelect.id_insumo
+        );
+        if (cantidadAgregada > productoEnStock) {
+          Swal.fire({
+            icon: "warning",
+            title: "Advertencia",
+            text: `Cantidad superior al stock... (disponible ${productoEnStock})`,
+          });
+          return;
+        }
+  
+        setTableData([...tableData, nuevoProducto]);
+        setCantidadAlterar("");
+  
+        // Calcular la cantidad restante
+        const cantidadRestante = productoEnStock - cantidadAgregada;
+        Swal.fire({
+          icon: "success",
+          title: "Producto agregado",
+          text: `Cantidad disponible: ${cantidadRestante}`,
+        });
       }
     }
   };
@@ -347,6 +411,7 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
                     setFieldValue,
                     errors,
                     touched,
+                  
                   }) => (
                     <Form onSubmit={handleSubmit} className="row g-3">
                       <div className="content">
@@ -420,6 +485,7 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
                 type='file'
                 name='imagen_producto_final'
                 className='form-control'
+              
                 onChange={(event) => {
                     setSelectedImage(event.target.files[0]);
                     setFieldValue('imagen_producto_final', event.target.files[0]);
@@ -555,7 +621,7 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
                                     <label className="col-md-9" htmlFor="items">
                                       <span className="small"></span>
                                       <input type="hidden"  value={listarFichaTecnica.id_ft}/>
-                                      <Autocomplete
+                                       {/* <Autocomplete
   disablePortal
   id="fixed-tags-demo"
   options={listar.filter((option) => option.estado)}
@@ -579,7 +645,50 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
       sx={{ width: "70%" }}
     />
   )}
-/>
+/>  */}
+
+ 
+<Autocomplete
+                                        disablePortal
+                                        id="fixed-tags-demo"
+                                        options={listar.filter((option) => option.estado)}
+                                        getOptionLabel={(option) =>
+                                          `${option.nombre} - ${option.presentacion}` 
+                                        }
+                                        onChange={(event, newValue) => {
+                                          if (newValue) {
+                                            setProductoSelect(newValue); // Establecer el primer elemento del array como productoSelect
+                                          } else if (newValue === null) {
+                                            setProductoSelect(null);
+                                          } else {
+                                            // Si newValue no es un array ni null, podría ser un nuevo producto seleccionado
+                                            agregarNuevoInsumo(newValue); // Asegúrate de manejar la lógica de agregar el nuevo insumo correctamente
+                                          }
+                                        }}
+                                        value={productoSelect}
+                                        noOptionsText="Producto no encontrado"
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            label="Insumos"
+                                            sx={{ width: "70%" }}
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                              }
+                                            }}
+                                          />
+                                        )}
+                                        filterOptions={(options, params) => {
+                                          return options.filter(option => {
+                                              if (!params.inputValue) {
+                                                  return true;
+                                              }
+                                              return option.nombre.toLowerCase().includes(params.inputValue.toLowerCase()) ||
+                                                  option.categoria.categoria.toLowerCase().includes(params.inputValue.toLowerCase());
+                                          });
+                                      }}
+                                      /> 
 
                                     </label>
                                   </div>
@@ -617,6 +726,7 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
                                         >
                                           <thead className="info text-left fs-6">
                                             <tr>
+
                                               <th>Insumo</th>
                                               <th>Precio</th>
                                               <th>Cantidad</th>

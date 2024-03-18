@@ -20,6 +20,11 @@ export const  getListarFichasTecnicas=async ()=>{
     return await axios.get(`${baseURL}fichaTecnica`)
 }
 
+export const  getListarFichasTecnicastodo=async ()=>{
+    return await axios.get(`${baseURL}fichaTecnica/todo`)
+}
+
+
 export const  getListarFichasTecnicasRealizada=async ()=>{
     return await axios.get(`${baseURL}fichaTecnica/realizada`)
 }
@@ -29,7 +34,11 @@ export const  getListarFichaTecnica=async (id_ft)=>{
 }
 
 export const  putActualizarFichasTecnicas=async (id_ft, taks)=>{
-    return await axios.put(`${baseURL}fichaTecnica/update/${id_ft}`,taks)
+    return await axios.put(`${baseURL}fichaTecnica/update/${id_ft}`,taks, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 }
 
 export const eliminarFichaTecnica= async (id_ft) => {
@@ -46,9 +55,10 @@ export const putActivarFichaTecnica = async (id_ft) => {
 
 export const putOperacion = async (id_ft, operacion) => {
     try {
-        const response = axios.put(`${baseURL}fichaTecnica/operacion/${id_ft}`,{
+        const response =await axios.put(`${baseURL}fichaTecnica/operacion/${id_ft}`,{
              operacion: operacion
         });
+        
         return response.data; // O algo similar
       } catch (error) {
         throw error; // Maneja el error adecuadamente en tu componente React

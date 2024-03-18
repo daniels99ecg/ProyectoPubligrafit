@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarFichasTecnicas, getListarFichasTecnicasRealizada,postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica, putOperacion} from "../../api/Ficha/Rutas.ficha"
+import {getListarFichasTecnicas, getListarFichasTecnicasRealizada,postCreateFichaTecnica,getListarFichaTecnica,putActualizarFichasTecnicas, eliminarFichaTecnica, putActivarFichaTecnica, putDesactivarFichaTecnica, putOperacion,getListarFichasTecnicastodo} from "../../api/Ficha/Rutas.ficha"
 import Swal from 'sweetalert2'
 export const FichaTecnicaContext = createContext()
 
@@ -29,7 +29,8 @@ export const FichaTecnicaContextProvider = ({children})=>{
 
         item.id_ft.toString().includes(searchTerm) ||
         item.costo_final_producto.toString().includes(searchTerm) ||
-        item.nombre_ficha.toLowerCase().includes(searchTerm.toLowerCase()) 
+        item.nombre_ficha.toLowerCase().includes(searchTerm.toLowerCase())||
+        item.fecha.toString().includes(searchTerm)
        
       );
       setListar(filterList);
@@ -37,9 +38,7 @@ export const FichaTecnicaContextProvider = ({children})=>{
 
 
 async function ShowFichasTecnicasParaId() {
-  const response = await getListarFichasTecnicas();
-
-
+  const response = await getListarFichasTecnicastodo();
     setListarPId(response.data);
 }
 
@@ -50,7 +49,8 @@ async function ShowFichasTecnicasRealizada() {
 
       item.id_ft.toString().includes(searchTerm) ||
       item.costo_final_producto.toString().includes(searchTerm) ||
-      item.nombre_ficha.toLowerCase().includes(searchTerm.toLowerCase()) 
+      item.nombre_ficha.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.fecha.toString().includes(searchTerm)
      
     );
     setListar(filterList);
@@ -276,6 +276,7 @@ const validacionFichaTecnica = async (values)=>{
         costo_final_producto: '',
         detalle:"",
         mano_obra:"",
+        imagen_producto_final:"",
         detalles: []
 
     })
@@ -306,45 +307,40 @@ const validacionFichaTecnica = async (values)=>{
 
   const actualizarOperacion = async (id_ft, nuevaOperacion) => {
     try {
-      // Mostrar una alerta antes de actualizar la operación
-      await Swal.fire({
-        title: '¿Estás seguro?',
-        text: '¿Quieres actualizar esta operación?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, actualizar',
-        cancelButtonText: 'Cancelar'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          // Realizar la solicitud para actualizar la operación
-          await putOperacion(id_ft, nuevaOperacion);
-          
-          // Si la solicitud se realiza correctamente, actualizar el estado local
-          const updatedList = listar.map((item) => {
-            if (item.id_ft === id_ft) {
-              // Actualizar la operación del elemento correspondiente
-              return { ...item, operacion: nuevaOperacion };
+        // Mostrar una alerta antes de actualizar la operación
+        await Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Quieres actualizar esta operación?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, actualizar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // Realizar la solicitud para actualizar la operación
+                await putOperacion(id_ft, nuevaOperacion);
+
+                // Actualizar el estado con la nueva lista que incluye la operación actualizada
+                // setListar(updatedList);
+                setListar(listar.filter(listar => listar.id_ft !== id_ft))
+
+                // Mostrar un mensaje de éxito
+                Swal.fire({
+                    title: '¡Operación actualizada!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
-            return item;
-          });
-          
-          // Actualizar el estado con la nueva lista que incluye la operación actualizada
-          // setListar(updatedList);
-          setListar(listar.filter(listar=>listar.id_ft!==id_ft))
-          
-          // Mostrar un mensaje de éxito
-          Swal.fire({
-            title: '¡Operación actualizada!',
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 1500
-          });
-         
-        }
-      });
+        });
     } catch (error) {
-      console.error(error);
-      // Maneja el error de manera adecuada
+        // Mostrar un mensaje de error si la actualización falla
+        Swal.fire({
+            title: '¡Error!',
+            text: `${error.response.data.error}`,
+            icon: 'error',
+            showConfirmButton: true
+        });
     }
 };
 

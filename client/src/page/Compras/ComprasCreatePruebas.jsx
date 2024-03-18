@@ -91,91 +91,100 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
     return producto ? producto.cantidad : 0;
   };
 //Edicion para cambiar la cantidad
-  const handleEdicionCantidad = (e) => {
-    if (e.key === "Enter") {
-      // Restablecer el campo a vacío al presionar Enter
-      e.preventDefault();
+const handleEdicionCantidad = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
 
-      // Verificar si la entrada cumple con el patrón deseado
-      const regexPattern = /^(-\d{1,4}|[1-9]\d{0,3})?$/;
-      if (!regexPattern.test(cantidadAlterar)) {
-        // Mostrar mensaje de error si la entrada no cumple con el patrón
+    const regexPattern = /^[0-9]*$/;
+    if (!regexPattern.test(cantidadAlterar)) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Cantidad inválida",
+      });
+      return;
+    }
+
+    const cantidadAgregada = parseInt(cantidadAlterar, 10);
+    if (isNaN(cantidadAgregada) || cantidadAgregada <= 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "La cantidad debe ser mayor que cero",
+      });
+      return;
+    }
+
+    const productoEnTabla = tableData.find(
+      (item) => item.fk_insumo === productoSelect.id_insumo
+    );
+
+    if (productoEnTabla) {
+      const cantidadActual = productoEnTabla.cantidad;
+      const nuevaCantidad = cantidadActual + cantidadAgregada;
+
+      const productoEnStock = findProductoEnStock(
+        productoEnTabla.fk_insumo
+      );
+      if (nuevaCantidad > productoEnStock) {
         Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Campo inválido",
+          icon: "warning",
+          title: "Advertencia",
+          text: `Cantidad superior al stock (disponible ${productoEnStock})`,
         });
         return;
       }
 
-      // Agregar la cantidad a la tabla
-      const cantidadAgregada = parseInt(cantidadAlterar, 10);
-      if (!isNaN(cantidadAgregada) && cantidadAgregada !== 0) {
-        const productoEnTabla = tableData.find(
-          (item) => item.fk_insumo === productoSelect.id_insumo
-        );
+      const nuevaTabla = tableData.map((item) =>
+        item.fk_insumo === productoSelect.id_insumo
+          ? actualizarSubtotal({ ...item, cantidad: nuevaCantidad })
+          : item
+      );
 
-        if (productoEnTabla) {
-          const cantidadActual = productoEnTabla.cantidad;
-          const nuevaCantidad = cantidadActual + cantidadAgregada;
+      setTableData(nuevaTabla);
 
-          // Validar si la nueva cantidad supera el stock disponible
-          const productoEnStock = findProductoEnStock(
-            productoEnTabla.fk_insumo
-          );
-          
+      // Calcular la cantidad restante
+      const cantidadRestante = productoEnStock - nuevaCantidad;
+      Swal.fire({
+        icon: "success",
+        title: "Producto agregado",
+        text: `Cantidad disponible: ${cantidadRestante}`,
+      });
+    } else {
+      const nuevoProducto = {
+        fk_insumo: productoSelect.id_insumo,
+        cantidad: cantidadAgregada,
+        precio: productoSelect.precio,
+        subtotal: cantidadAgregada * productoSelect.precio,
+        id_insumo:productoSelect.id_insumo,
+        nombre: productoSelect.nombre,
+      };
 
-          // Verificar que la nueva cantidad no sea menor que la cantidad original del producto
-          const cantidadOriginal = productoEnTabla.cantidad_original; // Ajustar el nombre según la estructura de tus datos
-
-          // Establecer la cantidad mínima en la cantidad original o 1
-          const cantidadMinima = Math.max(cantidadOriginal, 1);
-
-          // Verificar que la nueva cantidad no sea menor que la cantidad mínima
-          if (nuevaCantidad < cantidadMinima) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad no puede ser menor a la original del producto.",
-            });
-            return;
-          }
-
-          // Verificar que la cantidad a disminuir no sea mayor que la cantidad actual
-          if (
-            cantidadAgregada < 0 &&
-            Math.abs(cantidadAgregada) > cantidadActual
-          ) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad a disminuir no puede ser mayor a la actual del producto.",
-            });
-            return;
-          }
-
-          // Verificar que la nueva cantidad no sea cero o menos
-          if (nuevaCantidad <= 0) {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "La cantidad no puede ser menor a 1.",
-            });
-            return;
-          }
-
-          // Actualizar la cantidad en tiempo real en la tabla
-          const nuevaTabla = tableData.map((item) =>
-            item.fk_insumo === productoSelect.id_insumo
-              ? actualizarSubtotal({ ...item, cantidad: nuevaCantidad })
-              : item
-          );
-
-          setTableData(nuevaTabla);
-        }
+      const productoEnStock = findProductoEnStock(
+        productoSelect.id_insumo
+      );
+      if (cantidadAgregada > productoEnStock) {
+        Swal.fire({
+          icon: "warning",
+          title: "Advertencia",
+          text: `Cantidad superior al stock... (disponible ${productoEnStock})`,
+        });
+        return;
       }
+
+      setTableData([...tableData, nuevoProducto]);
+      setCantidadAlterar("");
+
+      // Calcular la cantidad restante
+      const cantidadRestante = productoEnStock - cantidadAgregada;
+      Swal.fire({
+        icon: "success",
+        title: "Producto agregado",
+        text: `Cantidad disponible: ${cantidadRestante}`,
+      });
     }
-  };
+  }
+};
 
 //Edicion para cambiar el precio
 
@@ -674,7 +683,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                   <div className="form-group mb-2">
                                     <label className="col-md-9" htmlFor="items">
                                       <span className="small"></span>
-                                      <Autocomplete
+                                      {/* <Autocomplete
                                         disablePortal
                                         id="fixed-tags-demo"
                                         options={listar.filter((option) => option.estado)}
@@ -770,6 +779,43 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                                   option.categoria.categoria.toLowerCase().includes(params.inputValue.toLowerCase());
                                           });
                                       }}
+                                      /> */}
+                                      
+                                      <Autocomplete
+                                        disablePortal
+                                        id="fixed-tags-demo"
+                                        options={listar.filter((option) => option.estado)}
+                                        getOptionLabel={(option) =>
+                                          `${option.nombre} - ${option.presentacion}` 
+                                        }
+                                        onChange={(event, newValue) => {
+                                          if (newValue) {
+                                            setProductoSelect(newValue);
+                                          }
+                                        }}
+                                        value={productoSelect}
+                                        noOptionsText="Producto no encontrado"
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            label="Insumos"
+                                            sx={{ width: "70%" }}
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                              }
+                                            }}
+                                          />
+                                        )}
+                                        filterOptions={(options, params) => {
+                                          return options.filter(option => {
+                                              if (!params.inputValue) {
+                                                  return true;
+                                              }
+                                              return option.nombre.toLowerCase().includes(params.inputValue.toLowerCase()) ||
+                                                  option.categoria.categoria.toLowerCase().includes(params.inputValue.toLowerCase());
+                                          });
+                                      }}
                                       />
                                     </label>
                                   </div>
@@ -841,6 +887,8 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                         >
                                           <thead className="info text-left fs-6">
                                             <tr>
+                                            <th>Id</th>
+
                                               <th>Insumo</th>
                                               <th>Precio</th>
                                               <th>Cantidad</th>
@@ -853,6 +901,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
                                             {currentItems.map((row, index) => (
                                               
                                               <tr key={index}>
+                                                 <td>{row.id_insumo}</td>
                                                 <td>{row.nombre}</td>
                                                 <td>
                                                 {/* {formatearPrecios(row.precio)}  */}
@@ -915,7 +964,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
           <td></td>
           <td></td>
           <td></td>
-      
+          <td></td>
           <td><strong>{formatearValores(subtotalTotal)}</strong></td>
           <td></td>
         
@@ -927,7 +976,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
            <td></td>
            <td></td>
            <td></td>
-           
+           <td></td>
            <td><strong>{formatearValores(totalIva)}</strong></td>
            <td></td>
        </tr>
@@ -938,7 +987,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
           <td></td>
           <td></td>
           <td></td>
-         
+          <td></td>
           <td><strong>{formatearValores(total)}</strong></td>
           <td></td>
       </tr>

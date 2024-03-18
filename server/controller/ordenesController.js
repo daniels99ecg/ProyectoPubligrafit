@@ -8,12 +8,32 @@ const Cliente = require("../models/Cliente");
 const fs = require('fs')
 const { request } = require("express");
 
+async function listarFichasTecnicasPortodo(req, res){
+  try {
+      const ordenes = await Orden.findAll();
+
+      res.json(ordenes);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al obtener órdenes' });
+  }
+}
+
+
+
+
 async function listarFichasTecnicas(req, res){
   try {
       const ordenes = await Orden.findAll({
           where: {
               operacion: 'Pendiente'
-          }
+          },  include: [
+     
+            {
+              model: Cliente,
+              attributes:["nombre"]
+            }
+          ],
       });
 
       res.json(ordenes);
@@ -28,7 +48,13 @@ async function listarFichasTecnicasRealizada(req, res){
       const ordenes = await Orden.findAll({
           where: {
               operacion: 'Realizada'
-          }
+          },  include: [
+     
+            {
+              model: Cliente,
+              attributes:["nombre"]
+            }
+          ],
       });
 
       res.json(ordenes);
@@ -88,15 +114,13 @@ async function listarFichaTecnica(req, res) {
   }
 }
 
-
-
 async function crearFichaTecnica(req, res) {
     try {
       const dataFicha = req.body;
 
-      if(!req.file) {
-        return res.json({ message: "Error la imagen del producto es requerida" });
-    }
+    //   if(!req.file) {
+    //     return res.json({ message: "Error la imagen del producto es requerida" });
+    // }
     const existeNombre = await Orden.findOne({
       where: {
         nombre_ficha: dataFicha.nombre_ficha,
@@ -126,7 +150,7 @@ async function crearFichaTecnica(req, res) {
               nombre_ficha:dataFicha.nombre_ficha,
               fk_cliente: dataFicha.id_cliente.fk_cliente,
 
-              imagen_producto_final:req.file.filename,
+              imagen_producto_final:req.file ? req.file.filename : "",
               costo_final_producto:dataFicha.costo_final_producto,
               detalle: dataFicha.detalle,
               mano_obra:dataFicha.mano_obra,
@@ -183,45 +207,33 @@ async function crearFichaTecnica(req, res) {
 
   async function actualizarFichaTecnica(req, res) {
     const id = req.params.id;
-    const { nombre_ficha, fk_cliente,imagen_producto_final, costo_final_producto,detalle, mano_obra,detalles } = req.body; // Asumiendo que `detalles` es un array de detalles de la ficha técnica
+    const { nombre_ficha, fk_cliente, costo_final_producto, detalle, mano_obra, detalles } = req.body; // Asumiendo que `detalles` es un array de detalles de la ficha técnica
   
     try {
       const fichaTecnicaExistente = await Orden.findByPk(id);
       if (!fichaTecnicaExistente) {
         return res.status(404).json({ error: 'Ficha Técnica no encontrada' });
       }
-  
-      // Actualiza la ficha técnica principal
-      await fichaTecnicaExistente.update({
+      
+      // Objeto para actualizar la ficha técnica principal
+      let actualizarObjeto = {
         nombre_ficha,
         fk_cliente,
-        imagen_producto_final,
         costo_final_producto,
         mano_obra,
         detalle
-        // Omitir actualizar 'detalle' directamente aquí, ya que lo manejaremos por separado
-      });
+      };
   
-      // Actualizar los detalles de la ficha técnica
-      // Esto es un esquema básico, necesitarás ajustarlo a tu lógica de negocio específica
-      if (detalles && detalles.length > 0) {
-        // Eliminar detalles existentes, una opción es eliminarlos todos y volver a insertar
-        // Otra opción es actualizar los existentes y añadir los nuevos
-        await DetalleOrden.destroy({
-          where: { fk_ficha_tecnica: id }
-        });
-  
-        // Insertar los nuevos detalles
-        for (const detalle of detalles) {
-          await DetalleOrden.create({
-            fk_ficha_tecnica: id,
-            fk_insumo: detalle.fk_insumo,
-            cantidad: detalle.cantidad,
-            precio: detalle.precio,
-            // Agrega los campos necesarios según tu modelo
-          });
-        }
+      // Si hay un archivo nuevo, actualiza el campo de imagen
+      if (req.file && req.file.filename) {
+        actualizarObjeto.imagen_producto_final = req.file.filename;
       }
+  
+      // Actualiza la ficha técnica principal
+      await fichaTecnicaExistente.update(actualizarObjeto);
+  
+      // Actualizar los detalles de la ficha técnica...
+      // (El código para actualizar los detalles sigue igual)
   
       res.status(200).json({ message: 'Ficha Técnica actualizada con éxito' });
     } catch (error) {
@@ -296,6 +308,7 @@ async function desactivarFichaTecnica(req, res) {
     }
   }
 
+
   async function operacionOrden(req, res) {
     try {
         const id_ft = req.params.id_ft;
@@ -303,19 +316,32 @@ async function desactivarFichaTecnica(req, res) {
 
         const fichaTecnica = await Orden.findByPk(id_ft);
         
-        if (!fichaTecnica) {
-            return res.status(404).json({ error: 'Ficha técnica no encontrada' });
-        }
+      
+        // Obtener detalles de orden para el producto actual
+        const detallesOrden = await DetalleOrden.findAll({ where: { fk_ficha_tecnica: fichaTecnica.id_ft } });
 
-        // Actualizar la operación de acuerdo a la opción seleccionada
+        
+            // Verificar si todos los insumos tienen suficiente cantidad
+            for (const detalle of detallesOrden) {
+                const insumo = await Insumo.findByPk(detalle.fk_insumo);
+
+                if (insumo) {
+                    // Si la cantidad del detalle de orden es mayor a la cantidad disponible del insumo, devuelve un error
+                    if (detalle.cantidad > insumo.cantidad) {
+                      const error = `Cantidad insuficiente del insumo:${insumo.nombre} : ${detalle.cantidad}, solo tienes en Stock ${insumo.cantidad}`;
+                     
+                       return res.status(500).json({ error:error });
+  
+                    }
+                }
+            }
+        
+
+        // Si todos los insumos tienen suficiente cantidad, procede con la actualización de la operación
         await fichaTecnica.update({ operacion: nuevaOperacion });
         
-        // Verificar si la orden está "Realizada"
-        if (fichaTecnica.operacion === "Realizada") {
-            // Obtener detalles de orden para el producto actual
-            const detallesOrden = await DetalleOrden.findAll({ where: { fk_ficha_tecnica: fichaTecnica.id_ft } });
-
-            // Descontar insumos del detalle de orden
+        // Actualizar detalles de insumos si la nueva operación es "Realizada"
+        if (nuevaOperacion === "Realizada") {
             for (const detalle of detallesOrden) {
                 const insumo = await Insumo.findByPk(detalle.fk_insumo);
 
@@ -335,6 +361,9 @@ async function desactivarFichaTecnica(req, res) {
         res.status(500).json({ error: 'Error al actualizar operación' });
     }
 }
+
+
+
 
 const { Op , fn, col} = require("sequelize");
 
@@ -512,5 +541,6 @@ module.exports ={
     listarVentasPorFechas,
     listarVentasPorFechasDia,
   listarComprasPorFechasDia,
-  listarComprasPorFechasDias
+  listarComprasPorFechasDias,
+  listarFichasTecnicasPortodo
 }

@@ -366,7 +366,7 @@
         subject: 'Cambio de Contraseña Exitoso',
         html: `
           <h1>¡Hola ${usuario.nombres}!</h1>
-          <p>Tu dirección para cambiar la contraseña es: http://localhost:5173/cambiarcontrasena?token=${token}</p>
+          <p>Tu dirección para cambiar la contraseña es: https://proyectopubligrafit.onrender.com/cambiarcontrasena?token=${token}</p>
         `
       };
   

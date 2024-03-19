@@ -866,6 +866,7 @@ const handleEdicionCantidad = (e) => {
                                           fontFamily:
                                             "Helvetica, Arial, sans-serif",
                                           fontStyle: "italic",
+                                          color:"red"
                                         }}
                                       >
                                         &nbsp;¡Sin productos en el carrito!
@@ -877,6 +878,7 @@ const handleEdicionCantidad = (e) => {
                                           style={{
                                             fontFamily: "Candara",
                                             fontWeight: "bold",
+                                           
                                           }}
                                         >
                                           Descripción <TiShoppingCart />

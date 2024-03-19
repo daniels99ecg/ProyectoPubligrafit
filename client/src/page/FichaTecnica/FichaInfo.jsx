@@ -1,4 +1,6 @@
 import Modal from "@mui/material/Modal";
+import {  Button } from 'react-bootstrap';
+
 import { Formik, Form, Field } from "formik";
 import Tooltip from "@mui/material/Tooltip";
 import { useState } from "react";
@@ -104,12 +106,20 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
             <div
               className="card"
               style={{
-                maxWidth: "1050px",
+                maxWidth: "1000px",
                 padding: "20px",
                 maxHeight: "620px",
               }}
             >
+     <div className="d-flex justify-content-end">
+  <button className="btn btn-outline-secondary" onClick={handleCloseModal}>
+    <i className="bi bi-x">X</i>
+  </button>
+</div>
               <div className="card-body">
+              
+                       
+                       
                 <div className="card-header"></div>
                 <br />
 

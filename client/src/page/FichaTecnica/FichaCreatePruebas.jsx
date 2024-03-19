@@ -87,18 +87,23 @@ useEffect(() => {
     mano_obra: Yup.string()
       .required("Campo requerido")
       .test("notZero", "El total no puede ser cero", (value) => value !== 0),
-      // imagen_producto_final: Yup.mixed().test('fileType', 'Formato de archivo no válido', (value) => {
-      //   if (!value) {
-      //     // Si no se ha seleccionado ningún archivo
-      //     return false;
-      //   }
-      //   // Obtener el tipo de archivo
-      //   const fileType = value.type;
-      //   // Definir los tipos de archivos permitidos
-      //   const allowedFormats = ['image/jpeg', 'image/png', 'image/gif']; // Puedes agregar más tipos de archivo según tus necesidades
-      //   // Verificar si el tipo de archivo está permitido
-      //   return allowedFormats.includes(fileType);
-      // })
+      imagen_producto_final: Yup.mixed()
+      .required('Es necesario seleccionar una imagen del producto')
+      .test(
+        'fileType',
+        'Formato de archivo no válido',
+        (value) => {
+          // Obtener el tipo de archivo
+          const fileType = value?.type;
+          // Definir los tipos de archivos permitidos
+          const allowedFormats = ['image/jpeg', 'image/png', 'image/gif'];
+          // Verificar si el tipo de archivo está permitido
+          return fileType ? allowedFormats.includes(fileType) : false;
+        }
+      ),
+      insumo: Yup.array().min(1, 'Debe agregar al menos un insumo a la tabla'),
+
+      
   });
 
   // Obtener Fecha Actual
@@ -320,6 +325,7 @@ useEffect(() => {
               
 
                   enableReinitialize={true}
+                  validationSchema={ventaSchema}
                   onSubmit={async (values, { setErrors, resetForm }) => {
                     try {
                       ventaSchema
@@ -444,6 +450,7 @@ useEffect(() => {
       `${option.documento} - ${option.nombre} ${option.apellido}`
     }
     onChange={(event, newValue) => {
+      
       setClientes(newValue ? newValue : "");
       // Aquí puedes realizar cualquier acción adicional necesaria cuando se selecciona un cliente
     }}
@@ -455,23 +462,7 @@ useEffect(() => {
         {...params}
         label="Cliente"
         sx={{ width: "100%" }}
-        InputProps={{
-          ...params.InputProps,
-          endAdornment: (
-            <>
-              {(touched.id_cliente?.fk_cliente && values.clienteSeleccionado) && (
-                <CheckCircleIcon
-                  sx={{ color: "green", marginLeft: "10px" }}
-                />
-              )}
-              {(touched.id_cliente?.fk_cliente && !values.clienteSeleccionado) && (
-                <ErrorIcon
-                  sx={{ color: "red", marginLeft: "10px" }}
-                />
-              )}
-            </>
-          ),
-        }}
+     
       />
     )}
   />
@@ -573,11 +564,11 @@ useEffect(() => {
                 }}
                 
             />
-            {/* <ErrorMessage
+             <ErrorMessage
     name="imagen_producto_final"
     component="div"
     className="error-message"
-/> */}
+/> 
 </div>
 <div className="form-group mb-2">
 
@@ -756,6 +747,7 @@ useEffect(() => {
                                           fontFamily:
                                             "Helvetica, Arial, sans-serif",
                                           fontStyle: "italic",
+                                          color:"red"
                                         }}
                                       >
                                         &nbsp;¡Sin insumo en el carrito!

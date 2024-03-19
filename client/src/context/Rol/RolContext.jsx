@@ -268,6 +268,7 @@ const desactivarCliente = async (id_rol) => {
           return item;
         });
         setListar(updatedList);
+        window.location.reload()
       }
     } catch (error) {
       console.error(error);
@@ -287,6 +288,7 @@ const activarCliente = async (id_rol) => {
           return item;
         });
         setListar(updatedList);
+        window.location.reload()
       }
     } catch (error) {
       console.error(error);

@@ -307,10 +307,12 @@ const handleEliminarUsuario = (idrol, nombre_rol) => {
                         e.preventDefault();
                         if (params.row.rol?.estado) {
                           desactivarCliente(params.row.rol?.id_rol);
-                          window.location.reload()
+                          
+                           
+                        
                         } else {
                           activarCliente(params.row.rol?.id_rol);
-                          window.location.reload()
+                         
                         }
                       }}
                       className="switch-button__checkbox"

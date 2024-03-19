@@ -115,7 +115,7 @@ function CreateInsumo() {
 <Autocomplete 
   disablePortal
   id="fixed-tags-demo"
-  options={Listar}  // Filtrar roles con estado true
+  options={Listar?.filter(option => option.estado === true) || []} // Ensure it's always an array
   getOptionLabel={(option) => option.categoria}
   value={values.nombreCategoria || null} 
   onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito

@@ -12,23 +12,17 @@ function CreateCliente({ handleCloseModal }) {
   const { primeraMayuscula } = useCliente();
   const validationSchema = Yup.object().shape({
     documento: Yup.string()
-    .min(6, "El documento debe tener al menos 6 caracteres")
-    .max(12, "El documento no puede tener más de 12 caracteres")
-    .matches(/^[0-9]+$/, {
-      message: "El campo debe contener solo números",
-      excludeEmptyString: true,
-    })
-    .test('no-leading-zero', 'El documento no puede comenzar con 0', value => {
-      if (value && value.charAt(0) === '0') {
-        return false;
-      }
-      return true; 
-    })
-    .required("Este campo es requerido"),
+      .min(6, "El documento debe tener al menos 6 caracteres")
+      .max(12, "El documento no puede tener más de 12 caracteres")
+      .matches(/^[1-9][0-9]*$/, {
+        message: "El campo debe contener solo números y no puede ser solo 0",
+        excludeEmptyString: true,
+      })
+      .required("Este campo es requerido"),
     nombre: Yup.string()
       .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El campo debe contener letras")
       .min(2, "El nombre debe tener al menos 2 caracteres")
-      .max(25, "El nombre no puede tener más de 25 caracteres")
+      .max(40, "El nombre no puede tener más de 40 caracteres")
       .test(
         "no-leading-trailing-space",
         "El nombre no puede empezar ni terminar con un espacio en blanco",
@@ -38,7 +32,7 @@ function CreateCliente({ handleCloseModal }) {
     apellido: Yup.string()
       .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El campo debe contener letras")
       .min(2, "El apellido debe tener al menos 2 caracteres")
-      .max(25, "El apellido no puede tener más de 25 caracteres")
+      .max(40, "El apellido no puede tener más de 40 caracteres")
       .test(
         "no-leading-trailing-space",
         "El apellido no puede empezar ni terminar con un espacio en blanco",
@@ -46,7 +40,7 @@ function CreateCliente({ handleCloseModal }) {
       )
       .required("Este campo es requerido"),
     telefono: Yup.string()
-      .min(9, "El teléfono debe tener 10 caracteres")
+      .min(10, "El teléfono debe tener 10 caracteres")
       .max(10, "El teléfono debe tener 10 caracteres")
       .matches(/^[0-9]+$/, {
         message: "El campo debe contener solo números",
@@ -54,9 +48,7 @@ function CreateCliente({ handleCloseModal }) {
       })
       .required("Este campo es requerido"),
     direccion: Yup.string()
-      .matches(/^(?![0-9]+$)[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\d.#\-]+$/, {
-        message: "La dirección no puede ser únicamente numérica"
-      })
+      .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\d.#\-]+$/, "Dirección inválida")
       .min(7, "La dirección debe tener al menos 7 caracteres")
       .max(40, "La dirección no puede tener más de 40 caracteres")
       .test(
@@ -72,35 +64,12 @@ function CreateCliente({ handleCloseModal }) {
         (value) => value && value.includes("@")
       )
       .test(
-        "has-local-part",
-        "El email debe contener al menos un carácter después del '@' y antes del dominio",
-        (value) => {
-          const atIndex = value.indexOf("@");
-          const domainIndex = value.lastIndexOf(".");
-          return atIndex < domainIndex - 1;
-        }
-      )
-      .test(
-        "local-part-length",
-        "El email debe tener entre 1 y 64 caracteres antes del '@'",
-        (value) => {
-          const atIndex = value.indexOf("@");
-          const localPart = value.slice(0, atIndex);
-          return localPart.length >= 1 && localPart.length <= 64;
-        }
-      )
-      .test(
         "has-domain",
-        "El email debe contener al menos un dominio válido '.com' '.co' '.net' '.org' '.edu' '.gov'",
+        "El email debe contener al menos un dominio válido '.com' '.co'",
         (value) => {
-          const domainRegex = /\.(com|co|net|org|edu|gov)$/; // Ajusta los dominios permitidos según tus necesidades
+          const domainRegex = /\.(com|net|org|edu|gov)$/; // Ajusta los dominios permitidos según tus necesidades
           return domainRegex.test(value);
         }
-      )
-      .test(
-        "not-gmail-only",
-        "El email no puede contener únicamente '@gmail.com'",
-        (value) => !/^@gmail\.com$/.test(value)
       )
       .test(
         "no-leading-trailing-space",
@@ -137,28 +106,65 @@ function CreateCliente({ handleCloseModal }) {
                       values.apellido = primeraMayuscula(values.apellido);
                       values.direccion = primeraMayuscula(values.direccion);
                       values.email = values.email.toLowerCase();
-                
-                      // Se eliminó la sección de la alerta de confirmación y se envían los datos directamente
-                      await postCrearClientes(values);
-                      resetForm();
-                      handleCloseModal();
-                
-                      // Mensaje de éxito en caso de registro exitoso
-                      Swal.fire({
-                        icon: "success",
-                        title: "Registro exitoso!",
-                        text: "Tu archivo ha sido registrado",
+
+                      const swalWithBootstrapButtons = Swal.mixin({
+                        customClass: {
+                          confirmButton: "btn btn-success me-3",
+                          cancelButton: "btn btn-danger",
+                        },
+                        buttonsStyling: false,
                       });
-                
+
+                      Swal
+                        .fire({
+                          title: "Confirmar el registro?",
+                          text: "Tu registro será guardado",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonText: "Aceptar",
+                          cancelButtonText: "Cancelar",
+                          buttons: true,
+                        })
+                        .then((result) => {
+                          if (result.isConfirmed) {
+                            postCrearClientes(values)
+                              .then((response) => {
+                                if (
+                                  response.status === 400 &&
+                                  response.data.error
+                                ) {
+                                } else {
+                                  Swal
+                                    .fire(
+                                      "Registro exitoso!",
+                                      "Tu archivo ha sido registrado",
+                                      "success"
+                                    )
+                                    .then(() => {
+                                      handleCloseModal();
+                                      resetForm();
+                                    });
+                                }
+                              })
+                              .catch((error) => {
+                                Swal.fire({
+                                  icon: "error",
+                                  title: "Error en la solicitud",
+                                  text: "Documento existente en la base de datos",
+                                });
+                              });
+                          } else if (
+                            result.dismiss === Swal.DismissReason.cancel
+                          ) {
+                            swalWithBootstrapButtons.fire(
+                              "Registro cancelado",
+                              "Registro no completado",
+                              "error"
+                            );
+                          }
+                        });
                     } catch (error) {
                       console.error(error);
-                
-                      // Manejo de errores, como documento existente en la base de datos
-                      Swal.fire({
-                        icon: "error",
-                        title: "Error en la solicitud",
-                        text: "Documento existente en la base de datos",
-                      });
                     }
                   }}
                 >

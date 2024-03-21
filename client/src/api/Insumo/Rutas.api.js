@@ -28,6 +28,9 @@ export const  getListarcategoria=async ()=>{
   return await axios.get(`${baseURL}insumo/categoria`)
 }
 
+export const  getListarpresentacion=async ()=>{
+  return await axios.get(`${baseURL}insumo/presentacion`)
+}
 
 
 export const  putActualizarInsumos=async (id_isumo, taks)=>{

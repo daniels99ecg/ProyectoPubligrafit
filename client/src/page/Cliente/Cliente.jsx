@@ -288,7 +288,7 @@ viewBox="0 0 16 16"
                           backgroundColor: 'white',
                         }}
                         onClick={() => handleOpenInfoModal(params.row)}
-                        disabled={!params.row.estado}
+                        
                       >
                         <BsInfoCircleFill
                           size={30}

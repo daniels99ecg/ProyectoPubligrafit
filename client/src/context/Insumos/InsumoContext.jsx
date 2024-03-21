@@ -1,6 +1,6 @@
 import {createContext , useContext, useState} from "react"
 import { useNavigate } from "react-router-dom"
-import {getListarInsumos, postCreateInsumo, getListarInsumo, putActualizarInsumos,eliminarInsumo, putActivarInsumo, putDesactivarInsumo} from "../../api/Insumo/Rutas.api"
+import {getListarInsumos, postCreateInsumo, getListarInsumo, putActualizarInsumos,eliminarInsumo, putActivarInsumo, putDesactivarInsumo,getListarpresentacion} from "../../api/Insumo/Rutas.api"
 import Swal from 'sweetalert2'
 export const InsumoContext = createContext()
 
@@ -341,7 +341,7 @@ const validacionInsumo = async (values)=>{
                 id_insumo: '',
                 nombre: '',
                 categoria:{categoria:""},
-                presentacion:""
+                presentacione:{nombre_presentacion:""}
                 // precio: '',
                 // cantidad: '' 
       
@@ -360,15 +360,27 @@ const validacionInsumo = async (values)=>{
             precio: response.precio,
             cantidad: response.cantidad,
             categoria:{categoria:response.categoria.categoria},
-            presentacion:response.presentacion
+            presentacione:{nombre_presentacion:response.presentacione.nombre_presentacion}
         })
     } catch (error) {
         console.log(error)
     }
   }
+
+const [listarPresentacion, setListarPresentacion]=useState("")
+
+  const cargarPresentacion=async()=>{
+    const response=await getListarpresentacion()
+    setListarPresentacion(response.data)
+   }
+   
+
+  
+
+
 return(
     <InsumoContext.Provider
-    value={{listar,ShowInsumos,searchTerm,setSearchTerm, validarInsumoActualizar,insumoActualizar,listarInsumo,activarInsumo, eliminarInsumos, desactivarInsumo, validacionInsumo ,filtrarDesactivados}}>
+    value={{listar,ShowInsumos,cargarPresentacion, listarPresentacion ,searchTerm,setSearchTerm, validarInsumoActualizar,insumoActualizar,listarInsumo,activarInsumo, eliminarInsumos, desactivarInsumo, validacionInsumo ,filtrarDesactivados}}>
     {children}
     </InsumoContext.Provider>
 )

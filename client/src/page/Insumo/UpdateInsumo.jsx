@@ -38,12 +38,13 @@ function UpdateInsumo({clienteId}){
 
     const params = useParams()
     const navigate = useNavigate()
-    const {insumoActualizar, listarInsumo, validarInsumoActualizar}=useInsumo()
+    const {insumoActualizar, listarInsumo, validarInsumoActualizar,cargarPresentacion, listarPresentacion}=useInsumo()
     const {validacionProducto, cargarCategoria, Listar}=useProducto()
 
  useEffect (() => {
     insumoActualizar(clienteId)
     cargarCategoria()
+    cargarPresentacion()
  }, [clienteId])
 
  const options = ['1 Litro', '2 Litros'];
@@ -159,10 +160,11 @@ function UpdateInsumo({clienteId}){
       <Autocomplete
         disablePortal
         id="fixed-tags-demo"
-        options={options}
-        value={values.presentacion}
+        options={listarPresentacion}
+        getOptionLabel={(option) => option.nombre_presentacion}
+        value={values.presentacione}
         onChange={(event, newValue) => {
-          handleChange({ target: { name: 'presentacion', value: newValue || '' } });
+          handleChange({ target: { name: 'fk_presentacion', value: newValue ? newValue.id_presentacion : null } } );
         }}
         sx={{ width: '100%' }}
         renderInput={(params) => <TextField {...params} label="Presentación" sx={{ width: '100%' }} />}

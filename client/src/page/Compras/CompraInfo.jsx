@@ -64,7 +64,7 @@ const CompraInfo = ({ compra, handleCloseModal, open }) => {
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = compra.detalles.slice(indexOfFirstProduct, indexOfLastProduct);
-
+  console.log(currentProducts)
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
@@ -107,8 +107,8 @@ const CompraInfo = ({ compra, handleCloseModal, open }) => {
                     <td style={tdStyle}>{detalle.insumo.nombre}</td>
                     <td style={tdStyle}>
                       {detalle.cantidad === 1
-                        ? `${detalle.cantidad} Und`
-                        : `${detalle.cantidad} Unds`}
+                        ? `${detalle.cantidad} de ${detalle.insumo.presentacione.nombre_presentacion}`
+                        : `${detalle.cantidad} de ${detalle.insumo.presentacione.nombre_presentacion}`}
                     </td>
                     <td style={tdStyle}>{formatearPrecios(detalle.precio)}</td>
                     <td style={tdStyle}>{formatearPrecios(detalle.subtotal)}</td>

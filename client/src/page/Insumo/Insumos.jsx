@@ -116,6 +116,7 @@ const handleCloseUpdateModal = () => {
 
                       <li className="list-group-item">Tipo ID: {item.id_insumo}</li>
                       <li className="list-group-item">Nombre: {item.nombre}</li>
+                      <li className="list-group-item">Presentación: {item.presentacione.nombre_presentacion}</li>
                       <li className="list-group-item">Precio: {item.precio}</li>
                       <li className="list-group-item">Cantidad: {item.cantidad}</li>
                     
@@ -234,7 +235,8 @@ const handleCloseUpdateModal = () => {
             rows={filtrarDesactivados.map((item) => ({
               ...item,
               id: item.id_insumo,
-              pruebas:item.categoria.categoria
+              pruebas:item.categoria.categoria,
+              presentacion:item.presentacione.nombre_presentacion
             }))}
             columns={[
               { field: 'id_insumo', headerName: 'Id', headerClassName: 'encabezado', flex: 1 },

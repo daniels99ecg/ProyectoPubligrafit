@@ -14,8 +14,8 @@ function CreateCliente({ handleCloseModal }) {
     documento: Yup.string()
       .min(6, "El documento debe tener al menos 6 caracteres")
       .max(12, "El documento no puede tener más de 12 caracteres")
-      .matches(/^[0-9]+$/, {
-        message: "El campo debe contener solo números",
+      .matches(/^[1-9][0-9]*$/, {
+        message: "El campo debe contener solo números y no puede ser solo 0",
         excludeEmptyString: true,
       })
       .required("Este campo es requerido"),

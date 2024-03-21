@@ -38,7 +38,7 @@ function ComprasCreatePruebas({ handleCloseVentaModal, row }) {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = tableData.slice(startIndex, endIndex);
   const [precio, setPrecio] = useState(0);
-
+console.log(productoSelect)
 
   const [nombreRol, setNombreRol]=useState("")
 
@@ -158,6 +158,8 @@ const handleEdicionCantidad = (e) => {
         subtotal: cantidadAgregada * productoSelect.precio,
         id_insumo:productoSelect.id_insumo,
         nombre: productoSelect.nombre,
+        presentacion:productoSelect.presentacione.nombre_presentacion
+  
       };
 
       // const productoEnStock = findProductoEnStock(
@@ -291,19 +293,28 @@ const handleEdicionCantidad = (e) => {
   };
   
 
-  function formatearValores(global) {
-    const [int, decimal] = parseFloat(global).toFixed(2).split(".");
-    const formateoInt = int.replace(/\d(?=(\d{3})+$)/g, "$&.");
-    return `${formateoInt},${decimal}`;
-  }
+  // function formatearValores(global) {
+  //   const [int, decimal] = parseFloat(global).toFixed(2).split(".");
+  //   const formateoInt = int.replace(/\d(?=(\d{3})+$)/g, "$&.");
+  //   return `${formateoInt},${decimal}`;
+  // }
 
-  // Formatear valores sin decimales
-  function formatearPrecios(valor) {
-    const valorFormateado = parseFloat(valor).toFixed(0);
-    const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
-    return formateoInt;
-  }
+  // // Formatear valores sin decimales
+  // function formatearPrecios(valor) {
+  //   const valorFormateado = parseFloat(valor).toFixed(0);
+  //   const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
+  //   return formateoInt;
+  // }
 
+  function formatearValores(amount) {
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+  
   useEffect(() => {
     // Lógica para actualizar automáticamente el subtotal
     const actualizarSubtotales = () => {
@@ -786,7 +797,7 @@ const handleEdicionCantidad = (e) => {
                                         id="fixed-tags-demo"
                                         options={listar.filter((option) => option.estado)}
                                         getOptionLabel={(option) =>
-                                          `${option.nombre} - ${option.presentacion}` 
+                                          `${option.nombre} - ${option.presentacione.nombre_presentacion}` 
                                         }
                                         onChange={(event, newValue) => {
                                           if (newValue) {
@@ -917,12 +928,12 @@ const handleEdicionCantidad = (e) => {
                                                     </td>
                                                 <td>
                                                   {row.cantidad === 1
-                                                    ? `${row.cantidad} Und`
-                                                    : `${row.cantidad} Unds`}
+                                                    ? `${row.cantidad} de ${row.presentacion}`
+                                                    : `${row.cantidad} de ${row.presentacion}`}
                                                 </td>
                                                 <td></td>
                                                 <td>
-                                                  {formatearPrecios(
+                                                  {formatearValores(
                                                     row.subtotal
                                                   )}
                                                 </td>

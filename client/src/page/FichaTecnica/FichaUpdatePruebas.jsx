@@ -155,6 +155,8 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
           subtotal: cantidadAgregada * productoSelect.precio,
           id_insumo:productoSelect.id_insumo,
           nombre: productoSelect.nombre,
+          presentacion:productoSelect.presentacione.nombre_presentacion,
+
           esNuevo:true
         };
   
@@ -184,22 +186,29 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
     }
   };
   
-  
+  function formatearValores(amount) {
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
   
 
   
-  function formatearValores(global) {
-    const [int, decimal] = parseFloat(global).toFixed(2).split(".");
-    const formateoInt = int.replace(/\d(?=(\d{3})+$)/g, "$&.");
-    return `${formateoInt},${decimal}`;
-  }
+  // function formatearValores(global) {
+  //   const [int, decimal] = parseFloat(global).toFixed(2).split(".");
+  //   const formateoInt = int.replace(/\d(?=(\d{3})+$)/g, "$&.");
+  //   return `${formateoInt},${decimal}`;
+  // }
 
   // Formatear valores sin decimales
-  function formatearPrecios(valor) {
-    const valorFormateado = parseFloat(valor).toFixed(0);
-    const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
-    return formateoInt;
-  }
+  // function formatearPrecios(valor) {
+  //   const valorFormateado = parseFloat(valor).toFixed(0);
+  //   const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
+  //   return formateoInt;
+  // }
 
   useEffect(() => {
     // Lógica para actualizar automáticamente el subtotal
@@ -282,16 +291,18 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
   
   useEffect(() => {
     const nuevosDetalles = detalles;
-  
+ 
     const allDetails = [
       ...nuevosDetalles.map((detalle) => ({
         ...detalle,
         nombre: detalle.insumo.nombre,
+       presentacion:detalle.insumo.presentacione.nombre_presentacion
       })),
       ...tableData,
     ].filter((detalle) => detalle.nombre && detalle.nombre.trim() !== "");
   
     setPruebas(allDetails);
+    console.log(pruebas)
   }, [listarFichaTecnica, tableData, detalles]);
   
 
@@ -326,6 +337,8 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
           precio: nuevoInsumo.precio,
           subtotal: nuevoInsumo.precio,
           nombre: nuevoInsumo.nombre,
+          presentacion:productoSelect.presentacione.nombre_presentacion,
+
           esNuevo: true,
         }
       ]);
@@ -653,7 +666,7 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
                                         id="fixed-tags-demo"
                                         options={listar.filter((option) => option.estado)}
                                         getOptionLabel={(option) =>
-                                          `${option.nombre} - ${option.presentacion}` 
+                                          `${option.nombre} - ${option.presentacione.nombre_presentacion}` 
                                         }
                                         onChange={(event, newValue) => {
                                           if (newValue) {
@@ -740,7 +753,7 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
                                               <tr key={index}>
                                                 <td>{row.nombre}</td>
                                                 <td>
-                                                  {formatearPrecios(row.precio)}
+                                                  {formatearValores(row.precio)}
                                                 </td>
                                                 {/* <td>
                                                   {row.cantidad === 1
@@ -750,9 +763,9 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
                                                 <td>
                                                 {
           row.esNuevo ? 
-          `${row.cantidad}` : // Puedes cambiar esto por cualquier cosa que prefieras mostrar
+          `${row.cantidad} de ${row.presentacion}` : // Puedes cambiar esto por cualquier cosa que prefieras mostrar
           <input
-            type="number"
+            type="text"
             value={row.cantidad}
             style={{width:60, height:25}}
             onChange={(e) => {
@@ -762,12 +775,12 @@ function FichaCreatePruebas({fichaId, handleCloseUpdateModal }) {
               }
             }}
               min="1"
-          />
-        }
+          /> 
+        }  {!row.esNuevo &&  row.presentacion}
                                           </td>
                                                 <td></td>
                                                 <td>
-                                                  {formatearPrecios(
+                                                  {formatearValores(
                                                     row.precio * row.cantidad
                                                   )}
                                                 </td>

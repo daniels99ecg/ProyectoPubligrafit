@@ -87,11 +87,11 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
   }
 
   // Formatear valores sin decimales
-  function formatearPrecios(valor) {
-    const valorFormateado = parseFloat(valor).toFixed(0);
-    const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
-    return formateoInt;
-  }
+  // function formatearPrecios(valor) {
+  //   const valorFormateado = parseFloat(valor).toFixed(0);
+  //   const formateoInt = valorFormateado.replace(/\d(?=(\d{3})+$)/g, "$&.");
+  //   return formateoInt;
+  // }
 
 
 
@@ -328,7 +328,7 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
                                               <th>Cantidad</th>
                                               <th></th>
                                               <th>Costo</th>
-                                              <th>Acciones</th>
+                                             
                                             </tr>
                                           </thead>
                                           <tbody className="small text-left fs-6">
@@ -340,7 +340,7 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
                                                   {formatearPrecios(row.precio)}
                                                 </td>
                                                 <td>
-                                                {row.cantidad}
+                                                {row.cantidad} de {row.insumo.presentacione.nombre_presentacion}
                                           </td>
                                                 <td></td>
                                                 <td>
@@ -354,31 +354,7 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
                                                     arrow
                                                   >
                                                     <span>
-                                                      <button
                                                       
-                                                        className="btn"
-                                                        type="button"
-                                                        style={{
-                                                          boxShadow: "none",
-                                                          background: "none",
-                                                          padding: 0,
-                                                          marginTop: "-3px",
-                                                          display: "flex",
-                                                          alignItems: "center",
-                                                          justifyContent:
-                                                            "center",
-                                                        }}
-                                                        onClick={() =>
-                                                          eliminarProducto(
-                                                            index
-                                                          )
-                                                        }
-                                                      >
-                                                        <TiDeleteOutline
-                                                          size={22}
-                                                          color="red"
-                                                        />
-                                                      </button>
                                                     </span>
                                                   </Tooltip>
                                                 </td>
@@ -393,7 +369,7 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
           <td></td>
           <td></td>
           <td></td>
-          <td><strong>{formatearValores(ficha.costo_final_producto)}</strong></td>
+          <td><strong>{formatearPrecios(ficha.costo_final_producto)}</strong></td>
           <td></td>
         
       </tr>
@@ -405,7 +381,7 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
           <td></td>
           <td></td>
           <td></td>
-          <td><strong>{formatearValores(ficha.costo_final_producto*0.19)}</strong></td>
+          <td><strong>{formatearPrecios(ficha.costo_final_producto*0.19)}</strong></td>
           <td></td>
       </tr>
 
@@ -416,7 +392,7 @@ const FichaInfo = ({ ficha, handleCloseModal, open }) => {
          <td></td>
          <td></td>
          <td></td>
-         <td><strong>{formatearValores(ficha.costo_final_producto*0.19+ficha.costo_final_producto)}</strong></td>
+         <td><strong>{formatearPrecios(ficha.costo_final_producto*0.19+ficha.costo_final_producto)}</strong></td>
          <td></td>
      </tr>
                                           </tbody>

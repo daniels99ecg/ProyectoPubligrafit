@@ -11,17 +11,19 @@ import {  useEffect,useState } from 'react'
 import Autocomplete from '@mui/material/Autocomplete';
 
 function CreateInsumo() {
-  const {validacionInsumo}=useInsumo()
+  const {validacionInsumo,cargarPresentacion, listarPresentacion}=useInsumo()
 
   const {validacionProducto, cargarCategoria, Listar}=useProducto()
   const [nombreRol, setNombreRol]=useState("")
+  const [nombrePresentacion, setNombrePresentacion]=useState("")
+
   useEffect(()=>{
     
     cargarCategoria()
- 
+    cargarPresentacion()
 
    },[])
-   const options = ['1 Litro', '2 Litros'];
+   
 
   return (
     <>
@@ -41,7 +43,7 @@ function CreateInsumo() {
                       id_insumo: '',
                       nombre: '',
                       nombreCategoria:'',
-                      presentacion:""
+                      nombrePresentacion:""
                      
                     }}
                     validate={async(values)=>{
@@ -60,7 +62,7 @@ function CreateInsumo() {
                       
 
                     onSubmit={async (values) => {
-                        validacionInsumo({...values, nombreCategoria:nombreRol })
+                        validacionInsumo({...values, nombreCategoria:nombreRol, nombrePresentacion:nombrePresentacion })
                         console.log(values)
                     }}
                   >
@@ -134,11 +136,15 @@ function CreateInsumo() {
       <Autocomplete
         disablePortal
         id="fixed-tags-demo"
-        options={options}
-        onChange={(event, newValue) => {
-          handleChange({ target: { name: 'presentacion', value: newValue || '' } });
+        options={listarPresentacion || null}
+        getOptionLabel={(option) => option.nombre_presentacion}
+        value={values.nombrePresentacion || null} 
+
+        onInputChange={(event, newInputValue) => {// Con esta parte se puede agregar el rol escrito
+          setNombrePresentacion(newInputValue);
         }}
         sx={{ width: '100%' }}
+        freeSolo
         renderInput={(params) => <TextField {...params} label="Presentación" sx={{ width: '100%' }} />}
       />
     </div>

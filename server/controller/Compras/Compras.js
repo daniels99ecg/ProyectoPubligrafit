@@ -3,7 +3,7 @@ const sequelize=require("../../database/db")
 const Compras_detalle=require('../../models/Detalle_Compra/Detalle_Compra')
 const Insumo = require("../../models/Insumo");
 const Proveedor = require("../../models/Proovedor/Proovedor");
-
+const Presentacion = require("../../models/Presentacion/Presentacion")
 
 
 async function listarCompras(req, res) {
@@ -20,7 +20,7 @@ async function listarCompras(req, res) {
             {
               model: Proveedor,
               attributes: ["nombre"],
-            },
+            }
           ],
         })
 
@@ -39,6 +39,7 @@ async function listarCompras(req, res) {
             {
               model: Insumo,
               attributes: ["nombre"],
+              
             },
           ],
         });
@@ -71,7 +72,7 @@ async function listarcompra(req, res) {
       
         {
           model:Proveedor,
-          attributes:["nombre"]
+          attributes:["nombre"],
         }
     ]
     });
@@ -92,8 +93,15 @@ async function listarcompra(req, res) {
       include: [
         {
           model: Insumo,
-          attributes: ["nombre"],
+          attributes: ["nombre"],  
+          include: [
+            {
+              model: Presentacion,
+              attributes: ["nombre_presentacion"] // Puedes agregar aquí los atributos que desees de la presentación
+            }
+          ]
         }
+      
       ],
     });
 

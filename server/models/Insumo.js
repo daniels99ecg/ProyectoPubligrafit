@@ -1,6 +1,7 @@
 const {DataTypes}=require("sequelize")
 const sequelize= require("../database/db")
 const Categoria = require('../models/Categoria')
+const Presentacion = require('./Presentacion/Presentacion')
 
 const Insumo=sequelize.define("insumos",{
     id_insumo:{
@@ -24,7 +25,7 @@ const Insumo=sequelize.define("insumos",{
         type:DataTypes.INTEGER,
         allowNull:false
     },
-    presentacion:{
+    fk_presentacion:{
         type:DataTypes.STRING,
         allowNull:false
     },
@@ -36,4 +37,6 @@ const Insumo=sequelize.define("insumos",{
     
 });
 Insumo.belongsTo(Categoria, { foreignKey: 'fk_categoria' })
+Insumo.belongsTo(Presentacion, { foreignKey: 'fk_presentacion' })
+
 module.exports=Insumo;

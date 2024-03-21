@@ -4,7 +4,7 @@ const Orden=require("../models/Ficha_Tecnica/FichaTecnica")
 const Insumo=require("../models/Insumo")
 const DetalleOrden=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
 const Cliente = require("../models/Cliente");
-
+const Presentacion = require("../models/Presentacion/Presentacion")
 const fs = require('fs')
 const { request } = require("express");
 
@@ -94,6 +94,12 @@ async function listarFichaTecnica(req, res) {
         {
           model: Insumo,
           attributes: ["id_insumo","nombre"],
+          include: [
+            {
+              model: Presentacion,
+              attributes: ["nombre_presentacion"] // Puedes agregar aquí los atributos que desees de la presentación
+            }
+          ]
         }
       ],
     });
@@ -124,7 +130,7 @@ async function crearFichaTecnica(req, res) {
     });
 
     if (existeNombre) {
-      return res.status(400).json({ error: "El nombre de la ficha técnica ya está registrado" });
+      return res.status(400).json({ error: "El nombre de la orden ya está registrado" });
     }
       await sequelize.transaction(async (t) => {
         const insumos = dataFicha.insumo || [];

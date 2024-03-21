@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-03-2024 a las 16:11:07
+-- Tiempo de generación: 21-03-2024 a las 03:45:02
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -40,7 +40,9 @@ INSERT INTO `categorias` (`id_categoria`, `categoria`) VALUES
 (1, 'Pintura'),
 (2, 'Papelería'),
 (3, 'Papelería'),
-(4, 'Documentos');
+(4, 'Documentos'),
+(16, 'algomas'),
+(17, 'almasdos');
 
 -- --------------------------------------------------------
 
@@ -82,13 +84,6 @@ CREATE TABLE `compras` (
   `total` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `compras`
---
-
-INSERT INTO `compras` (`id_compra`, `fk_proveedor`, `cantidad`, `fecha`, `total`) VALUES
-(113, 11, 0, '2024-03-11', 1190);
-
 -- --------------------------------------------------------
 
 --
@@ -105,13 +100,6 @@ CREATE TABLE `detalle_compras` (
   `subtotal` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `detalle_compras`
---
-
-INSERT INTO `detalle_compras` (`id_detalle_compra`, `fk_compra`, `fk_insumo`, `cantidad`, `precio`, `iva`, `subtotal`) VALUES
-(119, 113, 18, 5, 200, 0, 1000);
-
 -- --------------------------------------------------------
 
 --
@@ -126,18 +114,6 @@ CREATE TABLE `detalle_ordenes` (
   `precio` float(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `detalle_ordenes`
---
-
-INSERT INTO `detalle_ordenes` (`id_detalle_ft`, `fk_insumo`, `fk_ficha_tecnica`, `cantidad`, `precio`) VALUES
-(183, 18, 219, 1, 150),
-(187, 17, 221, 1, 200),
-(188, 17, 218, 1, 200),
-(189, 19, 218, 2, 15000),
-(190, 18, 218, 5, 150),
-(259, 41, 251, 1, 100);
-
 -- --------------------------------------------------------
 
 --
@@ -150,7 +126,7 @@ CREATE TABLE `insumos` (
   `precio` float NOT NULL,
   `cantidad` int(5) NOT NULL,
   `fk_categoria` int(11) NOT NULL,
-  `presentacion` varchar(50) NOT NULL,
+  `fk_presentacion` int(11) NOT NULL,
   `estado` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -158,13 +134,9 @@ CREATE TABLE `insumos` (
 -- Volcado de datos para la tabla `insumos`
 --
 
-INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `fk_categoria`, `presentacion`, `estado`) VALUES
-(17, 'Pepel iris', 200, 20, 2, 'Prueba1', 1),
-(18, 'Papel Bond', 150, 100, 2, 'Prueba2', 1),
-(19, 'tintas', 15000, 6, 4, '2 Litros', 1),
-(41, 'pruebasuno', 100, 30, 1, '1 Litro', 1),
-(42, 'Pruebastres', 100, 100, 1, '1 Litro', 1),
-(43, 'Pruebasdiez', 100, 100, 1, '1 Litro', 1);
+INSERT INTO `insumos` (`id_insumo`, `nombre`, `precio`, `cantidad`, `fk_categoria`, `fk_presentacion`, `estado`) VALUES
+(44, 'Papel Iris', 100, 110, 16, 1, 1),
+(47, 'Papel de algo', 100, 100, 2, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -180,20 +152,10 @@ CREATE TABLE `ordenes` (
   `costo_final_producto` float NOT NULL,
   `detalle` varchar(500) NOT NULL,
   `mano_obra` int(11) NOT NULL,
-  `operacion` varchar(15) NOT NULL,
+  `operacion` varchar(50) NOT NULL,
   `fecha` date NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `ordenes`
---
-
-INSERT INTO `ordenes` (`id_ft`, `nombre_ficha`, `fk_cliente`, `imagen_producto_final`, `costo_final_producto`, `detalle`, `mano_obra`, `operacion`, `fecha`, `estado`) VALUES
-(218, 'Cuaderno', 3, '3JEV4zlif.jpeg', 30950, 'Blabla', 5000, 'Realizada', '2024-03-14', 1),
-(219, 'Fenix', 1, '8d-NvwKiP.jpeg', 5150, 'Esto es una prueba', 5000, 'Realizada', '2024-03-14', 1),
-(221, 'Fenix2', 1, 'yPD9_M6mS.jpeg', 5200, 'Blabla', 5000, 'Realizada', '2024-03-14', 1),
-(251, 'Fenix6', 3, '', 5000, 'Pruebas de ingreso', 5000, 'Pendiente', '0000-00-00', 1);
 
 -- --------------------------------------------------------
 
@@ -220,6 +182,26 @@ INSERT INTO `permisos` (`id_permiso`, `nombre_permiso`) VALUES
 ('005Ficha', 'Ordenes'),
 ('007produc', 'Producto'),
 ('008Cliente', 'Cliente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `presentaciones`
+--
+
+CREATE TABLE `presentaciones` (
+  `id_presentacion` int(11) NOT NULL,
+  `nombre_presentacion` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `presentaciones`
+--
+
+INSERT INTO `presentaciones` (`id_presentacion`, `nombre_presentacion`) VALUES
+(1, '2 Kilos'),
+(2, '1 Kilo'),
+(3, '1/4 ');
 
 -- --------------------------------------------------------
 
@@ -364,7 +346,8 @@ ALTER TABLE `detalle_ordenes`
 --
 ALTER TABLE `insumos`
   ADD PRIMARY KEY (`id_insumo`),
-  ADD KEY `fk_categoria` (`fk_categoria`);
+  ADD KEY `fk_categoria` (`fk_categoria`),
+  ADD KEY `fk_presentacion` (`fk_presentacion`);
 
 --
 -- Indices de la tabla `ordenes`
@@ -378,6 +361,12 @@ ALTER TABLE `ordenes`
 --
 ALTER TABLE `permisos`
   ADD PRIMARY KEY (`id_permiso`);
+
+--
+-- Indices de la tabla `presentaciones`
+--
+ALTER TABLE `presentaciones`
+  ADD PRIMARY KEY (`id_presentacion`);
 
 --
 -- Indices de la tabla `proveedores`
@@ -414,7 +403,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_categoria` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
@@ -426,31 +415,37 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `id_compra` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `id_compra` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_compras`
 --
 ALTER TABLE `detalle_compras`
-  MODIFY `id_detalle_compra` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
+  MODIFY `id_detalle_compra` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_ordenes`
 --
 ALTER TABLE `detalle_ordenes`
-  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=260;
+  MODIFY `id_detalle_ft` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=261;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_insumo` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `ordenes`
 --
 ALTER TABLE `ordenes`
-  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=252;
+  MODIFY `id_ft` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=253;
+
+--
+-- AUTO_INCREMENT de la tabla `presentaciones`
+--
+ALTER TABLE `presentaciones`
+  MODIFY `id_presentacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -504,7 +499,8 @@ ALTER TABLE `detalle_ordenes`
 -- Filtros para la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  ADD CONSTRAINT `insumos_ibfk_1` FOREIGN KEY (`fk_categoria`) REFERENCES `categorias` (`id_categoria`);
+  ADD CONSTRAINT `insumos_ibfk_1` FOREIGN KEY (`fk_categoria`) REFERENCES `categorias` (`id_categoria`),
+  ADD CONSTRAINT `insumos_ibfk_2` FOREIGN KEY (`fk_presentacion`) REFERENCES `presentaciones` (`id_presentacion`);
 
 --
 -- Filtros para la tabla `ordenes`

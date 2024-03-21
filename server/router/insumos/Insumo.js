@@ -3,6 +3,7 @@ const InsumoController= require("../../controller/insumoController")
 
 
 Router.get("/categoria", InsumoController.listarCategoria);
+Router.get("/presentacion", InsumoController.listarPresentacion);
 
 Router.get("/", InsumoController.listarInsumos);
 Router.get("/:id", InsumoController.listarInsumo);

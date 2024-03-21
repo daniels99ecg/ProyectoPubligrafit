@@ -2,6 +2,8 @@ const Insumo=require("../models/Insumo")
 const DetalleOrden=require("../models/Ficha_Tecnica/DetalleFichaTecnica")
 const Compras_detalle=require('../models/Detalle_Compra/Detalle_Compra')
 const Categoria=require('../models/Categoria')
+const Presentacion=require('../models/Presentacion/Presentacion')
+
 const { Op } = require('sequelize');
 
 async function listarInsumos(req, res){
@@ -13,13 +15,17 @@ async function listarInsumos(req, res){
               "precio",
               "cantidad",
               "fk_categoria",
-              "presentacion",
+              "fk_presentacion",
               "estado"
             ],
             include: [
               {
                 model: Categoria,
                 attributes: ["categoria"],
+              },
+              {
+                model: Presentacion,
+                attributes: ["nombre_presentacion"],
               },
             ],
           });
@@ -62,7 +68,10 @@ async function listarInsumo(req, res){
             {
                 model:Categoria,
                 attributes:["categoria"]
-            }
+            }, {
+                model: Presentacion,
+                attributes: ["nombre_presentacion"],
+              },
            ]
         
         });
@@ -87,6 +96,20 @@ async function listarCategoria(req, res) {
         
     }
 }
+
+async function listarPresentacion(req, res) {
+    try {
+        const presentacion = await Presentacion.findAll();
+        res.json(presentacion);
+      
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error:'Error al obtener la presentacion'});
+        
+    }
+}
+
 
 
 
@@ -114,13 +137,22 @@ async function crearInsumo(req, res){
                     categoria = await Categoria.create({ categoria: dataInsumo.nombreCategoria });
                 }
 
+
+                     let presentacion = await Presentacion.findOne({
+                        where: { nombre_presentacion: dataInsumo.nombrePresentacion }
+                    });
+    
+                    if (!presentacion) {
+                        presentacion = await Presentacion.create({ nombre_presentacion: dataInsumo.nombrePresentacion });
+                    }
+
         const insumo = await Insumo.create({
         id_insumo:dataInsumo.id_insumo,
         nombre:dataInsumo.nombre,
         precio:0,
         cantidad:0,
         fk_categoria:categoria.id_categoria,
-        presentacion:dataInsumo.presentacion,
+        fk_presentacion:presentacion.id_presentacion,
         estado:1
             
         })
@@ -156,7 +188,7 @@ async function actualizarInsumo(req, res) {
                 precio:insumo.precio,
                 cantidad:insumo.cantidad,
                 fk_categoria:insumo.fk_categoria,
-                presentacion:insumo.presentacion
+                fk_presentacion:insumo.fk_presentacion
                 
             },
             {
@@ -238,6 +270,7 @@ module.exports ={
     eliminarInsumo,
     desactivarInsumo,
     activarInsumo,
-    listarCategoria
+    listarCategoria,
+    listarPresentacion
 }
 
